@@ -1,0 +1,50 @@
+import { branches, type Locale } from "@/data/rollc/content";
+import { Reveal } from "@/components/rollc/ui/Reveal";
+
+function PinIcon() {
+  return (
+    <svg viewBox="0 0 24 24">
+      <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" />
+      <circle cx="12" cy="10" r="2.4" />
+    </svg>
+  );
+}
+
+export function Branches({ locale }: { locale: Locale }) {
+  return (
+    <section className="section branches" id="branches">
+      <div className="wrap">
+        <div className="br-inner">
+          <Reveal className="br-text">
+            <span className="eyebrow">{locale === "ar" ? "زورونا" : "Visit us"}</span>
+            <h2 className="h-display">{locale === "ar" ? "معارضنا تنتظر زيارتك" : "Our showrooms await you"}</h2>
+            <p>
+              {locale === "ar"
+                ? "جرّب الراحة بنفسك، والمس الخامات، واحصل على استشارة تصميم مع خبرائنا في أقرب فرعٍ إليك."
+                : "Feel the comfort yourself, touch the materials, and get a design consultation with our experts at your nearest showroom."}
+            </p>
+            <a href="#" className="btn btn--solid" style={{ background: "var(--gold)" }}>
+              <span>{locale === "ar" ? "احجز موعد زيارة" : "Book a visit"}</span>
+              <span className="arrow">→</span>
+            </a>
+          </Reveal>
+
+          <Reveal className="br-grid">
+            {branches.map((branch) => (
+              <article className="br-card" key={branch.city.en}>
+                <h3 className="br-city">
+                  <span className="pin">
+                    <PinIcon />
+                  </span>
+                  <span>{branch.city[locale]}</span>
+                </h3>
+                <p className="br-addr">{branch.addr[locale]}</p>
+                <p className="br-hours">10:00 — 23:00</p>
+              </article>
+            ))}
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
