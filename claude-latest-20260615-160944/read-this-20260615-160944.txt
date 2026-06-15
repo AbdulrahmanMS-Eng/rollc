@@ -1,0 +1,15 @@
+هذه هي الحزمة الجديدة بعد آخر الإصلاحات، وليست نسخة 152128 القديمة.
+
+المطلوب فحصه فقط:
+1. وجود src/app/fonts.ts
+2. وجود .rollc-page-en في src/app/rollc.css
+3. وجود .actions .lang-switch في src/app/rollc.css
+4. Header يرسل العربي إلى / والإنجليزي إلى /en
+5. لا يوجد /real ولا iframe ولا rollc-pixel
+
+الفحوصات عندي:
+- pnpm build نجح
+- tsc نجح
+- / = 200 عربي
+- /en = 200 إنجليزي
+- /ar = 404
