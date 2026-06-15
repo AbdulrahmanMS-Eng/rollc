@@ -39,6 +39,37 @@ export const products: Product[] = [
   { id: "copenhagen-chair", cat: { ar: "كراسي", en: "Chairs" }, name: { ar: "كرسي كوبنهاغن", en: "Copenhagen Chair" }, desc: { ar: "كرسي مكتب بتصميم اسكندنافي.", en: "Scandinavian-style accent chair." }, price: "1,450", old: "", tag: { ar: "", en: "" }, img: "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=700&q=80" },
   { id: "arabesque-dining", cat: { ar: "طاولات", en: "Tables" }, name: { ar: "طاولة طعام أرابيسك", en: "Arabesque Dining" }, desc: { ar: "طاولة طعام لثمانية أشخاص.", en: "Dining table seating eight." }, price: "7,200", old: "", tag: { ar: "جديد", en: "New" }, img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=700&q=80" },
   { id: "amber-lamp", cat: { ar: "ديكور", en: "Decor" }, name: { ar: "مصباح أمبر", en: "Amber Lamp" }, desc: { ar: "مصباح أرضي بإضاءة دافئة.", en: "Floor lamp with warm glow." }, price: "890", old: "1,150", tag: { ar: "عرض", en: "Offer" }, img: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=700&q=80" },
+  {
+    id: "oslo-sofa",
+    cat: { ar: "أرائك", en: "Sofas" },
+    name: { ar: "أريكة أوسلو", en: "Oslo Sofa" },
+    desc: { ar: "أريكة فاخرة بخطوط معاصرة ولمسة دافئة.", en: "A refined sofa with contemporary lines and a warm presence." },
+    price: "3,950",
+    old: "",
+    tag: { ar: "جديد", en: "New" },
+    img: "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=700&q=80",
+  },
+  {
+    id: "serene-sofa",
+    cat: { ar: "أرائك", en: "Sofas" },
+    name: { ar: "أريكة سرين", en: "Serene Sofa" },
+    desc: { ar: "أريكة هادئة بتنجيد فاخر وحضور أنيق.", en: "A calm, elegant sofa with premium upholstery." },
+    price: "5,200",
+    old: "",
+    tag: { ar: "", en: "" },
+    img: "https://images.unsplash.com/photo-1550226891-ef816aed4a98?auto=format&fit=crop&w=700&q=80",
+  },
+  {
+    id: "copenhagen-sofa",
+    cat: { ar: "أرائك", en: "Sofas" },
+    name: { ar: "أريكة كوبنهاغن", en: "Copenhagen Sofa" },
+    desc: { ar: "أريكة أنيقة مستوحاة من بساطة التصميم الاسكندنافي.", en: "An elegant sofa inspired by Scandinavian simplicity." },
+    price: "4,600",
+    old: "",
+    tag: { ar: "عرض", en: "Offer" },
+    img: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=700&q=80",
+  },
+
 ];
 
 export function currency(locale: Locale) {

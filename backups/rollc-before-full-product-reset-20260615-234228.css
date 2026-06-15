@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap");
 :root{
   --ivory:#F6F1E8;
   --paper:#FBF8F2;
@@ -828,4 +829,403 @@ ul{list-style:none}
 .qv-dimensions b{
   text-align:start !important;
   flex:1 !important;
+}
+
+/* ===== Product exact page / step 3: original fonts + moving header only ===== */
+@import url("https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap");
+
+.product-exact-page{
+  --ivory:#F6F1E8;
+  --paper:#FBF8F2;
+  --sand:#E8DCC7;
+  --sand-deep:#D8C7A8;
+  --gold:#B68A4E;
+  --gold-soft:#D4B179;
+  --gold-line:rgba(182,138,78,.32);
+  --brown:#4A3B2D;
+  --espresso:#2A211A;
+  --ink:#16110C;
+  --text:#2C241C;
+  --muted:#6F6253;
+  --line:rgba(42,33,26,.12);
+  --line-soft:rgba(42,33,26,.07);
+  --shadow:0 40px 110px -40px rgba(28,20,12,.6);
+  --shadow-soft:0 14px 40px -22px rgba(42,33,26,.4);
+  --r:6px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ff-display:"El Messiri",serif;
+  --ff-body:"Tajawal",sans-serif;
+  --ff-serif:"Cormorant Garamond",serif;
+  --ff-sans:"Jost",sans-serif;
+  --wrap:1320px;
+
+  min-height:100vh;
+  background:var(--ivory);
+  color:var(--text);
+  font-family:var(--ff-body);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.product-exact-page.lang-en{
+  font-family:var(--ff-sans);
+}
+
+.product-exact-page *,
+.product-exact-page *::before,
+.product-exact-page *::after{
+  box-sizing:border-box;
+}
+
+.product-exact-page img{
+  display:block;
+  max-width:100%;
+}
+
+.product-exact-page button{
+  font-family:inherit;
+  cursor:pointer;
+  border:none;
+  background:none;
+  color:inherit;
+}
+
+.product-exact-page a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.product-exact-page ul{
+  list-style:none;
+}
+
+.product-exact-page .wrap{
+  max-width:var(--wrap);
+  margin-inline:auto;
+  padding-inline:clamp(20px,5vw,64px);
+}
+
+.product-exact-page .topbar{
+  background:var(--espresso);
+  color:var(--sand);
+  font-family:var(--ff-sans);
+  font-size:.72rem;
+  letter-spacing:.12em;
+  text-align:center;
+  padding:9px 16px;
+}
+
+.product-exact-page .topbar b{
+  color:var(--gold-soft);
+  font-weight:500;
+}
+
+.product-exact-page .header{
+  position:sticky;
+  top:0;
+  z-index:60;
+  background:rgba(246,241,232,.85);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid transparent;
+  transition:.4s var(--ease);
+}
+
+.product-exact-page .header.scrolled{
+  background:rgba(246,241,232,.97);
+  border-bottom-color:var(--line);
+  box-shadow:0 8px 30px -22px rgba(42,33,26,.5);
+}
+
+.product-exact-page .nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  height:78px;
+  transition:height .4s var(--ease);
+}
+
+.product-exact-page .header.scrolled .nav{
+  height:66px;
+}
+
+.product-exact-page .brand{
+  display:flex;
+  flex-direction:column;
+  line-height:1;
+  flex-shrink:0;
+}
+
+.product-exact-page .brand .mark{
+  font-family:var(--ff-serif);
+  font-weight:600;
+  font-size:1.85rem;
+  color:var(--espresso);
+}
+
+.product-exact-page .brand .mark b{
+  color:var(--gold);
+}
+
+.product-exact-page .brand .ar{
+  font-family:var(--ff-display);
+  font-size:1rem;
+  color:var(--brown);
+  letter-spacing:.18em;
+  margin-top:2px;
+}
+
+.product-exact-page .menu{
+  display:flex;
+  align-items:center;
+  gap:32px;
+  margin:0;
+  padding:0;
+}
+
+.product-exact-page .menu a{
+  font-size:.94rem;
+  color:var(--brown);
+  position:relative;
+  padding-block:6px;
+  transition:color .3s var(--ease);
+}
+
+.product-exact-page.lang-en .menu a{
+  font-family:var(--ff-sans);
+  font-size:.82rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.product-exact-page .menu a::after{
+  content:"";
+  position:absolute;
+  inset-inline:0;
+  bottom:0;
+  height:1px;
+  background:var(--gold);
+  transform:scaleX(0);
+  transition:transform .35s var(--ease);
+}
+
+.product-exact-page .menu a:hover,
+.product-exact-page .menu a.cur{
+  color:var(--gold);
+}
+
+.product-exact-page .menu a:hover::after,
+.product-exact-page .menu a.cur::after{
+  transform:scaleX(1);
+}
+
+.product-exact-page .actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.product-exact-page .icon-btn{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:var(--brown);
+  transition:.3s var(--ease);
+  position:relative;
+}
+
+.product-exact-page .icon-btn:hover{
+  background:rgba(182,138,78,.12);
+  color:var(--gold);
+}
+
+.product-exact-page .icon-btn svg{
+  width:20px;
+  height:20px;
+  stroke:currentColor;
+  stroke-width:1.5;
+  fill:none;
+}
+
+.product-exact-page .cart-count{
+  position:absolute;
+  top:4px;
+  inset-inline-end:4px;
+  background:var(--gold);
+  color:#fff;
+  font-size:.62rem;
+  font-family:var(--ff-sans);
+  min-width:16px;
+  height:16px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  padding:0 4px;
+}
+
+.product-exact-page .lang-switch{
+  display:flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:30px;
+  font-family:var(--ff-sans);
+  font-size:.72rem;
+  overflow:hidden;
+}
+
+.product-exact-page .lang-switch a{
+  padding:7px 12px;
+  color:var(--muted);
+  transition:.3s var(--ease);
+}
+
+.product-exact-page .lang-switch a.active{
+  background:var(--espresso);
+  color:var(--paper);
+}
+
+.product-exact-page .cta-shop{
+  background:var(--gold);
+  color:#fff;
+  padding:11px 24px;
+  border-radius:var(--r);
+  font-weight:500;
+  font-size:.9rem;
+  transition:.4s var(--ease);
+  white-space:nowrap;
+}
+
+.product-exact-page .cta-shop:hover{
+  background:var(--espresso);
+  transform:translateY(-2px);
+}
+
+.product-exact-page .burger{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  width:42px;
+  height:42px;
+  align-items:center;
+  justify-content:center;
+}
+
+.product-exact-page .burger span{
+  width:22px;
+  height:1.6px;
+  background:var(--brown);
+  transition:.3s var(--ease);
+}
+
+.product-exact-page .burger.open span:nth-child(1){
+  transform:translateY(6.6px) rotate(45deg);
+}
+
+.product-exact-page .burger.open span:nth-child(2){
+  opacity:0;
+}
+
+.product-exact-page .burger.open span:nth-child(3){
+  transform:translateY(-6.6px) rotate(-45deg);
+}
+
+.product-exact-page .mobile-nav{
+  position:fixed;
+  inset:0;
+  z-index:80;
+  background:var(--espresso);
+  color:var(--paper);
+  padding:90px clamp(24px,7vw,50px) 40px;
+  transform:translateX(100%);
+  transition:transform .5s var(--ease);
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  overflow-y:auto;
+}
+
+.product-exact-page.lang-en .mobile-nav{
+  transform:translateX(-100%);
+}
+
+.product-exact-page .mobile-nav.open{
+  transform:none;
+}
+
+.product-exact-page .mobile-nav a{
+  font-family:var(--ff-display);
+  font-weight:600;
+  font-size:1.5rem;
+  padding-block:13px;
+  border-bottom:1px solid rgba(246,241,232,.1);
+}
+
+.product-exact-page.lang-en .mobile-nav a{
+  font-family:var(--ff-serif);
+}
+
+.product-exact-page .mn-close{
+  position:absolute;
+  top:24px;
+  inset-inline-end:24px;
+  width:46px;
+  height:46px;
+  color:var(--paper);
+  font-size:1.5rem;
+}
+
+.product-exact-page .crumb{
+  padding-block:22px;
+  font-family:var(--ff-sans);
+  font-size:.8rem;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  letter-spacing:.02em;
+}
+
+.product-exact-page .crumb a{
+  transition:.3s var(--ease);
+}
+
+.product-exact-page .crumb a:hover{
+  color:var(--gold);
+}
+
+.product-exact-page .crumb .sep{
+  color:var(--sand-deep);
+}
+
+.product-exact-page .crumb .now{
+  color:var(--espresso);
+  font-weight:500;
+}
+
+@media(max-width:1080px){
+  .product-exact-page .menu{
+    display:none;
+  }
+
+  .product-exact-page .burger{
+    display:flex;
+  }
+}
+
+@media(max-width:560px){
+  .product-exact-page .topbar{
+    font-size:.62rem;
+  }
+
+  .product-exact-page .cta-shop{
+    display:none;
+  }
+
+  .product-exact-page .lang-switch{
+    display:none;
+  }
 }

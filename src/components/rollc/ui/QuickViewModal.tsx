@@ -7,7 +7,7 @@ import { useRollcStore } from "@/components/rollc/ui/RollcStore";
 const galleryFallback = (product: Product) => [
   product.img.replace("w=700", "w=1100"),
   "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1100&q=80",
-  "https://images.unsplash.com/photo-1567016376408-0226e4d0c1ff?auto=format&fit=crop&w=1100&q=80",
+  "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1100&q=80",
   "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=1100&q=80",
 ];
 
@@ -33,6 +33,49 @@ const specs = [
 
 function byLocale(locale: Locale, item: { ar: string; en: string }) {
   return locale === "ar" ? item.ar : item.en;
+}
+
+function productDimensions(product: Product, locale: Locale) {
+  const dimensions: Record<string, { ar: string; en: string }> = {
+    "milano-sofa": {
+      ar: "العرض 240 سم × العمق 95 سم × الارتفاع 82 سم",
+      en: "W 240 cm × D 95 cm × H 82 cm",
+    },
+    "oslo-chair": {
+      ar: "العرض 78 سم × العمق 82 سم × الارتفاع 86 سم",
+      en: "W 78 cm × D 82 cm × H 86 cm",
+    },
+    "nordic-table": {
+      ar: "العرض 120 سم × العمق 65 سم × الارتفاع 42 سم",
+      en: "W 120 cm × D 65 cm × H 42 cm",
+    },
+    "serene-bed": {
+      ar: "العرض 200 سم × الطول 220 سم × الارتفاع 110 سم",
+      en: "W 200 cm × L 220 cm × H 110 cm",
+    },
+    "roma-sofa": {
+      ar: "العرض 285 سم × العمق 165 سم × الارتفاع 84 سم",
+      en: "W 285 cm × D 165 cm × H 84 cm",
+    },
+    "copenhagen-chair": {
+      ar: "العرض 72 سم × العمق 78 سم × الارتفاع 80 سم",
+      en: "W 72 cm × D 78 cm × H 80 cm",
+    },
+    "arabesque-dining": {
+      ar: "العرض 220 سم × العمق 100 سم × الارتفاع 76 سم",
+      en: "W 220 cm × D 100 cm × H 76 cm",
+    },
+    "amber-lamp": {
+      ar: "العرض 38 سم × العمق 38 سم × الارتفاع 158 سم",
+      en: "W 38 cm × D 38 cm × H 158 cm",
+    },
+  };
+
+  return dimensions[product.id]?.[locale] ?? (
+    locale === "ar"
+      ? "الأبعاد تختلف حسب التكوين المختار"
+      : "Dimensions vary by selected configuration"
+  );
 }
 
 function StarIcon() {
@@ -198,6 +241,11 @@ export function QuickViewModal() {
                     {byLocale(locale, size)}
                   </button>
                 ))}
+              </div>
+
+              <div className="qv-dimensions">
+                <span>{locale === "ar" ? "الأبعاد:" : "Dimensions:"}</span>
+                <b>{productDimensions(selectedProduct, locale)}</b>
               </div>
             </div>
 
