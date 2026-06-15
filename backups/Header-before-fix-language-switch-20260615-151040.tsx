@@ -35,7 +35,7 @@ export function Header({ locale }: { locale: Locale }) {
   }, [mobileOpen]);
 
   const goLang = (nextLocale: Locale) => {
-    window.location.href = nextLocale === "ar" ? "/" : "/en";
+    window.location.href = `/${nextLocale}/real`;
   };
 
   return (
