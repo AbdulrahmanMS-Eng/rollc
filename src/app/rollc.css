@@ -652,3 +652,23 @@ body.lang-en,
     order: 2;
   }
 }
+
+
+/* Mobile Arabic eyebrow readability fix START */
+@media (max-width: 620px) {
+  html[dir="rtl"] .eyebrow {
+    font-family: var(--ff-ar-body);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.86rem;
+    font-weight: 500;
+    gap: 10px;
+    line-height: 1.6;
+    word-spacing: normal;
+  }
+
+  html[dir="rtl"] .eyebrow::before {
+    width: 28px;
+  }
+}
+/* Mobile Arabic eyebrow readability fix END */
