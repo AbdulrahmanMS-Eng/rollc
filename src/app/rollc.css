@@ -652,3 +652,71 @@ body.lang-en,
     order: 2;
   }
 }
+
+
+/* Mobile-only horizontal pillars slider START */
+@media (max-width: 620px) {
+  .signature .pillars {
+    display: flex;
+    grid-template-columns: none;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 20px 14px;
+    margin-inline: -20px;
+    scrollbar-width: none;
+    animation: rollcPillarsSoftMove 16s ease-in-out infinite;
+  }
+
+  .signature .pillars::-webkit-scrollbar {
+    display: none;
+  }
+
+  .signature .pillar {
+    flex: 0 0 78%;
+    min-width: 260px;
+    max-width: 320px;
+    scroll-snap-align: start;
+    background: rgba(255, 250, 242, 0.58);
+    border: 1px solid rgba(42, 33, 26, 0.08);
+    border-radius: 10px;
+    padding: 18px 18px 16px;
+  }
+
+  .signature .pillars:hover,
+  .signature .pillars:active,
+  .signature .pillars:focus-within {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes rollcPillarsSoftMove {
+  0%, 18% {
+    transform: translateX(0);
+  }
+
+  45%, 62% {
+    transform: translateX(-22px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+[dir="rtl"] @keyframes rollcPillarsSoftMove {
+  0%, 18% {
+    transform: translateX(0);
+  }
+
+  45%, 62% {
+    transform: translateX(22px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+/* Mobile-only horizontal pillars slider END */

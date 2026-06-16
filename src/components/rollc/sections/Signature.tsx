@@ -77,7 +77,7 @@ export function Signature({ locale }: { locale: Locale }) {
           <Reveal className="sig-text">
             <span className="eyebrow">{locale === "ar" ? "لماذا رولك" : "Why Rollc"}</span>
             <h2 className="h-display">
-              {locale === "ar" ? "فخامةٌ تُلمَس في كل تفصيلة" : "Luxury you can feel in every detail"}
+              {locale === "ar" ? "فخامةٌ تُلمَس في كل التفاصيل" : "Luxury you can feel in every detail"}
             </h2>
             <p className="lead">
               {locale === "ar"
