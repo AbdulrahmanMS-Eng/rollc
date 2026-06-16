@@ -28,7 +28,7 @@ export interface ShoppingAssistantProps {
   product?: Product;
 }
 
-// ── Module-level audio state (survives re-renders) ────────────
+// ── Module-level audio state ──────────────────────────────────
 
 let _audioUnlocked = false;
 
@@ -117,7 +117,7 @@ function ContactBlock() {
 // ── Main component ────────────────────────────────────────────
 
 export function ShoppingAssistant({ page, category, product }: ShoppingAssistantProps) {
-  const { locale, selectedProduct, closeQuickView } = useRollcStore();
+  const { locale, selectedProduct } = useRollcStore();
 
   const [open, setOpen]                     = useState(false);
   const [messages, setMessages]             = useState<ChatMsg[]>([]);
@@ -131,27 +131,30 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   const [emailError, setEmailError]         = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
 
-  const scrollRef          = useRef<HTMLDivElement>(null);
-  const inputRef           = useRef<HTMLInputElement>(null);
-  const closeRef           = useRef<HTMLButtonElement>(null);
-  const greetedRef         = useRef(false);
-  const pendingAutoOpenRef = useRef(false);
-  const mutedRef           = useRef(muted);
-  const selectedProductRef = useRef(selectedProduct);
-  const lastQvProductRef   = useRef<Product | null>(null);
+  const scrollRef        = useRef<HTMLDivElement>(null);
+  const inputRef         = useRef<HTMLInputElement>(null);
+  const closeRef         = useRef<HTMLButtonElement>(null);
+  const greetedRef       = useRef(false);   // component-lifetime guard
+  const mutedRef         = useRef(muted);
+  const lastQvProductRef = useRef<Product | null>(null);
+  // Stable refs for async callbacks
+  const localeRef        = useRef(locale);
+  const pageRef          = useRef(page);
+  const categoryRef      = useRef(category);
+  const productRef       = useRef(product);
+  const pushReplyRef     = useRef<(r: AssistantReply, id: string) => void>(() => {});
 
-  // Sync refs
+  // Keep refs current every render
+  useEffect(() => { localeRef.current  = locale;   });
+  useEffect(() => { pageRef.current    = page;     });
+  useEffect(() => { categoryRef.current = category; });
+  useEffect(() => { productRef.current = product;  });
   useEffect(() => {
     try { sessionStorage.setItem("rollc-ast-muted", muted ? "1" : "0"); } catch {}
     mutedRef.current = muted;
   }, [muted]);
-  useEffect(() => { selectedProductRef.current = selectedProduct; }, [selectedProduct]);
 
-  // Register audio unlock on first user interaction
   useEffect(() => { initAudioUnlock(); }, []);
-
-  // Active product for sendMessage context — QV product takes priority
-  const activeProduct = selectedProduct ?? product ?? lastQvProductRef.current ?? null;
 
   // ── Core: add a reply ──────────────────────────────────────
 
@@ -163,6 +166,12 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     );
     setBusy(false);
   }, []);
+
+  // Keep stable ref for use inside timers/promises
+  useEffect(() => { pushReplyRef.current = pushReply; }, [pushReply]);
+
+  // Active product for sendMessage context — QV product takes priority
+  const activeProduct = selectedProduct ?? product ?? lastQvProductRef.current ?? null;
 
   const sendMessage = useCallback(
     async (engineMsg: string, displayText: string) => {
@@ -192,9 +201,8 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     [busy, locale, page, category, activeProduct, pushReply]
   );
 
-  // ── Greeting trigger (component-lifetime guard only) ───────
-  // No sessionStorage check — greeting fires on every page mount.
-  // greetedRef resets when the component unmounts (new page navigation).
+  // ── Home / category greeting (respects dismissed) ──────────
+  //    Called only from hero observer and category timer.
 
   const triggerGreeting = useCallback(
     async (autoOpen: boolean, soundOnOpen = true) => {
@@ -212,53 +220,49 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
       const typingId = uid();
       setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
       setBusy(true);
-
-      const reply = await getAssistantReply({ locale, page, category, product: product ?? undefined });
-      pushReply(reply, typingId);
+      const reply = await getAssistantReply({
+        locale: localeRef.current,
+        page:   pageRef.current,
+        category: categoryRef.current,
+        product:  productRef.current ?? undefined,
+      });
+      pushReplyRef.current(reply, typingId);
     },
-    [locale, page, category, product, pushReply]
+    [] // all deps via refs — stable identity
   );
 
-  // ── QuickView: launcher stays visible, panel closes, auto-opens after QV ─
+  // ── PDP: always auto-open (ignores dismissed flag) ─────────
 
   useEffect(() => {
-    if (selectedProduct) {
-      // Close the panel only — launcher stays visible with product thumbnail
-      if (open) setOpen(false);
-      pendingAutoOpenRef.current = true;
-
-      const greetKey = `rollc-ast-qv-${selectedProduct.id}`;
-      if (ssGet(greetKey)) return;
-      ssSet(greetKey);
-
-      const sp = selectedProduct;
-      getAssistantReply({ locale, page, category, product: sp }).then((reply) => {
-        const msgId = uid();
-        setMessages((prev) => [...prev, { id: msgId, role: "assistant", reply } as AssistMsg]);
-        lastQvProductRef.current = sp;
-        setHasPending(true);
-
-        // If QV already closed while we were fetching, open panel now
-        if (!selectedProductRef.current) {
-          pendingAutoOpenRef.current = false;
-          if (!ssGet("rollc-ast-dismissed")) {
-            setOpen(true);
-            playNotif(mutedRef.current);
-          }
-        }
+    if (page !== "product") return;
+    const timer = setTimeout(async () => {
+      if (greetedRef.current) return;
+      greetedRef.current = true;
+      setOpen(true);
+      playNotif(mutedRef.current);
+      const typingId = uid();
+      setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
+      setBusy(true);
+      const reply = await getAssistantReply({
+        locale:   localeRef.current,
+        page:     "product",
+        category: categoryRef.current,
+        product:  productRef.current ?? undefined,
       });
-    } else if (pendingAutoOpenRef.current) {
-      // QV just closed — open the panel with the queued product greeting
-      pendingAutoOpenRef.current = false;
-      if (!ssGet("rollc-ast-dismissed")) {
-        setOpen(true);
-        playNotif(mutedRef.current);
-      } else {
-        setHasPending(true);
-      }
-    }
+      pushReplyRef.current(reply, typingId);
+    }, 800);
+    return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProduct?.id]);
+  }, []); // once on mount
+
+  // ── Category: auto-open (respects dismissed, 1200ms) ───────
+
+  useEffect(() => {
+    if (page !== "category") return;
+    const timer = setTimeout(() => triggerGreeting(true), 1200);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Home: hero scroll trigger ──────────────────────────────
 
@@ -273,7 +277,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     obs.observe(hero);
     return () => obs.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, []);
 
   // ── Home: section-aware context prompts ───────────────────
 
@@ -323,18 +327,15 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     ];
 
     const observers: IntersectionObserver[] = [];
-
     sections.forEach(({ selector, key, reply }) => {
       const el = document.querySelector(selector);
       if (!el) return;
-
       const obs = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
           if (ssGet(key) || ssGet("rollc-ast-dismissed")) { obs.disconnect(); return; }
           ssSet(key);
-          const msgId = uid();
-          setMessages((prev) => [...prev, { id: msgId, role: "assistant", reply } as AssistMsg]);
+          setMessages((prev) => [...prev, { id: uid(), role: "assistant", reply } as AssistMsg]);
           setHasPending(true);
           obs.disconnect();
         },
@@ -346,16 +347,54 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
 
     return () => observers.forEach((o) => o.disconnect());
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, []);
 
-  // ── Category / product: trigger after mount delay ─────────
+  // ── QuickView: open compact panel alongside QV modal ───────
+  // Panel and QV are NOT mutually exclusive.
+  // On mobile, only show badge (prevents bottom-sheet conflict).
 
   useEffect(() => {
-    if (page === "home") return;
-    const timer = setTimeout(() => triggerGreeting(true), 1200);
-    return () => clearTimeout(timer);
+    if (!selectedProduct) return; // Only handle QV opening
+
+    const greetKey = `rollc-ast-qv-${selectedProduct.id}`;
+    const alreadyGreeted = !!ssGet(greetKey);
+
+    const isMobile = typeof window !== "undefined" && window.innerWidth <= 640;
+
+    if (isMobile) {
+      // Mobile: don't open panel (QV is a conflicting bottom sheet), just badge
+      if (!alreadyGreeted) {
+        ssSet(greetKey);
+        const sp = selectedProduct;
+        getAssistantReply({ locale: localeRef.current, page: "product", category: categoryRef.current, product: sp })
+          .then((reply) => {
+            setMessages((prev) => [...prev, { id: uid(), role: "assistant", reply } as AssistMsg]);
+            lastQvProductRef.current = sp;
+            setHasPending(true);
+          });
+      } else {
+        setHasPending(true);
+      }
+      return;
+    }
+
+    // Desktop: open compact panel alongside QV
+    setOpen(true);
+
+    if (alreadyGreeted) return; // Panel opens but no duplicate greeting
+    ssSet(greetKey);
+
+    const sp = selectedProduct;
+    const typingId = uid();
+    setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
+    setBusy(true);
+    getAssistantReply({ locale: localeRef.current, page: "product", category: categoryRef.current, product: sp })
+      .then((reply) => {
+        pushReplyRef.current(reply, typingId);
+        lastQvProductRef.current = sp;
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [selectedProduct?.id]);
 
   // ── Scroll to bottom on new messages ──────────────────────
 
@@ -384,11 +423,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   // ── Actions ───────────────────────────────────────────────
 
   const handleOpen = () => {
-    // If QV is open, closing it will trigger the panel to open automatically
-    if (selectedProduct) {
-      closeQuickView();
-      return;
-    }
+    // Never close QV — just open the panel alongside whatever is showing
     setOpen(true);
     setHasPending(false);
     if (messages.length === 0 && !busy) {
@@ -428,11 +463,10 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     setEmailError("");
     setEmailValue("");
     const productName = activeProduct?.name[locale] ?? (locale === "ar" ? "منتجك المختار" : "your selected product");
-    const confirmId = uid();
     setMessages((prev) => [
       ...prev,
       {
-        id: confirmId,
+        id: uid(),
         role: "assistant",
         reply: {
           text: locale === "ar"
@@ -447,11 +481,11 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
 
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant") as AssistMsg | undefined;
   const chips: QuickQuestion[] = lastAssistant?.reply.suggestions
-    ?? (activeProduct ? PRODUCT_CHIPS : HOME_CHIPS);
+    ?? (activeProduct ? PRODUCT_CHIPS : page === "category" ? CATEGORY_CHIPS : HOME_CHIPS);
 
   const qvOpen = !!selectedProduct;
 
-  // Product shown in the panel header (QV product, or last QV product, or PDP product)
+  // Product shown in the panel header
   const displayProduct = selectedProduct ?? lastQvProductRef.current ?? product ?? null;
 
   const headerSub  = locale === "ar" ? "رولك · مساعد التسوّق" : "Rollc · Shopping Assistant";
@@ -463,21 +497,19 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
 
   return (
     <div className={styles.root}>
-      {/* Launcher — visible at all times; shows product thumbnail when QV is open */}
+      {/* Launcher */}
       <button
-        className={`${styles.launcher} ${open && !qvOpen ? styles.launcherOpen : ""} ${qvOpen ? styles.launcherQvActive : ""}`}
+        className={`${styles.launcher} ${open ? (qvOpen ? styles.launcherQvActive : styles.launcherOpen) : ""} ${!open && qvOpen ? styles.launcherQvActive : ""}`}
         aria-label={
-          qvOpen
-            ? (locale === "ar" ? "افتح المساعد وأغلق العرض السريع" : "Open assistant & close Quick View")
-            : open
+          open
             ? (locale === "ar" ? "إغلاق مساعد التسوّق" : "Close shopping assistant")
             : (locale === "ar" ? "افتح مساعد التسوّق" : "Open shopping assistant")
         }
-        aria-expanded={open && !qvOpen}
+        aria-expanded={open}
         aria-controls="rollc-chat-panel"
-        onClick={open && !qvOpen ? handleClose : handleOpen}
+        onClick={open ? handleClose : handleOpen}
       >
-        {(hasPending || qvOpen) && !open && <span className={styles.badge} aria-hidden />}
+        {hasPending && !open && <span className={styles.badge} aria-hidden />}
         {!qvOpen && <span className={styles.dot} aria-hidden />}
         {qvOpen ? (
           <img src={selectedProduct!.img} alt="" className={styles.launcherQvThumb} />
@@ -492,13 +524,13 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
         )}
       </button>
 
-      {/* Chat panel — hidden while QV is open */}
+      {/* Chat panel — can be open alongside QV on desktop */}
       <div
         id="rollc-chat-panel"
-        className={`${styles.panel} ${open && !qvOpen ? styles.panelOpen : ""}`}
+        className={`${styles.panel} ${open ? styles.panelOpen : ""} ${open && qvOpen ? styles.panelCompact : ""}`}
         role="dialog"
         aria-label={locale === "ar" ? "مساعد التسوّق" : "Shopping Assistant"}
-        aria-hidden={!open || qvOpen}
+        aria-hidden={!open}
       >
         {/* Header */}
         <div className={styles.header}>
@@ -566,7 +598,6 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
               );
             }
 
-            // assistant
             const { reply } = msg;
             const isLast = msg === ([...messages].reverse().find((m) => m.role === "assistant"));
 
@@ -630,8 +661,8 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
           </div>
         )}
 
-        {/* Input row */}
-        <div className={styles.inputRow}>
+        {/* Input row — hidden in compact QV mode on desktop */}
+        <div className={`${styles.inputRow} ${open && qvOpen ? styles.inputRowHidden : ""}`}>
           <input
             ref={inputRef}
             className={styles.input}

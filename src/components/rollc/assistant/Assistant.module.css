@@ -143,6 +143,18 @@
   transform: none;
 }
 
+/* Compact mode when Quick View is open alongside the assistant */
+.panelCompact {
+  max-height: 240px;
+  width: 300px;
+  transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s var(--ease),
+              max-height .35s var(--ease), width .35s var(--ease);
+}
+
+.inputRowHidden {
+  display: none;
+}
+
 /* ---------- Header ---------- */
 
 .header {

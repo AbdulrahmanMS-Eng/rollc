@@ -557,9 +557,3 @@ ul{list-style:none}
 }
 
 .topbar .topbar-highlight{color:#FFD400!important;opacity:1!important;font-weight:800!important;}
-
-
-/* Card click opens Quick View */
-.card{cursor:pointer}
-.card:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
-.card .quick{display:none!important}

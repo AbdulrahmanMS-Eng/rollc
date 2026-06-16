@@ -204,9 +204,3 @@
 @media (prefers-reduced-motion: reduce) {
   .reveal { transition-duration: .15s; }
 }
-
-
-/* Card click opens Quick View */
-.card { cursor: pointer; }
-.card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
-.quick { display: none !important; }

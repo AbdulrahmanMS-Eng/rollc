@@ -23,6 +23,10 @@ export function Branches({ locale }: { locale: Locale }) {
                 ? "جرّب الراحة بنفسك، والمس الخامات، واحصل على استشارة تصميم مع خبرائنا في أقرب فرعٍ إليك."
                 : "Feel the comfort yourself, touch the materials, and get a design consultation with our experts at your nearest showroom."}
             </p>
+            <a href="#" className="btn btn--solid" style={{ background: "var(--gold)" }}>
+              <span>{locale === "ar" ? "احجز موعد زيارة" : "Book a visit"}</span>
+              <span className="arrow">→</span>
+            </a>
           </Reveal>
 
           <Reveal className="br-grid">
@@ -35,7 +39,7 @@ export function Branches({ locale }: { locale: Locale }) {
                   <span>{branch.city[locale]}</span>
                 </h3>
                 <p className="br-addr">{branch.addr[locale]}</p>
-                <p className="br-hours">{branch.hours[locale]}</p>
+                <p className="br-hours">10:00 — 23:00</p>
               </article>
             ))}
           </Reveal>

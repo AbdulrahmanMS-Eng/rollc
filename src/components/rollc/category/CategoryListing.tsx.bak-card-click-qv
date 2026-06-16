@@ -271,42 +271,29 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
                   const badge = badgeOf(product);
                   const isFav = favs.has(product.id);
                   return (
-                    <article
-                      className={styles.card}
-                      key={product.id}
-                      data-qv-card="category-product"
-                      role="button"
-                      tabIndex={0}
-                      aria-label={locale === "ar" ? `افتح معاينة ${product.name.ar}` : `Open preview for ${product.name.en}`}
-                      onClick={(event) => {
-                        if ((event.target as Element).closest("button,a,input,textarea,select,label")) return;
-                        openQuickView(product);
-                      }}
-                      onKeyDown={(event) => {
-                        if ((event.target as Element).closest("button,a,input,textarea,select,label")) return;
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          openQuickView(product);
-                        }
-                      }}
-                    >
+                    <article className={styles.card} key={product.id}>
                       <div className={styles.cardMedia}>
                         {badge ? <span className={`${styles.cardTag} ${badge === "offer" ? styles.cardTagOffer : ""}`}>{badgeText[badge][locale]}</span> : null}
-                        <button type="button" className={`${styles.cardFav} ${isFav ? styles.cardFavActive : ""}`} onClick={(event) => { event.stopPropagation(); toggleFav(product); }} aria-label={locale === "ar" ? "المفضلة" : "Wishlist"}>
+                        <button type="button" className={`${styles.cardFav} ${isFav ? styles.cardFavActive : ""}`} onClick={() => toggleFav(product)} aria-label={locale === "ar" ? "المفضلة" : "Wishlist"}>
                           <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
                         </button>
-                        <img src={product.img} alt={product.name[locale]} loading="lazy" />
+                        <a href={href(product.id)} aria-label={product.name[locale]}>
+                          <img src={product.img} alt={product.name[locale]} loading="lazy" />
+                        </a>
+                        <button type="button" className={styles.quick} onClick={() => openQuickView(product)}>
+                          {locale === "ar" ? "عرض سريع" : "Quick view"}
+                        </button>
                       </div>
                       <div className={styles.cardBody}>
                         <span className={styles.cardCat}>{product.cat[locale]}</span>
-                        <h3 className={styles.cardName}>{product.name[locale]}</h3>
+                        <a href={href(product.id)}><h3 className={styles.cardName}>{product.name[locale]}</h3></a>
                         <p className={styles.cardDesc}>{product.desc[locale]}</p>
                         <div className={styles.cardFoot}>
                           <span className={styles.price}>
                             <b>{product.price}</b> <span className={styles.priceCur}>{cur}</span>
                             {product.old ? <span className={styles.priceOld}>{product.old}</span> : null}
                           </span>
-                          <button type="button" className={styles.addCart} onClick={(event) => { event.stopPropagation(); handleAdd(product); }} aria-label={locale === "ar" ? "أضف" : "Add"}>
+                          <button type="button" className={styles.addCart} onClick={() => handleAdd(product)} aria-label={locale === "ar" ? "أضف" : "Add"}>
                             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
                           </button>
                         </div>

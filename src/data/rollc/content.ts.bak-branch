@@ -105,7 +105,18 @@ export const collections = [
 export const branches = [
   {
     city: { ar: "الرياض", en: "Riyadh" },
-    addr: { ar: "حي السليمانية، طريق الملك عبدالعزيز", en: "Al Sulimaniyah District, King Abdulaziz Road" },
-    hours: { ar: "2:00 — 10:00 مساءً", en: "2:00 PM — 10:00 PM" },
+    addr: { ar: "طريق الملك فهد، حي العليا", en: "King Fahd Rd, Al Olaya District" },
+  },
+  {
+    city: { ar: "جدة", en: "Jeddah" },
+    addr: { ar: "طريق الأمير سلطان، الزهراء", en: "Prince Sultan Rd, Al Zahraa" },
+  },
+  {
+    city: { ar: "الدمام", en: "Dammam" },
+    addr: { ar: "طريق الملك سعود، الشاطئ", en: "King Saud Rd, Al Shati" },
+  },
+  {
+    city: { ar: "الخبر", en: "Khobar" },
+    addr: { ar: "كورنيش الخبر، العقربية", en: "Khobar Corniche, Al Aqrabiyah" },
   },
 ];

@@ -129,8 +129,8 @@ function bestSellersLinks(locale: Locale): ProductLink[] {
 
 function greetHome(): { ar: string; en: string } {
   return {
-    ar: "مرحباً 👋 أنا مساعد رولك للتسوّق. هل تبحث عن قطعة بعينها لمنزلك؟",
-    en: "Hello 👋 I'm your Rollc shopping assistant. Looking for a specific piece for your home?",
+    ar: "مرحباً 👋 أنا مساعد رولك. هل تبحث عن قطعة معينة لمنزلك؟",
+    en: "Hello 👋 I'm the Rollc assistant. Are you looking for a specific piece for your home?",
   };
 }
 

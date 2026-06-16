@@ -8,30 +8,14 @@ function ProductCard({ product }: { product: Product }) {
   const { locale, addToCart, openQuickView, showToast } = useRollcStore();
 
   return (
-    <article
-      className="card"
-      data-qv-card="home-product"
-      role="button"
-      tabIndex={0}
-      aria-label={locale === "ar" ? `افتح معاينة ${product.name.ar}` : `Open preview for ${product.name.en}`}
-      onClick={(event) => {
-        if ((event.target as Element).closest("button,a,input,textarea,select,label")) return;
-        openQuickView(product);
-      }}
-      onKeyDown={(event) => {
-        if ((event.target as Element).closest("button,a,input,textarea,select,label")) return;
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openQuickView(product);
-        }
-      }}
-    >
+    <article className="card">
       <div className="card-media">
         {product.tag[locale] ? <span className="card-tag">{product.tag[locale]}</span> : null}
-        <button type="button" className="card-fav" onClick={(event) => { event.stopPropagation(); showToast(locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist"); }} aria-label={locale === "ar" ? "إضافة للمفضلة" : "Add to wishlist"}>
+        <button className="card-fav" onClick={() => showToast(locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist")} aria-label={locale === "ar" ? "إضافة للمفضلة" : "Add to wishlist"}>
           <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
         </button>
         <img src={product.img} alt={product.name[locale]} loading="lazy" />
+        <button className="quick" onClick={() => openQuickView(product)}>{locale === "ar" ? "عرض سريع" : "Quick view"}</button>
       </div>
       <div className="card-body">
         <span className="card-cat">{product.cat[locale]}</span>
@@ -39,7 +23,7 @@ function ProductCard({ product }: { product: Product }) {
         <p className="card-desc">{product.desc[locale]}</p>
         <div className="card-foot">
           <span className="price"><b>{product.price}</b> <span className="cur">{currency(locale)}</span>{product.old ? <span className="old">{product.old}</span> : null}</span>
-          <button type="button" className="add-cart" onClick={(event) => { event.stopPropagation(); addToCart(); }} aria-label={locale === "ar" ? "أضف إلى السلة" : "Add to cart"}>
+          <button className="add-cart" onClick={addToCart} aria-label={locale === "ar" ? "أضف إلى السلة" : "Add to cart"}>
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
           </button>
         </div>

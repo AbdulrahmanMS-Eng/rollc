@@ -355,15 +355,15 @@ ul{list-style:none}
 .br-text .eyebrow::before{background:var(--gold-soft)}
 .br-text h2{font-size:clamp(2rem,3.6vw,3.1rem);color:#fff;margin:16px 0 20px}
 .br-text p{color:rgba(246,241,232,.74);max-width:46ch;margin-bottom:32px}
-.br-grid{display:grid;grid-template-columns:1fr;gap:18px;max-width:560px;width:100%}
-.br-card{background:rgba(246,241,232,.05);border:1px solid rgba(246,241,232,.12);border-radius:10px;padding:clamp(32px,4vw,52px);min-height:230px;display:flex;flex-direction:column;justify-content:center;transition:.4s var(--ease)}
+.br-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.br-card{background:rgba(246,241,232,.05);border:1px solid rgba(246,241,232,.12);border-radius:6px;padding:24px;transition:.4s var(--ease)}
 .br-card:hover{background:rgba(182,138,78,.12);border-color:var(--gold-line);transform:translateY(-4px)}
-.br-city{font-family:var(--ff-ar-display);font-weight:600;font-size:clamp(1.7rem,2.6vw,2.35rem);color:#fff;display:flex;align-items:center;gap:12px}
+.br-city{font-family:var(--ff-ar-display);font-weight:600;font-size:1.3rem;color:#fff;display:flex;align-items:center;gap:10px}
 .lang-en .br-city{font-family:var(--ff-en-serif)}
 .br-city .pin{color:var(--gold-soft)}
 .br-city .pin svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5;fill:none}
-.br-addr{font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.9;color:rgba(246,241,232,.72);margin:18px 0 18px}
-.br-hours{font-family:var(--ff-en-sans);font-size:.86rem;letter-spacing:.08em;color:var(--gold-soft)}
+.br-addr{font-size:.88rem;color:rgba(246,241,232,.66);margin:10px 0 14px}
+.br-hours{font-family:var(--ff-en-sans);font-size:.72rem;letter-spacing:.08em;color:var(--gold-soft)}
 
 /* ---------- Footer ---------- */
 .footer{background:var(--ink);color:var(--sand)}
@@ -557,9 +557,3 @@ ul{list-style:none}
 }
 
 .topbar .topbar-highlight{color:#FFD400!important;opacity:1!important;font-weight:800!important;}
-
-
-/* Card click opens Quick View */
-.card{cursor:pointer}
-.card:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
-.card .quick{display:none!important}
