@@ -14,7 +14,7 @@ export default function ArabicRootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${rollcFontClassName} rollc-page-ar`}>{children}</body>
+      <body className={rollcFontClassName}>{children}</body>
     </html>
   );
 }

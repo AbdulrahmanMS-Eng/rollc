@@ -14,7 +14,7 @@ export default function EnglishRootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr">
-      <body className={`${rollcFontClassName} rollc-page-en lang-en`}>{children}</body>
+      <body className={rollcFontClassName}>{children}</body>
     </html>
   );
 }
