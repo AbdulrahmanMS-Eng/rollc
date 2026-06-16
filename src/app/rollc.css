@@ -659,15 +659,14 @@ body.lang-en,
   .signature .pillars {
     display: flex;
     grid-template-columns: none;
-    gap: 16px;
+    gap: 26px;
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
-    padding: 4px 20px 14px;
-    margin-inline: -20px;
     scrollbar-width: none;
-    animation: rollcPillarsSoftMove 16s ease-in-out infinite;
+    padding-bottom: 12px;
+    animation: rollcPillarsSoftMove 18s ease-in-out infinite;
   }
 
   .signature .pillars::-webkit-scrollbar {
@@ -679,10 +678,6 @@ body.lang-en,
     min-width: 260px;
     max-width: 320px;
     scroll-snap-align: start;
-    background: rgba(255, 250, 242, 0.58);
-    border: 1px solid rgba(42, 33, 26, 0.08);
-    border-radius: 10px;
-    padding: 18px 18px 16px;
   }
 
   .signature .pillars:hover,
@@ -693,26 +688,12 @@ body.lang-en,
 }
 
 @keyframes rollcPillarsSoftMove {
-  0%, 18% {
+  0%, 22% {
     transform: translateX(0);
   }
 
   45%, 62% {
-    transform: translateX(-22px);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-
-[dir="rtl"] @keyframes rollcPillarsSoftMove {
-  0%, 18% {
-    transform: translateX(0);
-  }
-
-  45%, 62% {
-    transform: translateX(22px);
+    transform: translateX(-18px);
   }
 
   100% {
