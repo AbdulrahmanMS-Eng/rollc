@@ -631,3 +631,24 @@ body.lang-en,
   font-family: var(--ff-ar-body) !important;
   font-size: .92rem;
 }
+
+
+/* Mobile-only section order: show Signature before Categories under the hero */
+.mobile-section-swap {
+  display: contents;
+}
+
+@media (max-width: 620px) {
+  .mobile-section-swap {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-section-swap .signature {
+    order: 1;
+  }
+
+  .mobile-section-swap .cats {
+    order: 2;
+  }
+}

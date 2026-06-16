@@ -25,8 +25,10 @@ export function RollcHomePage({ locale }: { locale: Locale }) {
         <TopBar locale={locale} />
         <Header locale={locale} />
         <Hero locale={locale} />
-        <Categories locale={locale} />
-        <Signature locale={locale} />
+        <div className="mobile-section-swap">
+          <Categories locale={locale} />
+          <Signature locale={locale} />
+        </div>
         <Products locale={locale} />
         <Showroom locale={locale} />
         <Collections locale={locale} />
