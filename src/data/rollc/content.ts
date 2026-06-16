@@ -13,21 +13,21 @@ export type Product = {
 };
 
 export const navItems = [
-  { href: "#", label: { ar: "الرئيسية", en: "Home" } },
-  { href: "#categories", label: { ar: "غرف المعيشة", en: "Living" } },
-  { href: "#categories", label: { ar: "غرف النوم", en: "Bedroom" } },
-  { href: "#products", label: { ar: "طاولات", en: "Tables" } },
-  { href: "#collections", label: { ar: "ديكور", en: "Decor" } },
-  { href: "#products", label: { ar: "العروض", en: "Offers" } },
-  { href: "#branches", label: { ar: "الفروع", en: "Showrooms" } },
+  { href: { ar: "/", en: "/en" }, label: { ar: "الرئيسية", en: "Home" } },
+  { href: { ar: "/categories/sofas", en: "/en/categories/sofas" }, label: { ar: "غرف المعيشة", en: "Living" } },
+  { href: { ar: "/categories/beds", en: "/en/categories/beds" }, label: { ar: "غرف النوم", en: "Bedroom" } },
+  { href: { ar: "/categories/tables", en: "/en/categories/tables" }, label: { ar: "طاولات", en: "Tables" } },
+  { href: { ar: "/categories/decor", en: "/en/categories/decor" }, label: { ar: "ديكور", en: "Decor" } },
+  { href: { ar: "/categories/sofas", en: "/en/categories/sofas" }, label: { ar: "العروض", en: "Offers" } },
+  { href: { ar: "/#branches", en: "/en#branches" }, label: { ar: "الفروع", en: "Showrooms" } },
 ];
 
 export const categories = [
-  { num: "/ 01", title: { ar: "غرف المعيشة", en: "Living Rooms" }, sub: { ar: "مساحاتٌ للقاء والدفء", en: "Spaces for gathering and warmth" }, img: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=80", alt: "غرف المعيشة" },
-  { num: "/ 02", title: { ar: "غرف النوم", en: "Bedrooms" }, sub: { ar: "هدوءٌ يبدأ من التفاصيل", en: "Calm that begins in the details" }, img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80", alt: "غرف النوم" },
-  { num: "/ 03", title: { ar: "غرف الطعام", en: "Dining" }, sub: { ar: "موائد تجمع الأحبة", en: "Tables that bring people together" }, img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=900&q=80", alt: "غرف الطعام" },
-  { num: "/ 04", title: { ar: "أثاث المكاتب", en: "Office" }, sub: { ar: "إنتاجيةٌ بأناقة", en: "Productivity, elegantly" }, img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80", alt: "أثاث المكاتب" },
-  { num: "/ 05", title: { ar: "الديكور والإكسسوارات", en: "Decor & Accents" }, sub: { ar: "لمساتٌ تُكمل المشهد", en: "Finishing touches that complete the scene" }, img: "https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?auto=format&fit=crop&w=900&q=80", alt: "الديكور والإكسسوارات" },
+  { num: "/ 01", slug: "sofas", title: { ar: "غرف المعيشة", en: "Living Rooms" }, sub: { ar: "مساحاتٌ للقاء والدفء", en: "Spaces for gathering and warmth" }, img: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=80", alt: "غرف المعيشة" },
+  { num: "/ 02", slug: "beds", title: { ar: "غرف النوم", en: "Bedrooms" }, sub: { ar: "هدوءٌ يبدأ من التفاصيل", en: "Calm that begins in the details" }, img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80", alt: "غرف النوم" },
+  { num: "/ 03", slug: "tables", title: { ar: "غرف الطعام", en: "Dining" }, sub: { ar: "موائد تجمع الأحبة", en: "Tables that bring people together" }, img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=900&q=80", alt: "غرف الطعام" },
+  { num: "/ 04", slug: "chairs", title: { ar: "أثاث المكاتب", en: "Office" }, sub: { ar: "إنتاجيةٌ بأناقة", en: "Productivity, elegantly" }, img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80", alt: "أثاث المكاتب" },
+  { num: "/ 05", slug: "decor", title: { ar: "الديكور والإكسسوارات", en: "Decor & Accents" }, sub: { ar: "لمساتٌ تُكمل المشهد", en: "Finishing touches that complete the scene" }, img: "https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?auto=format&fit=crop&w=900&q=80", alt: "الديكور والإكسسوارات" },
 ];
 
 export const products: Product[] = [

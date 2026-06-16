@@ -3,9 +3,21 @@
 import { useState } from "react";
 import type { Locale } from "@/data/rollc/content";
 
-const shopLinks = {
-  ar: ["غرف المعيشة", "غرف النوم", "طاولات الطعام", "الديكور", "العروض"],
-  en: ["Living Rooms", "Bedrooms", "Dining Tables", "Decor", "Offers"],
+const shopLinks: Record<Locale, { label: string; slug: string }[]> = {
+  ar: [
+    { label: "غرف المعيشة", slug: "sofas" },
+    { label: "غرف النوم", slug: "beds" },
+    { label: "طاولات الطعام", slug: "tables" },
+    { label: "الديكور", slug: "decor" },
+    { label: "كراسي", slug: "chairs" },
+  ],
+  en: [
+    { label: "Living Rooms", slug: "sofas" },
+    { label: "Bedrooms", slug: "beds" },
+    { label: "Dining Tables", slug: "tables" },
+    { label: "Decor", slug: "decor" },
+    { label: "Chairs", slug: "chairs" },
+  ],
 };
 
 const companyLinks = {
@@ -51,8 +63,8 @@ export function Footer({ locale }: { locale: Locale }) {
 
           <div className="foot-col">
             <h4>{locale === "ar" ? "تسوّق" : "Shop"}</h4>
-            {shopLinks[locale].map((link) => (
-              <a href="#" key={link}>{link}</a>
+            {shopLinks[locale].map(({ label, slug }) => (
+              <a href={`${locale === "ar" ? "" : "/en"}/categories/${slug}`} key={label}>{label}</a>
             ))}
           </div>
 

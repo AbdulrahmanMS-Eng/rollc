@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { navItems, type Locale } from "@/data/rollc/content";
 import { useRollcStore } from "@/components/rollc/ui/RollcStore";
 
@@ -34,8 +35,12 @@ export function Header({ locale }: { locale: Locale }) {
     };
   }, [mobileOpen]);
 
+  const pathname = usePathname();
+
   const goLang = (nextLocale: Locale) => {
-    window.location.href = nextLocale === "ar" ? "/" : "/en";
+    const isEn = pathname.startsWith("/en");
+    const arPath = isEn ? pathname.slice(3) || "/" : pathname;
+    window.location.href = nextLocale === "ar" ? arPath : `/en${arPath === "/" ? "" : arPath}`;
   };
 
   return (
@@ -43,7 +48,7 @@ export function Header({ locale }: { locale: Locale }) {
       <header className={`header${scrolled ? " scrolled" : ""}`} id="header">
         <div className="wrap">
           <nav className="nav">
-            <a href="#" className="brand" aria-label="Rollc رولك">
+            <a href={locale === "ar" ? "/" : "/en"} className="brand" aria-label="Rollc رولك">
               <span className="mark">
                 Roll<b>c</b>
               </span>
@@ -52,8 +57,8 @@ export function Header({ locale }: { locale: Locale }) {
 
             <ul className="menu">
               {navItems.map((item) => (
-                <li key={`${item.href}-${item.label.en}`}>
-                  <a href={item.href}>{item.label[locale]}</a>
+                <li key={`${item.href.en}-${item.label.en}`}>
+                  <a href={item.href[locale]}>{item.label[locale]}</a>
                 </li>
               ))}
             </ul>
@@ -128,8 +133,8 @@ export function Header({ locale }: { locale: Locale }) {
 
         {navItems.map((item) => (
           <a
-            key={`mobile-${item.href}-${item.label.en}`}
-            href={item.href}
+            key={`mobile-${item.href.en}-${item.label.en}`}
+            href={item.href[locale]}
             onClick={() => setMobileOpen(false)}
           >
             {item.label[locale]}

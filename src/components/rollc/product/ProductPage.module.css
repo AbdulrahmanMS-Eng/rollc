@@ -20,6 +20,9 @@
 
   font-family: var(--ff-body);
   line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 :global(.lang-en) .productTemplate { font-family: var(--ff-sans); }

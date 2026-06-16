@@ -12,6 +12,7 @@ import { RollcProvider } from "@/components/rollc/ui/RollcStore";
 import { SearchPanel } from "@/components/rollc/ui/SearchPanel";
 import { QuickViewModal } from "@/components/rollc/ui/QuickViewModal";
 import { Toast } from "@/components/rollc/ui/Toast";
+import { ShoppingAssistant } from "@/components/rollc/assistant/Assistant";
 import type { Locale } from "@/data/rollc/content";
 
 export function RollcHomePage({ locale }: { locale: Locale }) {
@@ -34,6 +35,7 @@ export function RollcHomePage({ locale }: { locale: Locale }) {
         <SearchPanel />
         <QuickViewModal />
         <Toast />
+        <ShoppingAssistant page="home" />
       </main>
     </RollcProvider>
   );

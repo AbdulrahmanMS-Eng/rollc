@@ -226,7 +226,7 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
         <nav className={styles.crumb} aria-label={locale === "ar" ? "مسار التنقل" : "Breadcrumb"}>
           <a href={locale === "ar" ? "/" : "/en"}>{locale === "ar" ? "الرئيسية" : "Home"}</a>
           <span className={styles.sep}>/</span>
-          <a href="#">{category[locale]}</a>
+          <a href={`${locale === "ar" ? "" : "/en"}/categories/${productKind(product)}`}>{category[locale]}</a>
           <span className={styles.sep}>/</span>
           <span className={styles.nowCrumb}>{product.name[locale]}</span>
         </nav>
@@ -344,11 +344,11 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
       </section>
 
       <section className={`${styles.section} ${styles.related}`}>
-        <div className="wrap"><div className={`${styles.secHead} ${styles.reveal}`}><div><span className={styles.eyebrow}>{locale === "ar" ? "قد يعجبك أيضاً" : "You may also like"}</span><h2 className={styles.sectionTitle}>{locale === "ar" ? `قطعٌ تنسجم مع ${shortName}` : `Pieces that pair with ${shortName}`}</h2></div><a href="#" className={styles.secLink}>{locale === "ar" ? "عرض الكل" : "View all"} <span>→</span></a></div><div className={`${styles.prodGrid} ${styles.reveal}`}>{related.map((item) => <ProductCard item={item} locale={locale} quickAdd={quickAdd} key={item.id} />)}</div></div>
+        <div className="wrap"><div className={`${styles.secHead} ${styles.reveal}`}><div><span className={styles.eyebrow}>{locale === "ar" ? "قد يعجبك أيضاً" : "You may also like"}</span><h2 className={styles.sectionTitle}>{locale === "ar" ? `قطعٌ تنسجم مع ${shortName}` : `Pieces that pair with ${shortName}`}</h2></div><a href={`${locale === "ar" ? "" : "/en"}/categories/${productKind(product)}`} className={styles.secLink}>{locale === "ar" ? "عرض الكل" : "View all"} <span>→</span></a></div><div className={`${styles.prodGrid} ${styles.reveal}`}>{related.map((item) => <ProductCard item={item} locale={locale} quickAdd={quickAdd} key={item.id} />)}</div></div>
       </section>
 
       <section className={`${styles.section} ${isSofa ? styles.similarSofas : styles.similarSection}`}>
-        <div className="wrap"><div className={`${styles.secHead} ${styles.reveal}`}><div><span className={styles.eyebrow}>{isSofa ? (locale === "ar" ? "أرائك أخرى من رولك" : "Similar Sofas") : (locale === "ar" ? "منتجات مشابهة" : "Similar products")}</span><h2 className={styles.sectionTitle}>{isSofa ? (locale === "ar" ? "اكتشف المزيد من الأرائك الفاخرة" : "Discover more luxury sofas") : (locale === "ar" ? "اكتشف المزيد من نفس الفئة" : "Discover more from this category")}</h2></div><a href="#" className={styles.secLink}>{isSofa ? (locale === "ar" ? "كل الأرائك" : "All sofas") : (locale === "ar" ? "عرض الكل" : "View all")} <span>→</span></a></div><div className={`${styles.prodGrid} ${styles.reveal}`}>{similar.map((item) => <ProductCard item={item} locale={locale} quickAdd={quickAdd} key={`similar-${item.id}`} />)}</div></div>
+        <div className="wrap"><div className={`${styles.secHead} ${styles.reveal}`}><div><span className={styles.eyebrow}>{isSofa ? (locale === "ar" ? "أرائك أخرى من رولك" : "Similar Sofas") : (locale === "ar" ? "منتجات مشابهة" : "Similar products")}</span><h2 className={styles.sectionTitle}>{isSofa ? (locale === "ar" ? "اكتشف المزيد من الأرائك الفاخرة" : "Discover more luxury sofas") : (locale === "ar" ? "اكتشف المزيد من نفس الفئة" : "Discover more from this category")}</h2></div><a href={`${locale === "ar" ? "" : "/en"}/categories/${productKind(product)}`} className={styles.secLink}>{isSofa ? (locale === "ar" ? "كل الأرائك" : "All sofas") : (locale === "ar" ? "عرض الكل" : "View all")} <span>→</span></a></div><div className={`${styles.prodGrid} ${styles.reveal}`}>{similar.map((item) => <ProductCard item={item} locale={locale} quickAdd={quickAdd} key={`similar-${item.id}`} />)}</div></div>
       </section>
 
       <section className={`${styles.section} ${styles.branches}`} id="branches">

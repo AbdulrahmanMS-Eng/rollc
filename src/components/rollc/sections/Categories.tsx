@@ -14,7 +14,12 @@ export function Categories({ locale }: { locale: Locale }) {
         </Reveal>
         <Reveal className="cat-grid">
           {categories.map((cat) => (
-            <article className="cat" key={cat.num}>
+            <a
+              href={`${locale === "ar" ? "" : "/en"}/categories/${cat.slug}`}
+              className="cat"
+              key={cat.num}
+              aria-label={cat.title[locale]}
+            >
               <img src={cat.img} alt={cat.alt} />
               <div className="cat-body">
                 <span className="cat-num">{cat.num}</span>
@@ -22,7 +27,7 @@ export function Categories({ locale }: { locale: Locale }) {
                 <p className="cat-sub">{cat.sub[locale]}</p>
                 <span className="cat-go">{locale === "ar" ? "اكتشف ←" : "Discover →"}</span>
               </div>
-            </article>
+            </a>
           ))}
         </Reveal>
       </div>

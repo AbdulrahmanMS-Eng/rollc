@@ -11,7 +11,7 @@ function ProductCard({ product }: { product: Product }) {
     <article className="card">
       <div className="card-media">
         {product.tag[locale] ? <span className="card-tag">{product.tag[locale]}</span> : null}
-        <button className="card-fav" onClick={() => showToast(locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist")} aria-label="fav">
+        <button className="card-fav" onClick={() => showToast(locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist")} aria-label={locale === "ar" ? "إضافة للمفضلة" : "Add to wishlist"}>
           <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
         </button>
         <img src={product.img} alt={product.name[locale]} loading="lazy" />
@@ -23,7 +23,7 @@ function ProductCard({ product }: { product: Product }) {
         <p className="card-desc">{product.desc[locale]}</p>
         <div className="card-foot">
           <span className="price"><b>{product.price}</b> <span className="cur">{currency(locale)}</span>{product.old ? <span className="old">{product.old}</span> : null}</span>
-          <button className="add-cart" onClick={addToCart} aria-label="add">
+          <button className="add-cart" onClick={addToCart} aria-label={locale === "ar" ? "أضف إلى السلة" : "Add to cart"}>
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
           </button>
         </div>
