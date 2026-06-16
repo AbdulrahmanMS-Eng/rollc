@@ -13,7 +13,7 @@ export function Hero({ locale }: { locale: Locale }) {
           <p>{locale === "ar" ? "قطعٌ مختارة بعناية، وغرفٌ منسّقة بلمسة فنية، مع خدمة توصيل وتركيب احترافية تصل إلى باب منزلك في جميع أنحاء المملكة." : "Carefully curated pieces and artfully styled rooms, with professional delivery and installation brought right to your door across the Kingdom."}</p>
           <div className="hero-cta">
             <a href="#categories" className="btn btn--solid"><span>{locale === "ar" ? "استكشف المجموعات" : "Explore collections"}</span><span className="arrow">→</span></a>
-            <a href="#showroom" className="btn btn--ghost"><span>{locale === "ar" ? "صمّم غرفتك" : "Design your room"}</span></a>
+            <a href="#showroom" className="btn btn--ghost"><span>{locale === "ar" ? "صمّم منزلك" : "Design your room"}</span></a>
           </div>
         </div>
       </div>
