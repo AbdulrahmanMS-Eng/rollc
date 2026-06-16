@@ -5,14 +5,14 @@ import type { Locale } from "@/data/rollc/content";
 
 const shopLinks: Record<Locale, { label: string; slug: string }[]> = {
   ar: [
-    { label: "غرف المعيشة", slug: "sofas" },
+    { label: "الأرائك", slug: "sofas" },
     { label: "غرف النوم", slug: "beds" },
     { label: "طاولات الطعام", slug: "tables" },
     { label: "الديكور", slug: "decor" },
     { label: "كراسي", slug: "chairs" },
   ],
   en: [
-    { label: "Living Rooms", slug: "sofas" },
+    { label: "Sofas", slug: "sofas" },
     { label: "Bedrooms", slug: "beds" },
     { label: "Dining Tables", slug: "tables" },
     { label: "Decor", slug: "decor" },

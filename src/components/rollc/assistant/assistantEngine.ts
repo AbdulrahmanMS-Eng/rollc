@@ -7,7 +7,7 @@
 //   2. import { GoogleGenAI } from "@google/genai";
 //      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_KEY! });
 //   3. Replace the body of getAssistantReply() with:
-//        const prompt = buildGeminiPrompt(ctx);   // see sketch below
+//        const prompt = buildGeminiPrompt(ctx);
 //        const res = await ai.models.generateContent({
 //          model: "gemini-2.0-flash",
 //          contents: prompt,
@@ -27,7 +27,7 @@ import {
   productDimensions,
   thumb,
 } from "@/components/rollc/product/productPageData";
-import type { CategoryKind } from "@/components/rollc/category/categoryPageData";
+import { getCategoryMeta, type CategoryKind } from "@/components/rollc/category/categoryPageData";
 
 // ── Public types ──────────────────────────────────────────────
 
@@ -62,36 +62,31 @@ export type AssistantReply = {
 
 // ── Chip banks ────────────────────────────────────────────────
 
+/** 6 premium chips shown on product pages and in the QV greeting */
 export const PRODUCT_CHIPS: QuickQuestion[] = [
-  { id: "q:delivery", label: { ar: "التوصيل داخل المملكة؟", en: "Delivery in KSA?" } },
-  { id: "q:size",     label: { ar: "تفصيل بمقاسات مختلفة؟", en: "Custom sizes?" } },
-  { id: "q:color",    label: { ar: "هل يوجد ألوان أخرى؟",   en: "Other colors?" } },
-  { id: "q:set",      label: { ar: "هل يوجد طقم مطابق؟",    en: "Matching set?" } },
+  { id: "q:delivery-install", label: { ar: "التوصيل والتركيب",    en: "Delivery & installation" } },
+  { id: "q:custom-size",      label: { ar: "تفصيل بمقاس خاص",     en: "Custom size" } },
+  { id: "q:colors",           label: { ar: "الألوان المتوفرة",     en: "Available colors" } },
+  { id: "q:matching-set",     label: { ar: "طقم مناسب معه",        en: "Matching set" } },
+  { id: "q:delivery-time",    label: { ar: "مدة وصول الطلب",       en: "Delivery time" } },
+  { id: "q:consultant",       label: { ar: "تواصل مع المستشار",    en: "Talk to a consultant" } },
 ];
 
 export const CATEGORY_CHIPS: QuickQuestion[] = [
   { id: "q:budget",     label: { ar: "ما الميزانية المناسبة؟", en: "What's my budget?" } },
-  { id: "q:color",      label: { ar: "الألوان المتاحة",         en: "Available colors" } },
-  { id: "q:size",       label: { ar: "المقاسات المتاحة",        en: "Available sizes" } },
+  { id: "q:colors",     label: { ar: "الألوان المتاحة",         en: "Available colors" } },
+  { id: "q:custom-size",label: { ar: "المقاسات المتاحة",        en: "Available sizes" } },
   { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",           en: "Best sellers" } },
 ];
 
 export const HOME_CHIPS: QuickQuestion[] = [
-  { id: "q:delivery",   label: { ar: "التوصيل والتركيب",     en: "Delivery & Install" } },
-  { id: "q:budget",     label: { ar: "ما الميزانية المناسبة؟", en: "What's my budget?" } },
-  { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",         en: "Best sellers" } },
-  { id: "q:contact",    label: { ar: "تواصل مع رولك",         en: "Contact Rollc" } },
+  { id: "q:delivery-install", label: { ar: "التوصيل والتركيب",     en: "Delivery & installation" } },
+  { id: "q:budget",           label: { ar: "ما الميزانية المناسبة؟", en: "What's my budget?" } },
+  { id: "q:bestseller",       label: { ar: "الأكثر مبيعاً",         en: "Best sellers" } },
+  { id: "q:consultant",       label: { ar: "تواصل مع المستشار",     en: "Talk to a consultant" } },
 ];
 
 // ── Private helpers ───────────────────────────────────────────
-
-const CATEGORY_LABELS: Record<CategoryKind, { ar: string; en: string }> = {
-  sofas:  { ar: "غرف المعيشة",         en: "Living Rooms" },
-  beds:   { ar: "غرف النوم",           en: "Bedrooms" },
-  tables: { ar: "طاولات الطعام",       en: "Dining Tables" },
-  chairs: { ar: "أثاث المكاتب",        en: "Office Furniture" },
-  decor:  { ar: "الديكور والإكسسوارات", en: "Decor & Accents" },
-};
 
 function delay(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms));
@@ -116,7 +111,6 @@ function sameCategoryLinks(current: Product, locale: Locale): ProductLink[] {
 }
 
 function pickLinks(exclude: string, locale: Locale, n = 3): ProductLink[] {
-  // Deterministic selection by alphabetical id order
   return products
     .filter((p) => p.id !== exclude)
     .sort((a, b) => (a.id < b.id ? -1 : 1))
@@ -135,54 +129,67 @@ function bestSellersLinks(locale: Locale): ProductLink[] {
 
 function greetHome(): { ar: string; en: string } {
   return {
-    ar: "مرحباً 👋 أنا مساعدك في رولك. هل تبحث عن قطعة بعينها، أو تريد مساعدة في اختيار ما يناسب مساحتك؟",
-    en: "Hello 👋 I'm your Rollc shopping assistant. Looking for a specific piece, or need help choosing what suits your space?",
+    ar: "مرحباً 👋 أنا مساعد رولك للتسوّق. هل تبحث عن قطعة بعينها لمنزلك؟",
+    en: "Hello 👋 I'm your Rollc shopping assistant. Looking for a specific piece for your home?",
   };
 }
 
 function greetCategory(category: CategoryKind): { ar: string; en: string } {
-  const cat = CATEGORY_LABELS[category];
+  const title = getCategoryMeta(category).title;
   return {
-    ar: `مرحباً 👋 تتصفح الآن قسم ${cat.ar}. عن ماذا تبحث تحديداً؟`,
-    en: `Hello 👋 You're browsing ${cat.en}. What are you looking for exactly?`,
+    ar: `مرحباً 👋 تتصفح الآن مجموعة ${title.ar}. عن ماذا تبحث تحديداً؟`,
+    en: `Hello 👋 You're browsing our ${title.en} collection. What are you looking for exactly?`,
   };
 }
 
 function greetProduct(product: Product): { ar: string; en: string } {
   return {
-    ar: `اختيار جميل ✦ هل تود معرفة المزيد عن ${product.name.ar}؟`,
-    en: `Great choice ✦ Would you like to know more about the ${product.name.en}?`,
+    ar: `اختيار رائع ✦ هل تود معرفة تفاصيل أكثر عن ${product.name.ar}؟`,
+    en: `Beautiful choice ✦ Would you like to know more about ${product.name.en}?`,
   };
 }
 
 // ── Canned answer handlers ────────────────────────────────────
 
-function replyDelivery(): AssistantReply {
+function replyDeliveryInstall(): AssistantReply {
   return {
     text: {
-      ar: "نعم ✦ نوفر توصيلاً احترافياً داخل المملكة العربية السعودية، مع تركيب مجاني بواسطة فريقنا المتخصص. تصل قطعتك خلال 5–10 أيام عمل، وسنتواصل معك لتحديد الموعد الأنسب.",
-      en: "Yes ✦ We offer professional delivery across the Kingdom, with free installation by our specialist team. Your piece arrives in 5–10 business days, and we'll contact you to arrange a convenient time.",
+      ar: "نعم ✦ نوفر توصيلاً احترافياً داخل المملكة العربية السعودية مع تركيب مجاني بواسطة فريقنا المتخصص. تصل قطعتك في 5–10 أيام عمل ونتواصل معك لتأكيد الموعد.",
+      en: "Yes ✦ We offer professional delivery across the Kingdom with free installation by our specialist team. Your piece arrives in 5–10 business days — we'll coordinate a convenient time with you.",
     },
     suggestions: [
-      { id: "q:set",     label: { ar: "هل يوجد طقم مطابق؟", en: "Matching set?" } },
-      { id: "q:contact", label: { ar: "تواصل معنا",           en: "Contact us" } },
+      { id: "q:delivery-time", label: { ar: "مدة وصول الطلب",    en: "Delivery time" } },
+      { id: "q:consultant",    label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
     ],
   };
 }
 
-function replySize(product?: Product): AssistantReply {
+function replyDeliveryTime(): AssistantReply {
+  return {
+    text: {
+      ar: "توصيل قطع رولك يستغرق 5–10 أيام عمل داخل المملكة. للمدن الرئيسية (الرياض · جدة · الدمام) في الغالب خلال 5 أيام. للمناطق البعيدة قد يصل إلى 10 أيام. التركيب يُجدوَل مع فريقنا بعد وصول القطعة.",
+      en: "Rollc deliveries take 5–10 business days across KSA. Major cities (Riyadh · Jeddah · Dammam) are typically 5 days; remote areas may take up to 10. Installation is scheduled with our team after delivery.",
+    },
+    suggestions: [
+      { id: "q:delivery-install", label: { ar: "تفاصيل التركيب",    en: "Installation details" } },
+      { id: "q:consultant",       label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
+    ],
+  };
+}
+
+function replyCustomSize(product?: Product): AssistantReply {
   if (product) {
     const dims = productDimensions(product);
     const arDims = dims.map((d) => `${d.key.ar}: ${d.value.ar}${d.unit ? " " + d.unit.ar : ""}`).join(" · ");
     const enDims = dims.map((d) => `${d.key.en}: ${d.value.en}${d.unit ? " " + d.unit.en : ""}`).join(" · ");
     return {
       text: {
-        ar: `نعم ✦ يمكن تفصيل ${product.name.ar} بمقاسات مختلفة حسب طلبك. أبعاد النموذج الأصلي: ${arDims}. للتفاصيل يسعدنا التواصل معك مباشرة.`,
-        en: `Yes ✦ The ${product.name.en} can be custom-sized to your request. Standard dimensions: ${enDims}. For full details, we'd be happy to connect with you.`,
+        ar: `نعم ✦ يمكن تفصيل ${product.name.ar} بمقاسات مخصصة حسب طلبك. أبعاد النموذج الأصلي: ${arDims}. للتفاصيل يسعدنا التواصل معك مباشرة.`,
+        en: `Yes ✦ The ${product.name.en} can be tailored to custom sizes on request. Standard dimensions: ${enDims}. For full details, we'd be happy to connect with you.`,
       },
       suggestions: [
-        { id: "q:color",   label: { ar: "الألوان المتاحة؟", en: "Available colors?" } },
-        { id: "q:contact", label: { ar: "تواصل معنا",        en: "Contact us" } },
+        { id: "q:colors",     label: { ar: "الألوان المتوفرة؟", en: "Available colors?" } },
+        { id: "q:consultant", label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
       ],
       askEmail: true,
     };
@@ -193,14 +200,14 @@ function replySize(product?: Product): AssistantReply {
       en: "Yes ✦ All our pieces are available in custom sizes. We'd love to discuss what suits your space.",
     },
     suggestions: [
-      { id: "q:delivery", label: { ar: "التوصيل؟", en: "Delivery?" } },
-      { id: "q:contact",  label: { ar: "تواصل معنا", en: "Contact us" } },
+      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
+      { id: "q:consultant",       label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
     ],
     askEmail: true,
   };
 }
 
-function replyColor(product: Product | undefined, locale: Locale): AssistantReply {
+function replyColors(product: Product | undefined, locale: Locale): AssistantReply {
   const colors = productColors;
   const arNames = colors.map((c) => c.ar).join("، ");
   const enNames = colors.map((c) => c.en).join(", ");
@@ -210,18 +217,18 @@ function replyColor(product: Product | undefined, locale: Locale): AssistantRepl
 
   return {
     text: {
-      ar: `نعم ✦ هذه القطعة متاحة بعدة ألوان: ${arNames}. إليك بعض القطع التي توضح خيارات الألوان:`,
-      en: `Yes ✦ This piece is available in: ${enNames}. Here are some pieces showing the color range:`,
+      ar: `نعم ✦ هذه القطعة متاحة بألوان متعددة: ${arNames}. إليك بعض القطع التي توضح خيارات الألوان:`,
+      en: `Yes ✦ This piece is available in: ${enNames}. Here are some pieces showing the full color range:`,
     },
     productLinks,
     suggestions: [
-      { id: "q:set",     label: { ar: "طقم مطابق؟",                 en: "Matching set?" } },
-      { id: "q:contact", label: { ar: "استفسر عن لون بعينه",        en: "Ask about a specific color" } },
+      { id: "q:matching-set", label: { ar: "طقم مناسب معه؟",          en: "Matching set?" } },
+      { id: "q:consultant",   label: { ar: "استفسر عن لون بعينه",      en: "Ask about a specific color" } },
     ],
   };
 }
 
-function replySet(product: Product | undefined, locale: Locale): AssistantReply {
+function replyMatchingSet(product: Product | undefined, locale: Locale): AssistantReply {
   const productLinks = product
     ? sameCategoryLinks(product, locale)
     : products.slice(0, 3).map((p) => link(p, locale));
@@ -237,8 +244,8 @@ function replySet(product: Product | undefined, locale: Locale): AssistantReply 
     },
     productLinks,
     suggestions: [
-      { id: "q:delivery", label: { ar: "التوصيل والتركيب؟", en: "Delivery & install?" } },
-      { id: "q:contact",  label: { ar: "استفسر عن الطقم",   en: "Ask about a set" } },
+      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
+      { id: "q:consultant",       label: { ar: "استفسر عن الطقم",    en: "Ask about a set" } },
     ],
   };
 }
@@ -251,8 +258,8 @@ function replyBudget(locale: Locale): AssistantReply {
     },
     productLinks: bestSellersLinks(locale),
     suggestions: [
-      { id: "q:bestseller", label: { ar: "الأكثر مبيعاً", en: "Best sellers" } },
-      { id: "q:contact",    label: { ar: "استشارة مجانية", en: "Free consultation" } },
+      { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",  en: "Best sellers" } },
+      { id: "q:consultant", label: { ar: "استشارة مجانية", en: "Free consultation" } },
     ],
   };
 }
@@ -265,8 +272,8 @@ function replyBestSellers(locale: Locale): AssistantReply {
     },
     productLinks: bestSellersLinks(locale),
     suggestions: [
-      { id: "q:delivery", label: { ar: "التوصيل والتركيب؟", en: "Delivery & install?" } },
-      { id: "q:contact",  label: { ar: "تواصل معنا",         en: "Contact us" } },
+      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
+      { id: "q:consultant",       label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
     ],
   };
 }
@@ -278,8 +285,8 @@ function replyWarranty(): AssistantReply {
       en: "All Rollc pieces come with a 2-year warranty ✦ covering manufacturing defects in the frame and stitching. Returns or exchanges are available within 14 days of delivery.",
     },
     suggestions: [
-      { id: "q:delivery", label: { ar: "التوصيل والتركيب؟", en: "Delivery & install?" } },
-      { id: "q:contact",  label: { ar: "تواصل معنا",         en: "Contact us" } },
+      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
+      { id: "q:consultant",       label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
     ],
   };
 }
@@ -349,13 +356,14 @@ function detectIntent(msg: string): string {
   if (/مرحب|أهل|السلام|هلا|hello|hi\b|hey\b/.test(s)) return "greeting";
   if (/ضمان|إرجاع|استبدال|warranty|return|exchange|refund/.test(s)) return "warranty";
   if (/شراء|اشتر|اطلب|أطلب|buy|order|purchase|checkout/.test(s)) return "buy";
-  if (/توصيل|تسليم|شحن|تركيب|delivery|shipping|install/.test(s)) return "delivery";
-  if (/مقاس|أبعاد|حجم|تفصيل|قياس|size|dimension|width|height|depth|custom/.test(s)) return "size";
-  if (/لون|ألوان|color|colour|رملي|بني|رمادي|أخضر|أبيض|أسود|sand|brown|grey|green|white|black/.test(s)) return "color";
-  if (/طقم|مجموعة|يناسب|مطابق|set|collection|matching|complement/.test(s)) return "set";
+  if (/توصيل|تسليم|شحن|تركيب|delivery|shipping|install/.test(s)) return "delivery-install";
+  if (/وقت|مدة|متى|يوم|أسبوع|time|when|days|week|how long/.test(s)) return "delivery-time";
+  if (/مقاس|أبعاد|حجم|تفصيل|قياس|size|dimension|width|height|depth|custom/.test(s)) return "custom-size";
+  if (/لون|ألوان|color|colour|رملي|بني|رمادي|أخضر|أبيض|أسود|sand|brown|grey|green|white|black/.test(s)) return "colors";
+  if (/طقم|مجموعة|يناسب|مطابق|set|collection|matching|complement/.test(s)) return "matching-set";
   if (/سعر|ثمن|تكلفة|ميزانية|price|cost|budget|how much|كم|غالي|رخيص|cheap|expensive/.test(s)) return "budget";
   if (/مبيعاً|شعبي|popular|bestsell|trending|أكثر/.test(s)) return "bestseller";
-  if (/تواصل|اتصل|contact|phone|email|whatsapp|رقم|هاتف/.test(s)) return "contact";
+  if (/تواصل|اتصل|استشار|مستشار|contact|phone|email|whatsapp|رقم|هاتف|consult/.test(s)) return "consultant";
   if (/أريكة|كرسي|طاولة|سرير|ديكور|أثاث|غرفة|نوم|معيشة|sofa|chair|table|bed|decor|furniture|room|living|bedroom|dining/.test(s)) return "general";
   if (/رولك|rollc|المتجر|store|shop/.test(s)) return "general";
   return "offtopic";
@@ -366,14 +374,20 @@ function detectIntent(msg: string): string {
 function handleQuickQuestion(qid: string, ctx: AssistantContext): AssistantReply {
   const { locale, product } = ctx;
   switch (qid) {
-    case "delivery":   return replyDelivery();
-    case "size":       return replySize(product);
-    case "color":      return replyColor(product, locale);
-    case "set":        return replySet(product, locale);
-    case "budget":     return replyBudget(locale);
-    case "bestseller": return replyBestSellers(locale);
-    case "contact":    return replyContact();
-    default:           return replyGeneral(product, locale);
+    case "delivery":
+    case "delivery-install":  return replyDeliveryInstall();
+    case "delivery-time":     return replyDeliveryTime();
+    case "size":
+    case "custom-size":       return replyCustomSize(product);
+    case "color":
+    case "colors":            return replyColors(product, locale);
+    case "set":
+    case "matching-set":      return replyMatchingSet(product, locale);
+    case "budget":            return replyBudget(locale);
+    case "bestseller":        return replyBestSellers(locale);
+    case "contact":
+    case "consultant":        return replyContact();
+    default:                  return replyGeneral(product, locale);
   }
 }
 
@@ -382,18 +396,19 @@ function handleQuickQuestion(qid: string, ctx: AssistantContext): AssistantReply
 function handleFreeText(msg: string, ctx: AssistantContext): AssistantReply {
   const { locale, product, page } = ctx;
   switch (detectIntent(msg)) {
-    case "greeting":   return replyGreeting(product, page);
-    case "delivery":   return replyDelivery();
-    case "size":       return replySize(product);
-    case "color":      return replyColor(product, locale);
-    case "set":        return replySet(product, locale);
-    case "budget":     return replyBudget(locale);
-    case "bestseller": return replyBestSellers(locale);
-    case "warranty":   return replyWarranty();
-    case "buy":        return replyBuy(product);
-    case "contact":    return replyContact();
-    case "general":    return replyGeneral(product, locale);
-    default:           return replyOffTopic();
+    case "greeting":         return replyGreeting(product, page);
+    case "delivery-install": return replyDeliveryInstall();
+    case "delivery-time":    return replyDeliveryTime();
+    case "custom-size":      return replyCustomSize(product);
+    case "colors":           return replyColors(product, locale);
+    case "matching-set":     return replyMatchingSet(product, locale);
+    case "budget":           return replyBudget(locale);
+    case "bestseller":       return replyBestSellers(locale);
+    case "warranty":         return replyWarranty();
+    case "buy":              return replyBuy(product);
+    case "consultant":       return replyContact();
+    case "general":          return replyGeneral(product, locale);
+    default:                 return replyOffTopic();
   }
 }
 

@@ -66,6 +66,22 @@
   transform: scale(0.88) rotate(10deg);
 }
 
+/* When Quick View is open: launcher shows the product thumbnail */
+.launcherQvActive {
+  padding: 0;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 3px var(--gold),
+    0 8px 28px -8px rgba(42, 33, 26, .55);
+}
+
+.launcherQvThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 /* Online dot */
 .dot {
   position: absolute;

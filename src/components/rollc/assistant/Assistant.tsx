@@ -8,6 +8,7 @@ import {
   getAssistantReply,
   HOME_CHIPS,
   PRODUCT_CHIPS,
+  CATEGORY_CHIPS,
   type AssistantReply,
   type QuickQuestion,
   type ProductLink,
@@ -16,15 +17,51 @@ import styles from "./Assistant.module.css";
 
 // ── Types ─────────────────────────────────────────────────────
 
-type UserMsg    = { id: string; role: "user"; text: string };
-type AssistMsg  = { id: string; role: "assistant"; reply: AssistantReply };
-type TypingMsg  = { id: string; role: "typing" };
-type ChatMsg    = UserMsg | AssistMsg | TypingMsg;
+type UserMsg   = { id: string; role: "user"; text: string };
+type AssistMsg = { id: string; role: "assistant"; reply: AssistantReply };
+type TypingMsg = { id: string; role: "typing" };
+type ChatMsg   = UserMsg | AssistMsg | TypingMsg;
 
 export interface ShoppingAssistantProps {
   page: "home" | "category" | "product";
   category?: CategoryKind;
   product?: Product;
+}
+
+// ── Module-level audio state (survives re-renders) ────────────
+
+let _audioUnlocked = false;
+
+function initAudioUnlock() {
+  if (typeof window === "undefined" || _audioUnlocked) return;
+  const unlock = () => { _audioUnlocked = true; };
+  window.addEventListener("pointerdown",  unlock, { once: true, passive: true });
+  window.addEventListener("keydown",      unlock, { once: true, passive: true });
+  window.addEventListener("touchstart",   unlock, { once: true, passive: true });
+}
+
+function playNotif(muted: boolean) {
+  if (muted || !_audioUnlocked || typeof window === "undefined") return;
+  try {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx  = new AudioContext();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(523, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(659, ctx.currentTime + 0.09);
+    osc.frequency.exponentialRampToValueAtTime(784, ctx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.7);
+    setTimeout(() => ctx.close().catch(() => {}), 1400);
+  } catch {
+    // AudioContext unavailable
+  }
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -35,29 +72,6 @@ const uid = () => `m${Date.now()}-${_counter++}`;
 function t(text: AssistantReply["text"], locale: Locale): string {
   if (typeof text === "string") return text;
   return text[locale];
-}
-
-function playNotif(muted: boolean) {
-  if (muted || typeof window === "undefined") return;
-  try {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(440, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.065, ctx.currentTime + 0.045);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.6);
-    setTimeout(() => ctx.close().catch(() => {}), 1200);
-  } catch {
-    // AudioContext unavailable
-  }
 }
 
 function ssGet(key: string) {
@@ -103,34 +117,41 @@ function ContactBlock() {
 // ── Main component ────────────────────────────────────────────
 
 export function ShoppingAssistant({ page, category, product }: ShoppingAssistantProps) {
-  const { locale, selectedProduct } = useRollcStore();
+  const { locale, selectedProduct, closeQuickView } = useRollcStore();
 
-  const [open, setOpen]                   = useState(false);
-  const [messages, setMessages]           = useState<ChatMsg[]>([]);
-  const [input, setInput]                 = useState("");
-  const [busy, setBusy]                   = useState(false);
-  const [muted, setMuted]                 = useState(false);
-  const [hasPending, setHasPending]       = useState(false);
-  const [emailValue, setEmailValue]       = useState("");
-  const [emailError, setEmailError]       = useState("");
+  const [open, setOpen]                     = useState(false);
+  const [messages, setMessages]             = useState<ChatMsg[]>([]);
+  const [input, setInput]                   = useState("");
+  const [busy, setBusy]                     = useState(false);
+  const [muted, setMuted]                   = useState(() => {
+    try { return sessionStorage.getItem("rollc-ast-muted") === "1"; } catch { return false; }
+  });
+  const [hasPending, setHasPending]         = useState(false);
+  const [emailValue, setEmailValue]         = useState("");
+  const [emailError, setEmailError]         = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
 
-  const scrollRef  = useRef<HTMLDivElement>(null);
-  const inputRef   = useRef<HTMLInputElement>(null);
-  const closeRef   = useRef<HTMLButtonElement>(null);
-  const greetedRef = useRef(false);
-  const prevQvRef  = useRef<string | null>(null);
+  const scrollRef          = useRef<HTMLDivElement>(null);
+  const inputRef           = useRef<HTMLInputElement>(null);
+  const closeRef           = useRef<HTMLButtonElement>(null);
+  const greetedRef         = useRef(false);
+  const pendingAutoOpenRef = useRef(false);
+  const mutedRef           = useRef(muted);
+  const selectedProductRef = useRef(selectedProduct);
+  const lastQvProductRef   = useRef<Product | null>(null);
 
-  // Effective product context: QuickView takes precedence over PDP prop
-  const activeProduct = selectedProduct ?? product;
+  // Sync refs
+  useEffect(() => {
+    try { sessionStorage.setItem("rollc-ast-muted", muted ? "1" : "0"); } catch {}
+    mutedRef.current = muted;
+  }, [muted]);
+  useEffect(() => { selectedProductRef.current = selectedProduct; }, [selectedProduct]);
 
-  // Session key for this page context
-  const contextKey =
-    page === "product" && activeProduct
-      ? `rollc-ast-greeted-product-${activeProduct.id}`
-      : page === "category" && category
-      ? `rollc-ast-greeted-category-${category}`
-      : "rollc-ast-greeted-home";
+  // Register audio unlock on first user interaction
+  useEffect(() => { initAudioUnlock(); }, []);
+
+  // Active product for sendMessage context — QV product takes priority
+  const activeProduct = selectedProduct ?? product ?? lastQvProductRef.current ?? null;
 
   // ── Core: add a reply ──────────────────────────────────────
 
@@ -171,18 +192,20 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     [busy, locale, page, category, activeProduct, pushReply]
   );
 
-  // ── Greeting trigger ───────────────────────────────────────
+  // ── Greeting trigger (component-lifetime guard only) ───────
+  // No sessionStorage check — greeting fires on every page mount.
+  // greetedRef resets when the component unmounts (new page navigation).
 
   const triggerGreeting = useCallback(
     async (autoOpen: boolean, soundOnOpen = true) => {
       if (greetedRef.current) return;
-      if (ssGet(contextKey)) return;
       greetedRef.current = true;
 
-      if (autoOpen && !ssGet("rollc-ast-dismissed")) {
+      const wasDismissed = ssGet("rollc-ast-dismissed");
+      if (autoOpen && !wasDismissed) {
         setOpen(true);
-        if (soundOnOpen) playNotif(muted);
-      } else {
+        if (soundOnOpen) playNotif(mutedRef.current);
+      } else if (!wasDismissed) {
         setHasPending(true);
       }
 
@@ -190,67 +213,149 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
       setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
       setBusy(true);
 
-      const reply = await getAssistantReply({ locale, page, category, product: activeProduct ?? undefined });
+      const reply = await getAssistantReply({ locale, page, category, product: product ?? undefined });
       pushReply(reply, typingId);
-      ssSet(contextKey);
     },
-    [contextKey, locale, muted, page, category, activeProduct, pushReply]
+    [locale, page, category, product, pushReply]
   );
 
-  // ── Proactive trigger per page ─────────────────────────────
+  // ── QuickView: launcher stays visible, panel closes, auto-opens after QV ─
 
-  // Home: wait for hero to scroll out of view
+  useEffect(() => {
+    if (selectedProduct) {
+      // Close the panel only — launcher stays visible with product thumbnail
+      if (open) setOpen(false);
+      pendingAutoOpenRef.current = true;
+
+      const greetKey = `rollc-ast-qv-${selectedProduct.id}`;
+      if (ssGet(greetKey)) return;
+      ssSet(greetKey);
+
+      const sp = selectedProduct;
+      getAssistantReply({ locale, page, category, product: sp }).then((reply) => {
+        const msgId = uid();
+        setMessages((prev) => [...prev, { id: msgId, role: "assistant", reply } as AssistMsg]);
+        lastQvProductRef.current = sp;
+        setHasPending(true);
+
+        // If QV already closed while we were fetching, open panel now
+        if (!selectedProductRef.current) {
+          pendingAutoOpenRef.current = false;
+          if (!ssGet("rollc-ast-dismissed")) {
+            setOpen(true);
+            playNotif(mutedRef.current);
+          }
+        }
+      });
+    } else if (pendingAutoOpenRef.current) {
+      // QV just closed — open the panel with the queued product greeting
+      pendingAutoOpenRef.current = false;
+      if (!ssGet("rollc-ast-dismissed")) {
+        setOpen(true);
+        playNotif(mutedRef.current);
+      } else {
+        setHasPending(true);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProduct?.id]);
+
+  // ── Home: hero scroll trigger ──────────────────────────────
+
   useEffect(() => {
     if (page !== "home") return;
     const hero = document.querySelector(".hero") as HTMLElement | null;
     if (!hero) return;
-
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) triggerGreeting(true);
-      },
+      ([entry]) => { if (!entry.isIntersecting) triggerGreeting(true); },
       { threshold: 0 }
     );
     obs.observe(hero);
     return () => obs.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]); // triggerGreeting via ref to avoid re-subscribing
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
-  // Category / product: trigger after a short mount delay
+  // ── Home: section-aware context prompts ───────────────────
+
+  useEffect(() => {
+    if (page !== "home") return;
+
+    const sections: Array<{ selector: string; key: string; reply: AssistantReply }> = [
+      {
+        selector: "#categories",
+        key: "rollc-ast-section-categories",
+        reply: {
+          text: {
+            ar: "تصفح أقسامنا: الأرائك، الكراسي، الطاولات، الأسرة، والإكسسوارات. عن ماذا تبحث؟",
+            en: "Browse our collections: sofas, chairs, tables, beds, and décor accents. What are you looking for?",
+          },
+          suggestions: CATEGORY_CHIPS,
+        },
+      },
+      {
+        selector: "#products",
+        key: "rollc-ast-section-products",
+        reply: {
+          text: {
+            ar: "هذه أبرز قطعنا هذا الموسم. هل تريد مساعدة في الاختيار؟",
+            en: "These are our standout pieces this season. Can I help you choose?",
+          },
+          suggestions: [
+            { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",  en: "Best sellers" } },
+            { id: "q:budget",     label: { ar: "حسب الميزانية",   en: "By budget" } },
+          ],
+        },
+      },
+      {
+        selector: "#branches",
+        key: "rollc-ast-section-branches",
+        reply: {
+          text: {
+            ar: "يمكنك زيارة أحد معارض رولك لتجربة القطع مباشرة، أو طلب استشارة تصميم عن بُعد.",
+            en: "You can visit a Rollc showroom to experience pieces in person, or request a remote design consultation.",
+          },
+          suggestions: [
+            { id: "q:consultant",       label: { ar: "تواصل مع المستشار",  en: "Talk to a consultant" } },
+            { id: "q:delivery-install", label: { ar: "التوصيل والتركيب",   en: "Delivery & installation" } },
+          ],
+        },
+      },
+    ];
+
+    const observers: IntersectionObserver[] = [];
+
+    sections.forEach(({ selector, key, reply }) => {
+      const el = document.querySelector(selector);
+      if (!el) return;
+
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          if (ssGet(key) || ssGet("rollc-ast-dismissed")) { obs.disconnect(); return; }
+          ssSet(key);
+          const msgId = uid();
+          setMessages((prev) => [...prev, { id: msgId, role: "assistant", reply } as AssistMsg]);
+          setHasPending(true);
+          obs.disconnect();
+        },
+        { threshold: 0.25 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  // ── Category / product: trigger after mount delay ─────────
+
   useEffect(() => {
     if (page === "home") return;
     const timer = setTimeout(() => triggerGreeting(true), 1200);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  // QuickView: react to selectedProduct changes
-  useEffect(() => {
-    if (!selectedProduct) { prevQvRef.current = null; return; }
-    if (selectedProduct.id === prevQvRef.current) return;
-    prevQvRef.current = selectedProduct.id;
-
-    // Send a product greeting whenever a NEW product opens in QuickView
-    const doGreet = async () => {
-      const typingId = uid();
-      setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
-      setBusy(true);
-      const reply = await getAssistantReply({
-        locale,
-        page,
-        category,
-        product: selectedProduct,
-      });
-      pushReply(reply, typingId);
-    };
-
-    if (open) {
-      doGreet();
-    } else {
-      setHasPending(true);
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProduct?.id]);
+  }, [page]);
 
   // ── Scroll to bottom on new messages ──────────────────────
 
@@ -263,8 +368,8 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   useEffect(() => {
     if (!open) return;
     setHasPending(false);
-    const t = setTimeout(() => inputRef.current?.focus(), 280);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => inputRef.current?.focus(), 280);
+    return () => clearTimeout(timer);
   }, [open]);
 
   // Esc to close
@@ -279,11 +384,15 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   // ── Actions ───────────────────────────────────────────────
 
   const handleOpen = () => {
+    // If QV is open, closing it will trigger the panel to open automatically
+    if (selectedProduct) {
+      closeQuickView();
+      return;
+    }
     setOpen(true);
     setHasPending(false);
-    // If no messages yet and greeting was dismissed, trigger manually
     if (messages.length === 0 && !busy) {
-      greetedRef.current = false; // allow re-run
+      greetedRef.current = false;
       triggerGreeting(false, false);
     }
   };
@@ -308,7 +417,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   };
 
   const handleEmailSend = () => {
-    const val = emailValue.trim();
+    const val   = emailValue.trim();
     const valid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val);
     if (!valid) {
       setEmailError(locale === "ar" ? "فضلاً أدخل بريداً إلكترونياً صحيحاً" : "Please enter a valid email");
@@ -336,39 +445,43 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
 
   // ── Render helpers ─────────────────────────────────────────
 
-  // Last assistant reply (for chips + email capture)
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant") as AssistMsg | undefined;
   const chips: QuickQuestion[] = lastAssistant?.reply.suggestions
     ?? (activeProduct ? PRODUCT_CHIPS : HOME_CHIPS);
 
-  const showEmailCapture =
-    !emailSubmitted &&
-    !!lastAssistant?.reply.askEmail &&
-    lastAssistant === ([...messages].reverse().find((m) => m.role === "assistant") as AssistMsg | undefined);
+  const qvOpen = !!selectedProduct;
 
-  // Header label
-  const headerSub = locale === "ar" ? "رولك · مساعد التسوّق" : "Rollc · Shopping Assistant";
-  const headerName = activeProduct
-    ? activeProduct.name[locale]
+  // Product shown in the panel header (QV product, or last QV product, or PDP product)
+  const displayProduct = selectedProduct ?? lastQvProductRef.current ?? product ?? null;
+
+  const headerSub  = locale === "ar" ? "رولك · مساعد التسوّق" : "Rollc · Shopping Assistant";
+  const headerName = displayProduct
+    ? displayProduct.name[locale]
     : locale === "ar" ? "مساعد رولك" : "Rollc Assistant";
 
   // ── JSX ───────────────────────────────────────────────────
 
   return (
     <div className={styles.root}>
-      {/* Launcher */}
+      {/* Launcher — visible at all times; shows product thumbnail when QV is open */}
       <button
-        className={`${styles.launcher} ${open ? styles.launcherOpen : ""}`}
-        aria-label={open
-          ? (locale === "ar" ? "إغلاق مساعد التسوّق" : "Close shopping assistant")
-          : (locale === "ar" ? "افتح مساعد التسوّق" : "Open shopping assistant")}
-        aria-expanded={open}
+        className={`${styles.launcher} ${open && !qvOpen ? styles.launcherOpen : ""} ${qvOpen ? styles.launcherQvActive : ""}`}
+        aria-label={
+          qvOpen
+            ? (locale === "ar" ? "افتح المساعد وأغلق العرض السريع" : "Open assistant & close Quick View")
+            : open
+            ? (locale === "ar" ? "إغلاق مساعد التسوّق" : "Close shopping assistant")
+            : (locale === "ar" ? "افتح مساعد التسوّق" : "Open shopping assistant")
+        }
+        aria-expanded={open && !qvOpen}
         aria-controls="rollc-chat-panel"
-        onClick={open ? handleClose : handleOpen}
+        onClick={open && !qvOpen ? handleClose : handleOpen}
       >
-        {hasPending && !open && <span className={styles.badge} aria-hidden />}
-        <span className={styles.dot} aria-hidden />
-        {open ? (
+        {(hasPending || qvOpen) && !open && <span className={styles.badge} aria-hidden />}
+        {!qvOpen && <span className={styles.dot} aria-hidden />}
+        {qvOpen ? (
+          <img src={selectedProduct!.img} alt="" className={styles.launcherQvThumb} />
+        ) : open ? (
           <svg className={styles.launcherIcon} viewBox="0 0 24 24">
             <path d="M18 6 6 18M6 6l12 12" />
           </svg>
@@ -379,20 +492,20 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
         )}
       </button>
 
-      {/* Chat panel */}
+      {/* Chat panel — hidden while QV is open */}
       <div
         id="rollc-chat-panel"
-        className={`${styles.panel} ${open ? styles.panelOpen : ""}`}
+        className={`${styles.panel} ${open && !qvOpen ? styles.panelOpen : ""}`}
         role="dialog"
         aria-label={locale === "ar" ? "مساعد التسوّق" : "Shopping Assistant"}
-        aria-hidden={!open}
+        aria-hidden={!open || qvOpen}
       >
         {/* Header */}
         <div className={styles.header}>
-          {activeProduct && (
+          {displayProduct && (
             <img
-              src={activeProduct.img}
-              alt={activeProduct.name[locale]}
+              src={displayProduct.img}
+              alt={displayProduct.name[locale]}
               className={styles.headerThumb}
             />
           )}

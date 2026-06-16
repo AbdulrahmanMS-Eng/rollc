@@ -27,7 +27,7 @@ const categoryMeta: Record<CategoryKind, CategoryMeta> = {
       ar: "اختر من مجموعة أرائك رولك الفاخرة المصممة لتمنح غرفة المعيشة حضوراً دافئاً وراحة تدوم.",
       en: "Choose from Rollc's collection of luxury sofas, designed to give your living room a warm presence and lasting comfort.",
     },
-    parentCrumb: { ar: "غرف المعيشة", en: "Living" },
+    parentCrumb: { ar: "الرئيسية", en: "Home" },
     hero: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1800&q=80",
   },
   chairs: {
@@ -37,7 +37,7 @@ const categoryMeta: Record<CategoryKind, CategoryMeta> = {
       ar: "كراسي تجمع بين الراحة والتصميم، تكمّل أي مساحة بلمسة من الأناقة الهادئة.",
       en: "Chairs that balance comfort and design, completing any space with quiet elegance.",
     },
-    parentCrumb: { ar: "غرف المعيشة", en: "Living" },
+    parentCrumb: { ar: "الرئيسية", en: "Home" },
     hero: "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=1800&q=80",
   },
   tables: {
