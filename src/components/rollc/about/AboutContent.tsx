@@ -510,7 +510,10 @@ function LogoMarquee({ locale }: { locale: Locale }) {
     scrollerRef.current?.scrollBy({ left: dx, behavior: "smooth" });
   };
 
-  const logos = Array.from({ length: 8 }, (_, i) => i + 1);
+  const logos = Array.from({ length: 8 }, (_, i) => ({
+    src: `/rollc/about/partners/partner-${String(i + 1).padStart(2, "0")}.svg`,
+    alt: `Partner ${i + 1}`,
+  }));
   const loop = [...logos, ...logos]; // duplicate for a seamless wrap
 
   const ar = locale === "ar";
@@ -536,15 +539,9 @@ function LogoMarquee({ locale }: { locale: Locale }) {
         onTouchEnd={() => { pausedRef.current = false; }}
       >
         <div className={styles.logoTrack}>
-          {loop.map((n, i) => (
-            <div key={i} className={styles.logoCell} aria-hidden={i >= logos.length ? true : undefined}>
-              <svg className={styles.logoMark} viewBox="0 0 120 40" role="img" aria-label={`Logo ${n}`}>
-                <rect x="6" y="10" width="20" height="20" rx="4" />
-                <circle cx="48" cy="20" r="10" />
-                <path d="M70 30V10l14 20V10" />
-                <path d="M100 30V10h10" />
-              </svg>
-              <span className={styles.logoCap}>Logo {n}</span>
+          {loop.map((logo, i) => (
+            <div key={`${logo.src}-${i}`} className={styles.logoCell} aria-hidden={i >= logos.length ? true : undefined}>
+              <img className={styles.logoImg} src={logo.src} alt={logo.alt} loading="lazy" />
             </div>
           ))}
         </div>

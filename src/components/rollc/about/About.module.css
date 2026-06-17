@@ -329,6 +329,8 @@
 }
 .logoCell:hover { border-color: var(--gold-line); box-shadow: var(--shadow-soft); }
 .logoMark { width: 72px; height: 24px; color: var(--sand-deep); opacity: 0.65; stroke: currentColor; stroke-width: 1.4; fill: none; }
+.logoImg { max-width: 112px; max-height: 44px; width: auto; height: auto; object-fit: contain; display: block; opacity: 0.82; filter: saturate(0.9); }
+.logoCell:hover .logoImg { opacity: 1; filter: none; }
 .logoCap { font-family: var(--ff-sans); font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 .logoNav {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
