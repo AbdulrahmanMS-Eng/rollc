@@ -9,6 +9,7 @@ import {
   HOME_CHIPS,
   PRODUCT_CHIPS,
   CATEGORY_CHIPS,
+  getCategoryChips,
   type AssistantReply,
   type QuickQuestion,
   type ProductLink,
@@ -284,7 +285,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     const hero = document.querySelector(".hero") as HTMLElement | null;
     if (!hero) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (!entry.isIntersecting) triggerGreeting(true); },
+      ([entry]) => { if (!entry.isIntersecting) triggerGreeting(false); },
       { threshold: 0 }
     );
     obs.observe(hero);
@@ -490,7 +491,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
 
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant") as AssistMsg | undefined;
   const chips: QuickQuestion[] = lastAssistant?.reply.suggestions
-    ?? (activeProduct ? PRODUCT_CHIPS : page === "category" ? CATEGORY_CHIPS : HOME_CHIPS);
+    ?? (activeProduct ? PRODUCT_CHIPS : page === "category" ? getCategoryChips(category) : HOME_CHIPS);
 
   // Product shown in the panel header
   const displayProduct = selectedProduct ?? lastQvProductRef.current ?? assistantProduct ?? product ?? null;

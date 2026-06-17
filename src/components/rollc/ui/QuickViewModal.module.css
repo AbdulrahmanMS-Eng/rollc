@@ -148,6 +148,8 @@
   .specs { grid-template-columns: repeat(2, 1fr); }
   .modal { padding: 0; place-items: end center; }
   .box { border-radius: 16px 16px 0 0; width: 100%; }
+  /* Move chat icon away from close (top-end) on mobile */
+  .gChat { top: auto; bottom: 14px; inset-inline-end: auto; inset-inline-start: 14px; }
 }
 @media (max-width: 420px) {
   .buyRow { flex-wrap: wrap; }

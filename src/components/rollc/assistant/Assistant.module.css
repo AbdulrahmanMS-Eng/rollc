@@ -119,7 +119,7 @@
   inset-inline-end: 24px;
   z-index: 159;
   width: 368px;
-  max-height: 560px;
+  height: min(72vh, 560px);
   display: flex;
   flex-direction: column;
   background: var(--paper);
@@ -618,13 +618,17 @@
     height: 52px;
   }
 
+  /* Prevent iOS Safari auto-zoom on input focus (font-size must be ≥ 16px) */
+  .input { font-size: 1rem; }
+  .emailInput { font-size: 1rem; }
+
   /* Panel anchors to the launcher corner — NOT a full-width bottom sheet */
   .panel {
     bottom: 88px; /* above launcher (52px + 20px bottom + 16px gap) */
     inset-inline-end: 16px;
     inset-inline-start: auto;
     width: min(340px, calc(100vw - 32px));
-    max-height: 62vh;
+    height: min(62vh, 520px);
     border-radius: 16px;
     transform-origin: bottom inline-end;
   }

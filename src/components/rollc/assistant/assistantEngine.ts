@@ -62,29 +62,40 @@ export type AssistantReply = {
 
 // ── Chip banks ────────────────────────────────────────────────
 
-/** 6 premium chips shown on product pages and in the QV greeting */
 export const PRODUCT_CHIPS: QuickQuestion[] = [
-  { id: "q:delivery-install", label: { ar: "التوصيل والتركيب",    en: "Delivery & installation" } },
-  { id: "q:custom-size",      label: { ar: "تفصيل بمقاس خاص",     en: "Custom size" } },
-  { id: "q:colors",           label: { ar: "الألوان المتوفرة",     en: "Available colors" } },
-  { id: "q:matching-set",     label: { ar: "طقم مناسب معه",        en: "Matching set" } },
-  { id: "q:delivery-time",    label: { ar: "مدة وصول الطلب",       en: "Delivery time" } },
-  { id: "q:consultant",       label: { ar: "تواصل مع المستشار",    en: "Talk to a consultant" } },
+  { id: "q:colors",        label: { ar: "ما الألوان المتاحة؟",         en: "What colours are available?" } },
+  { id: "q:sizes",         label: { ar: "ما المقاسات المتاحة؟",        en: "What sizes are available?" } },
+  { id: "q:custom-size",   label: { ar: "هل يمكن تفصيله بمقاس خاص؟",  en: "Can it be custom-sized?" } },
+  { id: "q:matching-set",  label: { ar: "هل تتوفّر قطع مطابقة؟",      en: "Any matching pieces?" } },
+  { id: "q:full-set",      label: { ar: "هل يُباع كطقم كامل؟",        en: "Is it sold as a full set?" } },
+  { id: "q:delivery-city", label: { ar: "هل يصل التوصيل لمدينتي؟",    en: "Do you deliver to my city?" } },
 ];
 
 export const CATEGORY_CHIPS: QuickQuestion[] = [
-  { id: "q:budget",     label: { ar: "ما الميزانية المناسبة؟", en: "What's my budget?" } },
-  { id: "q:colors",     label: { ar: "الألوان المتاحة",         en: "Available colors" } },
-  { id: "q:custom-size",label: { ar: "المقاسات المتاحة",        en: "Available sizes" } },
-  { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",           en: "Best sellers" } },
+  { id: "q:colors",      label: { ar: "ما اللون الذي تبحث عنه؟", en: "Which colour are you after?" } },
+  { id: "q:custom-size", label: { ar: "ما المقاس المناسب؟",       en: "What size suits you?" } },
+  { id: "q:bestseller",  label: { ar: "الأكثر مبيعاً",           en: "Best sellers" } },
+  { id: "q:budget",      label: { ar: "حسب الميزانية",           en: "By budget" } },
 ];
 
 export const HOME_CHIPS: QuickQuestion[] = [
-  { id: "q:delivery-install", label: { ar: "التوصيل والتركيب",     en: "Delivery & installation" } },
-  { id: "q:budget",           label: { ar: "ما الميزانية المناسبة؟", en: "What's my budget?" } },
-  { id: "q:bestseller",       label: { ar: "الأكثر مبيعاً",         en: "Best sellers" } },
-  { id: "q:consultant",       label: { ar: "تواصل مع المستشار",     en: "Talk to a consultant" } },
+  { id: "q:categories", label: { ar: "تصفّح الأقسام",  en: "Browse categories" } },
+  { id: "q:bestseller", label: { ar: "الأكثر مبيعاً", en: "Best sellers" } },
+  { id: "q:budget",     label: { ar: "حسب الميزانية", en: "By budget" } },
 ];
+
+export function getCategoryChips(category?: CategoryKind): QuickQuestion[] {
+  const catName = category
+    ? getCategoryMeta(category).title
+    : { ar: "الأثاث", en: "furniture" };
+  return [
+    { id: "q:colors",     label: { ar: "ما اللون الذي تبحث عنه؟",          en: "Which colour are you after?" } },
+    { id: "q:custom-size",label: { ar: "ما المقاس المناسب؟",                en: "What size suits you?" } },
+    { id: "q:cat-type",   label: { ar: `ما نوع ${catName.ar} المطلوب؟`,    en: `Which type of ${catName.en}?` } },
+    { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",                    en: "Best sellers" } },
+    { id: "q:budget",     label: { ar: "حسب الميزانية",                    en: "By budget" } },
+  ];
+}
 
 // ── Private helpers ───────────────────────────────────────────
 
@@ -125,27 +136,52 @@ function bestSellersLinks(locale: Locale): ProductLink[] {
     .map((p) => link(p, locale));
 }
 
+// ── Color extractor ───────────────────────────────────────────
+
+function extractColor(msg: string): { ar: string; en: string } | null {
+  const s = msg.toLowerCase();
+  const map: Array<{ p: RegExp; ar: string; en: string }> = [
+    { p: /رملي|بيج|beige|sand/,     ar: "الرملي",  en: "Sand" },
+    { p: /بني|brown/,               ar: "البني",   en: "Brown" },
+    { p: /رمادي|grey|gray/,         ar: "الرمادي", en: "Grey" },
+    { p: /أخضر|زيتون|green|olive/,  ar: "الأخضر",  en: "Green" },
+    { p: /أبيض|white/,              ar: "الأبيض",  en: "White" },
+    { p: /أسود|black/,              ar: "الأسود",  en: "Black" },
+    { p: /أزرق|blue/,               ar: "الأزرق",  en: "Blue" },
+    { p: /أحمر|red/,                ar: "الأحمر",  en: "Red" },
+    { p: /ذهبي|golden|gold/,        ar: "الذهبي",  en: "Golden" },
+  ];
+  for (const c of map) {
+    if (c.p.test(s)) return { ar: c.ar, en: c.en };
+  }
+  return null;
+}
+
 // ── Greeting builders ────────────────────────────────────────
 
 function greetHome(): { ar: string; en: string } {
   return {
-    ar: "مرحباً 👋 أنا مساعد رولك. هل تبحث عن قطعة معينة لمنزلك؟",
-    en: "Hello 👋 I'm the Rollc assistant. Are you looking for a specific piece for your home?",
+    ar: "مرحباً 👋 أنا مساعد رولك، كيف أساعدك؟",
+    en: "Hi 👋 I'm the Rollc assistant. How can I help you?",
   };
 }
 
 function greetCategory(category: CategoryKind): { ar: string; en: string } {
   const title = getCategoryMeta(category).title;
   return {
-    ar: `مرحباً 👋 تتصفح الآن مجموعة ${title.ar}. عن ماذا تبحث تحديداً؟`,
-    en: `Hello 👋 You're browsing our ${title.en} collection. What are you looking for exactly?`,
+    ar: `مرحباً 👋 تتصفّح الآن مجموعة ${title.ar}. عن ماذا تبحث تحديداً؟`,
+    en: `Hi 👋 You're browsing our ${title.en} collection. What are you looking for?`,
   };
 }
 
-function greetProduct(product: Product): { ar: string; en: string } {
+function greetProduct(product: Product, locale: Locale): AssistantReply {
   return {
-    ar: `اختيار رائع ✦ هل تود معرفة تفاصيل أكثر عن ${product.name.ar}؟`,
-    en: `Beautiful choice ✦ Would you like to know more about ${product.name.en}?`,
+    text: {
+      ar: `اختيار رائع ✦ ${product.name.ar}`,
+      en: `Great choice ✦ ${product.name.en}`,
+    },
+    productLinks: [link(product, locale)],
+    suggestions: PRODUCT_CHIPS,
   };
 }
 
@@ -154,8 +190,8 @@ function greetProduct(product: Product): { ar: string; en: string } {
 function replyDeliveryInstall(): AssistantReply {
   return {
     text: {
-      ar: "نعم ✦ نوفر توصيلاً احترافياً داخل المملكة العربية السعودية مع تركيب مجاني بواسطة فريقنا المتخصص. تصل قطعتك في 5–10 أيام عمل ونتواصل معك لتأكيد الموعد.",
-      en: "Yes ✦ We offer professional delivery across the Kingdom with free installation by our specialist team. Your piece arrives in 5–10 business days — we'll coordinate a convenient time with you.",
+      ar: "نعم، نوصّل ونركّب في جميع مناطق المملكة خلال ٥–١٠ أيام ✦ يتولى فريقنا المتخصص التركيب مجاناً ونتواصل معك لتأكيد الموعد.",
+      en: "Yes, we deliver and install across all regions of Saudi Arabia in 5–10 days ✦ our specialist team handles installation for free and will coordinate a time with you.",
     },
     suggestions: [
       { id: "q:delivery-time", label: { ar: "مدة وصول الطلب",    en: "Delivery time" } },
@@ -184,30 +220,47 @@ function replyCustomSize(product?: Product): AssistantReply {
     const enDims = dims.map((d) => `${d.key.en}: ${d.value.en}${d.unit ? " " + d.unit.en : ""}`).join(" · ");
     return {
       text: {
-        ar: `نعم ✦ يمكن تفصيل ${product.name.ar} بمقاسات مخصصة حسب طلبك. أبعاد النموذج الأصلي: ${arDims}. للتفاصيل يسعدنا التواصل معك مباشرة.`,
-        en: `Yes ✦ The ${product.name.en} can be tailored to custom sizes on request. Standard dimensions: ${enDims}. For full details, we'd be happy to connect with you.`,
+        ar: `نعم ✦ نُفصّل ${product.name.ar} بمقاسات خاصة حسب مساحتك. أبعاد النموذج الأصلي: ${arDims}.`,
+        en: `Yes ✦ The ${product.name.en} can be custom-tailored to your space. Standard dimensions: ${enDims}.`,
       },
       suggestions: [
-        { id: "q:colors",     label: { ar: "الألوان المتوفرة؟", en: "Available colors?" } },
-        { id: "q:consultant", label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
+        { id: "q:colors",     label: { ar: "ما الألوان المتاحة؟",   en: "What colours are available?" } },
+        { id: "q:consultant", label: { ar: "تواصل مع المستشار",     en: "Talk to a consultant" } },
       ],
       askEmail: true,
     };
   }
   return {
     text: {
-      ar: "نعم ✦ جميع قطعنا متاحة بمقاسات مخصصة. يسعدنا التواصل معك لمناقشة ما يناسب مساحتك.",
-      en: "Yes ✦ All our pieces are available in custom sizes. We'd love to discuss what suits your space.",
+      ar: "نعم ✦ نُفصّل بمقاسات خاصة حسب مساحتك. يسعدنا التواصل معك لمناقشة ما يناسب مساحتك.",
+      en: "Yes ✦ We custom-tailor to your space. We'd love to discuss what works best for you.",
     },
     suggestions: [
-      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
-      { id: "q:consultant",       label: { ar: "تواصل مع المستشار", en: "Talk to a consultant" } },
+      { id: "q:delivery-city", label: { ar: "هل يصل التوصيل لمدينتي؟", en: "Do you deliver to my city?" } },
+      { id: "q:consultant",    label: { ar: "تواصل مع المستشار",        en: "Talk to a consultant" } },
     ],
     askEmail: true,
   };
 }
 
-function replyColors(product: Product | undefined, locale: Locale): AssistantReply {
+function replyColors(
+  product: Product | undefined,
+  locale: Locale,
+  specificColor?: { ar: string; en: string } | null,
+): AssistantReply {
+  if (specificColor) {
+    const pName = product ? product.name : { ar: "هذه القطعة", en: "this piece" };
+    return {
+      text: {
+        ar: `نعم، ${specificColor.ar} متوفّر لـ ${pName.ar} ✦ وبإمكاننا توفير درجات أخرى عند الطلب.`,
+        en: `Yes, ${specificColor.en} is available for the ${pName.en} ✦ and other shades can be arranged on request.`,
+      },
+      suggestions: [
+        { id: "q:matching-set", label: { ar: "هل تتوفّر قطع مطابقة؟",     en: "Any matching pieces?" } },
+        { id: "q:custom-size",  label: { ar: "هل يمكن تفصيله بمقاس خاص؟", en: "Can it be custom-sized?" } },
+      ],
+    };
+  }
   const colors = productColors;
   const arNames = colors.map((c) => c.ar).join("، ");
   const enNames = colors.map((c) => c.en).join(", ");
@@ -217,13 +270,17 @@ function replyColors(product: Product | undefined, locale: Locale): AssistantRep
 
   return {
     text: {
-      ar: `نعم ✦ هذه القطعة متاحة بألوان متعددة: ${arNames}. إليك بعض القطع التي توضح خيارات الألوان:`,
-      en: `Yes ✦ This piece is available in: ${enNames}. Here are some pieces showing the full color range:`,
+      ar: product
+        ? `${product.name.ar} متوفّر بعدة ألوان: ${arNames} ✦ إليك بعض الأمثلة:`
+        : `قطعنا متوفرة بألوان متعددة: ${arNames} ✦ إليك بعض الأمثلة:`,
+      en: product
+        ? `The ${product.name.en} comes in: ${enNames} ✦ Here are some examples:`
+        : `Our pieces come in: ${enNames} ✦ Here are some examples:`,
     },
     productLinks,
     suggestions: [
-      { id: "q:matching-set", label: { ar: "طقم مناسب معه؟",          en: "Matching set?" } },
-      { id: "q:consultant",   label: { ar: "استفسر عن لون بعينه",      en: "Ask about a specific color" } },
+      { id: "q:matching-set", label: { ar: "هل تتوفّر قطع مطابقة؟",  en: "Any matching pieces?" } },
+      { id: "q:consultant",   label: { ar: "استفسر عن لون بعينه",     en: "Ask about a specific colour" } },
     ],
   };
 }
@@ -236,11 +293,11 @@ function replyMatchingSet(product: Product | undefined, locale: Locale): Assista
   return {
     text: {
       ar: product
-        ? `نعم ✦ لدينا قطع من نفس العائلة تتناسق مع ${product.name.ar} تماماً:`
-        : "نعم ✦ لدينا مجموعات متناسقة. إليك بعض القطع التي تتكامل معاً:",
+        ? `نعم، تتوفّر قطع مطابقة من نفس مجموعة ${product.name.ar}:`
+        : "نعم، تتوفّر قطع مطابقة من نفس المجموعة. إليك بعض القطع التي تتكامل معاً:",
       en: product
-        ? `Yes ✦ We have pieces from the same family that pair beautifully with the ${product.name.en}:`
-        : "Yes ✦ We have coordinated sets. Here are some pieces that work together:",
+        ? `Yes, there are matching pieces from the same ${product.name.en} family:`
+        : "Yes, we have matching sets. Here are some pieces that work together:",
     },
     productLinks,
     suggestions: [
@@ -349,6 +406,62 @@ function replyOffTopic(): AssistantReply {
   };
 }
 
+function replySizes(product?: Product): AssistantReply {
+  if (product) {
+    const dims = productDimensions(product);
+    const arDims = dims.map((d) => `${d.key.ar}: ${d.value.ar}${d.unit ? " " + d.unit.ar : ""}`).join(" · ");
+    const enDims = dims.map((d) => `${d.key.en}: ${d.value.en}${d.unit ? " " + d.unit.en : ""}`).join(" · ");
+    return {
+      text: {
+        ar: `أبعاد ${product.name.ar}: ${arDims} ✦ كذلك يمكن التفصيل بمقاسات خاصة.`,
+        en: `${product.name.en} dimensions: ${enDims} ✦ Custom sizing is also available.`,
+      },
+      suggestions: [
+        { id: "q:custom-size", label: { ar: "هل يمكن تفصيله بمقاس خاص؟", en: "Can it be custom-sized?" } },
+        { id: "q:consultant",  label: { ar: "تواصل مع المستشار",           en: "Talk to a consultant" } },
+      ],
+    };
+  }
+  return {
+    text: {
+      ar: "قطعنا متوفرة بمقاسات متعددة ✦ وجميعها قابلة للتفصيل حسب مساحتك.",
+      en: "Our pieces come in multiple sizes ✦ and all can be custom-tailored to your space.",
+    },
+    suggestions: [
+      { id: "q:custom-size", label: { ar: "هل يمكن تفصيله بمقاس خاص؟", en: "Can it be custom-sized?" } },
+      { id: "q:consultant",  label: { ar: "تواصل مع المستشار",           en: "Talk to a consultant" } },
+    ],
+  };
+}
+
+function replyCategories(locale: Locale): AssistantReply {
+  return {
+    text: {
+      ar: "تجد في رولك: أرائك، كراسي، طاولات، أسرة، وإكسسوارات ديكور. أيّ قسم يستأثر باهتمامك؟",
+      en: "Rollc offers: sofas, chairs, tables, beds, and décor accents. Which section interests you?",
+    },
+    productLinks: bestSellersLinks(locale),
+    suggestions: CATEGORY_CHIPS,
+  };
+}
+
+function replyCatBrowse(category: CategoryKind | undefined, locale: Locale): AssistantReply {
+  const catName = category
+    ? getCategoryMeta(category).title
+    : { ar: "الأثاث", en: "furniture" };
+  return {
+    text: {
+      ar: `في قسم ${catName.ar} لدينا خيارات متنوعة من الأشكال والتصاميم. إليك أبرزها:`,
+      en: `Our ${catName.en} section has a wide variety of styles and designs. Here are our highlights:`,
+    },
+    productLinks: bestSellersLinks(locale),
+    suggestions: [
+      { id: "q:colors", label: { ar: "ما اللون الذي تبحث عنه؟", en: "Which colour are you after?" } },
+      { id: "q:budget", label: { ar: "حسب الميزانية",            en: "By budget" } },
+    ],
+  };
+}
+
 // ── Intent detection (mock NLU) ───────────────────────────────
 
 function detectIntent(msg: string): string {
@@ -372,22 +485,27 @@ function detectIntent(msg: string): string {
 // ── Quick-question dispatcher ─────────────────────────────────
 
 function handleQuickQuestion(qid: string, ctx: AssistantContext): AssistantReply {
-  const { locale, product } = ctx;
+  const { locale, product, category } = ctx;
   switch (qid) {
     case "delivery":
-    case "delivery-install":  return replyDeliveryInstall();
-    case "delivery-time":     return replyDeliveryTime();
+    case "delivery-install":
+    case "delivery-city":    return replyDeliveryInstall();
+    case "delivery-time":    return replyDeliveryTime();
+    case "sizes":            return replySizes(product);
     case "size":
-    case "custom-size":       return replyCustomSize(product);
+    case "custom-size":      return replyCustomSize(product);
     case "color":
-    case "colors":            return replyColors(product, locale);
+    case "colors":           return replyColors(product, locale);
     case "set":
-    case "matching-set":      return replyMatchingSet(product, locale);
-    case "budget":            return replyBudget(locale);
-    case "bestseller":        return replyBestSellers(locale);
+    case "full-set":
+    case "matching-set":     return replyMatchingSet(product, locale);
+    case "budget":           return replyBudget(locale);
+    case "bestseller":       return replyBestSellers(locale);
+    case "categories":       return replyCategories(locale);
+    case "cat-type":         return replyCatBrowse(category, locale);
     case "contact":
-    case "consultant":        return replyContact();
-    default:                  return replyGeneral(product, locale);
+    case "consultant":       return replyContact();
+    default:                 return replyGeneral(product, locale);
   }
 }
 
@@ -400,7 +518,7 @@ function handleFreeText(msg: string, ctx: AssistantContext): AssistantReply {
     case "delivery-install": return replyDeliveryInstall();
     case "delivery-time":    return replyDeliveryTime();
     case "custom-size":      return replyCustomSize(product);
-    case "colors":           return replyColors(product, locale);
+    case "colors":           return replyColors(product, locale, extractColor(msg));
     case "matching-set":     return replyMatchingSet(product, locale);
     case "budget":           return replyBudget(locale);
     case "bestseller":       return replyBestSellers(locale);
@@ -433,13 +551,12 @@ export async function getAssistantReply(ctx: AssistantContext): Promise<Assistan
       case "category":
         return {
           text: category ? greetCategory(category) : greetHome(),
-          suggestions: CATEGORY_CHIPS,
+          suggestions: getCategoryChips(category),
         };
       case "product":
-        return {
-          text: product ? greetProduct(product) : greetHome(),
-          suggestions: PRODUCT_CHIPS,
-        };
+        return product
+          ? greetProduct(product, locale)
+          : { text: greetHome(), suggestions: PRODUCT_CHIPS };
     }
   }
 
