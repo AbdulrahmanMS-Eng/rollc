@@ -1757,3 +1757,117 @@ body.lang-en,
     flex:0 0 auto !important;
   }
 }
+
+/* ---------- Mobile header true edge layout ---------- */
+@media(max-width:700px){
+  .header .wrap{
+    padding-inline:14px !important;
+  }
+
+  .header .nav{
+    position:relative !important;
+    width:100% !important;
+    height:74px !important;
+    display:block !important;
+    overflow:visible !important;
+  }
+
+  .header.scrolled .nav{
+    height:68px !important;
+  }
+
+  .header .brand{
+    position:absolute !important;
+    top:50% !important;
+    width:158px !important;
+    max-width:158px !important;
+    flex:none !important;
+    margin:0 !important;
+    transform:translateY(-50%) !important;
+    z-index:2;
+  }
+
+  .header .brand img,
+  .header .brand svg,
+  .header img.brand,
+  .header svg.brand{
+    width:158px !important;
+    max-width:158px !important;
+    height:auto !important;
+    transform:none !important;
+  }
+
+  .header .actions{
+    position:absolute !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:6px !important;
+    width:auto !important;
+    flex:none !important;
+    margin:0 !important;
+    z-index:3;
+  }
+
+  /* عربي: اللوقو يمين، الأزرار يسار */
+  [dir="rtl"] .header .brand{
+    right:0 !important;
+    left:auto !important;
+  }
+
+  [dir="rtl"] .header .actions{
+    left:0 !important;
+    right:auto !important;
+  }
+
+  /* إنجليزي: اللوقو يسار، الأزرار يمين */
+  [dir="ltr"] .header .brand,
+  .lang-en .header .brand{
+    left:0 !important;
+    right:auto !important;
+  }
+
+  [dir="ltr"] .header .actions,
+  .lang-en .header .actions{
+    right:0 !important;
+    left:auto !important;
+  }
+
+  .header .icon-btn,
+  .header .burger{
+    width:38px !important;
+    height:38px !important;
+    flex:0 0 38px !important;
+  }
+}
+
+@media(max-width:390px){
+  .header .wrap{
+    padding-inline:10px !important;
+  }
+
+  .header .brand{
+    width:150px !important;
+    max-width:150px !important;
+  }
+
+  .header .brand img,
+  .header .brand svg,
+  .header img.brand,
+  .header svg.brand{
+    width:150px !important;
+    max-width:150px !important;
+  }
+
+  .header .actions{
+    gap:5px !important;
+  }
+
+  .header .icon-btn,
+  .header .burger{
+    width:36px !important;
+    height:36px !important;
+    flex-basis:36px !important;
+  }
+}
