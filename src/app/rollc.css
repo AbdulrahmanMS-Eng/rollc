@@ -1459,3 +1459,13 @@ body.lang-en,
     text-align:center;
   }
 }
+
+/* Footer logo desktop final bump only */
+@media(min-width:701px){
+  .footer-logo,
+  .foot-brand .footer-logo{
+    width:clamp(235px, 18vw, 285px) !important;
+    transform:scale(1.12) !important;
+    margin-bottom:24px !important;
+  }
+}
