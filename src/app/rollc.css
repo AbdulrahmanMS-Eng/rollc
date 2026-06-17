@@ -1729,3 +1729,31 @@ body.lang-en,
     max-width:150px !important;
   }
 }
+
+/* Mobile header logo edge alignment by language */
+@media(max-width:700px){
+  [dir="rtl"] .header .nav{
+    direction:rtl;
+  }
+
+  [dir="ltr"] .header .nav,
+  .lang-en .header .nav{
+    direction:ltr;
+  }
+
+  .header .nav{
+    justify-content:flex-start !important;
+  }
+
+  .header .brand{
+    margin-inline-start:0 !important;
+    margin-inline-end:auto !important;
+    transform:none !important;
+  }
+
+  .header .actions{
+    margin-inline-start:0 !important;
+    margin-inline-end:0 !important;
+    flex:0 0 auto !important;
+  }
+}
