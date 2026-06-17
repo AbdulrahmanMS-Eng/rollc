@@ -33,7 +33,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
                 {t(locale, { ar: "من نحن", en: "Who we are" })}
               </span>
               <span className={styles.heroSince}>
-                {t(locale, { ar: "منذ عام ٢٠٠٠", en: "Since 2000" })}
+                {t(locale, { ar: "منذ عام 2000", en: "Since 2000" })}
               </span>
             </div>
             <h1 className={styles.heroTitle}>
@@ -49,7 +49,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
             </h1>
             <p className={styles.heroLead}>
               {t(locale, {
-                ar: "رولك علامة سعودية للأثاث الفاخر والتجهيز المتكامل، تأسست عام ٢٠٠٠. على مدى ٢٦ عاماً، حوّلنا الرؤى إلى مساحاتٍ تجمع بين الإتقان الحرفي والخامات الأصيلة والتصميم الخليجي المعاصر.",
+                ar: "رولك علامة سعودية للأثاث الفاخر والتجهيز المتكامل، تأسست عام 2000. على مدى 26 عاماً، حوّلنا الرؤى إلى مساحاتٍ تجمع بين الإتقان الحرفي والخامات الأصيلة والتصميم الخليجي المعاصر.",
                 en: "Rollc is a Saudi house of luxury furniture and turnkey fit-out, founded in 2000. For 26 years we have turned visions into spaces that unite master craftsmanship, authentic materials, and contemporary Gulf design.",
               })}
             </p>
@@ -72,13 +72,13 @@ export function AboutContent({ locale }: { locale: Locale }) {
           <Reveal>
             <div className={styles.statsGrid}>
               {[
-                { num: "٢٦+", numEn: "26+", lbl: { ar: "عاماً من الإتقان (٢٠٠٠–٢٠٢٦)", en: "Years of mastery (2000–2026)" } },
+                { num: "٢٦+", numEn: "26+", lbl: { ar: "عاماً من الإتقان (2000–2026)", en: "Years of mastery (2000–2026)" } },
                 { num: "[ +٥٠٠ ]", numEn: "[ 500+ ]", lbl: { ar: "[ مشروع منجز ]", en: "[ Projects delivered ]" } },
                 { num: "[ +٢٠ ]", numEn: "[ 20+ ]", lbl: { ar: "[ مدينة في المملكة ]", en: "[ Cities across the Kingdom ]" } },
                 { num: "[ +١٠٠ ]", numEn: "[ 100+ ]", lbl: { ar: "[ شريك وعلامة فاخرة ]", en: "[ Partners & luxury brands ]" } },
               ].map((s, i) => (
                 <div key={i} className={styles.stat}>
-                  <div className={styles.statNum}>{ar ? s.num : s.numEn}</div>
+                  <div className={styles.statNum}>{s.numEn}</div>
                   <div className={styles.statLbl}>{t(locale, s.lbl)}</div>
                 </div>
               ))}
@@ -105,7 +105,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
                 </h2>
                 <p className={styles.storyOpen}>
                   {t(locale, {
-                    ar: "بدأت رولك عام ٢٠٠٠ بقناعةٍ واحدة: أن الأثاث الفاخر ليس قطعةً تُشترى، بل مساحةٌ تُعاش.",
+                    ar: "بدأت رولك عام 2000 بقناعةٍ واحدة: أن الأثاث الفاخر ليس قطعةً تُشترى، بل مساحةٌ تُعاش.",
                     en: "Rollc began in 2000 with a single conviction: that luxury furniture is not a piece you buy, but a space you live.",
                   })}
                 </p>
@@ -118,7 +118,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
                   </p>
                   <p>
                     {t(locale, {
-                      ar: "اليوم، ومع حلول عام ٢٠٢٦، تجمع رولك بين أصالة الصنعة وروح التصميم المعاصر، لتقدّم أعمالاً ترقى إلى أكبر المناقصات وأرفع المعايير.",
+                      ar: "اليوم، ومع حلول عام 2026، تجمع رولك بين أصالة الصنعة وروح التصميم المعاصر، لتقدّم أعمالاً ترقى إلى أكبر المناقصات وأرفع المعايير.",
                       en: "Today, as we reach 2026, Rollc unites time-honoured craft with a contemporary design spirit — delivering work that meets the most demanding tenders and the highest standards.",
                     })}
                   </p>
@@ -217,7 +217,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
                 },
               ].map((v, i) => (
                 <div key={i} className={styles.valCard}>
-                  <span className={styles.valNum}>{ar ? `٠${i + 1}` : `0${i + 1}`}</span>
+                  <span className={styles.valNum}>{`0${i + 1}`}</span>
                   <div className={styles.valIcon}>{v.icon}</div>
                   <h3>{t(locale, v.h)}</h3>
                   <p>{t(locale, v.p)}</p>
@@ -289,11 +289,11 @@ export function AboutContent({ locale }: { locale: Locale }) {
             <div className={styles.tlTrack}>
               {[
                 { yr: "2000", lbl: { ar: "تأسيس رولك وانطلاق أول ورشة", en: "Rollc is founded; the first workshop opens" } },
-                { yr: "[ ٢٠٠٨ ]", lbl: { ar: "[ افتتاح أول صالة عرض رئيسية ]", en: "[ First flagship showroom opens ]" } },
-                { yr: "[ ٢٠١٤ ]", lbl: { ar: "[ التوسّع في التجهيز المؤسسي ]", en: "[ Expansion into institutional fit-out ]" } },
-                { yr: "[ ٢٠١٩ ]", lbl: { ar: "[ تسليم مشروعٍ بارز / جائزة ____ ]", en: "[ Landmark project delivered / Award ____ ]" } },
-                { yr: "[ ٢٠٢٢ ]", lbl: { ar: "[ اعتماد شهادة ISO ____ ]", en: "[ ISO ____ certification achieved ]" } },
-                { yr: "2026", lbl: { ar: "[ +٥٠٠ مشروع ] عبر [ +٢٠ مدينة ]", en: "[ 500+ projects ] across [ 20+ cities ]" } },
+                { yr: "[ 2008 ]", lbl: { ar: "[ افتتاح أول صالة عرض رئيسية ]", en: "[ First flagship showroom opens ]" } },
+                { yr: "[ 2014 ]", lbl: { ar: "[ التوسّع في التجهيز المؤسسي ]", en: "[ Expansion into institutional fit-out ]" } },
+                { yr: "[ 2019 ]", lbl: { ar: "[ تسليم مشروعٍ بارز / جائزة ____ ]", en: "[ Landmark project delivered / Award ____ ]" } },
+                { yr: "[ 2022 ]", lbl: { ar: "[ اعتماد شهادة ISO ____ ]", en: "[ ISO ____ certification achieved ]" } },
+                { yr: "2026", lbl: { ar: "[ 500+ مشروع ] عبر [ 20+ مدينة ]", en: "[ 500+ projects ] across [ 20+ cities ]" } },
               ].map((m, i) => (
                 <div key={i} className={styles.tlItem}>
                   <div className={styles.tlYear}>{m.yr}</div>
@@ -323,7 +323,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
                 { h: { ar: "التوصيل والتركيب", en: "Delivery & install" }, p: { ar: "تسليمٌ وتركيبٌ احترافي ومتابعةٌ بعد البيع.", en: "Professional delivery, installation, and after-sales care." } },
               ].map((s, i) => (
                 <div key={i} className={styles.procStep}>
-                  <div className={styles.procNum}>{ar ? `٠${i + 1}` : `0${i + 1}`}</div>
+                  <div className={styles.procNum}>{`0${i + 1}`}</div>
                   <h3>{t(locale, s.h)}</h3>
                   <p>{t(locale, s.p)}</p>
                 </div>
@@ -343,7 +343,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
                 <h3>{t(locale, { ar: "علامةٌ تُطمئن أصحاب القرار", en: "A name decision-makers rely on" })}</h3>
                 <p>
                   {t(locale, {
-                    ar: "حين تُسلَّم رولك مشروعاً، تُسلَّم معه ٢٦ عاماً من الخبرة وسجلٌّ من المشاريع المنجزة وفريقٌ يلتزم بالموعد والميزانية والجودة.",
+                    ar: "حين تُسلَّم رولك مشروعاً، تُسلَّم معه 26 عاماً من الخبرة وسجلٌّ من المشاريع المنجزة وفريقٌ يلتزم بالموعد والميزانية والجودة.",
                     en: "When Rollc takes on a project, it brings 26 years of experience, a record of delivered work, and a team committed to schedule, budget, and quality.",
                   })}
                 </p>
