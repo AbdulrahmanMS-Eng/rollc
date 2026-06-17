@@ -42,7 +42,7 @@ function SpecIcon({ kind }: { kind: ProductSpec["icon"] }) {
 }
 
 export function QuickViewModal() {
-  const { locale, selectedProduct, closeQuickView, addToCart, showToast } = useRollcStore();
+  const { locale, selectedProduct, closeQuickView, addToCart, showToast, openAssistant } = useRollcStore();
 
   // Keep the last product mounted through the close animation.
   const [data, setData] = useState<Product | null>(selectedProduct);
@@ -144,7 +144,10 @@ export function QuickViewModal() {
           <div className={styles.gallery}>
             <div className={styles.gMain}>
               {badge ? <span className={styles.gBadge}>{badge}</span> : null}
-<span className={styles.gZoom}>
+              <button className={styles.gChat} onClick={() => openAssistant(data)} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
+              </button>
+              <span className={styles.gZoom}>
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3M11 8v6M8 11h6" /></svg>
                 {locale === "ar" ? "تكبير" : "Zoom"}
               </span>

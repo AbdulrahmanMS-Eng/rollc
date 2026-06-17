@@ -117,7 +117,7 @@ function ContactBlock() {
 // ── Main component ────────────────────────────────────────────
 
 export function ShoppingAssistant({ page, category, product }: ShoppingAssistantProps) {
-  const { locale, selectedProduct } = useRollcStore();
+  const { locale, selectedProduct, assistantProduct, assistantNonce } = useRollcStore();
 
   const [open, setOpen]                     = useState(false);
   const [messages, setMessages]             = useState<ChatMsg[]>([]);
@@ -231,15 +231,13 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     [] // all deps via refs — stable identity
   );
 
-  // ── PDP: always auto-open (ignores dismissed flag) ─────────
+  // ── PDP: pulse launcher + prepare greeting (no auto-open) ──
 
   useEffect(() => {
     if (page !== "product") return;
     const timer = setTimeout(async () => {
       if (greetedRef.current) return;
       greetedRef.current = true;
-      setOpen(true);
-      playNotif(mutedRef.current);
       const typingId = uid();
       setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
       setBusy(true);
@@ -250,16 +248,31 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
         product:  productRef.current ?? undefined,
       });
       pushReplyRef.current(reply, typingId);
+      setHasPending(true);
     }, 800);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // once on mount
 
-  // ── Category: auto-open (respects dismissed, 1200ms) ───────
+  // ── Category: pulse launcher + prepare greeting (no auto-open) ─
 
   useEffect(() => {
     if (page !== "category") return;
-    const timer = setTimeout(() => triggerGreeting(true), 1200);
+    const timer = setTimeout(async () => {
+      if (greetedRef.current) return;
+      greetedRef.current = true;
+      const typingId = uid();
+      setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
+      setBusy(true);
+      const reply = await getAssistantReply({
+        locale:   localeRef.current,
+        page:     "category",
+        category: categoryRef.current,
+        product:  productRef.current ?? undefined,
+      });
+      pushReplyRef.current(reply, typingId);
+      setHasPending(true);
+    }, 1200);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -349,52 +362,48 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── QuickView: open compact panel alongside QV modal ───────
-  // Panel and QV are NOT mutually exclusive.
-  // On mobile, only show badge (prevents bottom-sheet conflict).
+  // ── QuickView: pulse badge only (no auto-open on any device) ──
 
   useEffect(() => {
-    if (!selectedProduct) return; // Only handle QV opening
+    if (!selectedProduct) return;
 
     const greetKey = `rollc-ast-qv-${selectedProduct.id}`;
     const alreadyGreeted = !!ssGet(greetKey);
 
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 640;
-
-    if (isMobile) {
-      // Mobile: don't open panel (QV is a conflicting bottom sheet), just badge
-      if (!alreadyGreeted) {
-        ssSet(greetKey);
-        const sp = selectedProduct;
-        getAssistantReply({ locale: localeRef.current, page: "product", category: categoryRef.current, product: sp })
-          .then((reply) => {
-            setMessages((prev) => [...prev, { id: uid(), role: "assistant", reply } as AssistMsg]);
-            lastQvProductRef.current = sp;
-            setHasPending(true);
-          });
-      } else {
-        setHasPending(true);
-      }
-      return;
+    if (!alreadyGreeted) {
+      ssSet(greetKey);
+      const sp = selectedProduct;
+      getAssistantReply({ locale: localeRef.current, page: "product", category: categoryRef.current, product: sp })
+        .then((reply) => {
+          setMessages((prev) => [...prev, { id: uid(), role: "assistant", reply } as AssistMsg]);
+          lastQvProductRef.current = sp;
+          setHasPending(true);
+        });
+    } else {
+      setHasPending(true);
     }
-
-    // Desktop: open compact panel alongside QV
-    setOpen(true);
-
-    if (alreadyGreeted) return; // Panel opens but no duplicate greeting
-    ssSet(greetKey);
-
-    const sp = selectedProduct;
-    const typingId = uid();
-    setMessages((prev) => [...prev, { id: typingId, role: "typing" } as TypingMsg]);
-    setBusy(true);
-    getAssistantReply({ locale: localeRef.current, page: "product", category: categoryRef.current, product: sp })
-      .then((reply) => {
-        pushReplyRef.current(reply, typingId);
-        lastQvProductRef.current = sp;
-      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProduct?.id]);
+
+  // ── openAssistant(product) trigger: open, clear, fresh greeting ──
+
+  useEffect(() => {
+    if (!assistantNonce) return; // skip initial nonce=0
+    setOpen(true);
+    setHasPending(false);
+    setInput("");
+    setMessages([]);
+    setBusy(true);
+    const typingId = uid();
+    setMessages([{ id: typingId, role: "typing" } as TypingMsg]);
+    getAssistantReply({
+      locale:   localeRef.current,
+      page:     "product",
+      category: categoryRef.current,
+      product:  assistantProduct ?? undefined,
+    }).then((reply) => pushReplyRef.current(reply, typingId));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assistantNonce]);
 
   // ── Scroll to bottom on new messages ──────────────────────
 
@@ -483,10 +492,8 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
   const chips: QuickQuestion[] = lastAssistant?.reply.suggestions
     ?? (activeProduct ? PRODUCT_CHIPS : page === "category" ? CATEGORY_CHIPS : HOME_CHIPS);
 
-  const qvOpen = !!selectedProduct;
-
   // Product shown in the panel header
-  const displayProduct = selectedProduct ?? lastQvProductRef.current ?? product ?? null;
+  const displayProduct = selectedProduct ?? lastQvProductRef.current ?? assistantProduct ?? product ?? null;
 
   const headerSub  = locale === "ar" ? "رولك · مساعد التسوّق" : "Rollc · Shopping Assistant";
   const headerName = displayProduct
@@ -499,7 +506,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
     <div className={styles.root}>
       {/* Launcher */}
       <button
-        className={`${styles.launcher} ${open ? (qvOpen ? styles.launcherQvActive : styles.launcherOpen) : ""} ${!open && qvOpen ? styles.launcherQvActive : ""}`}
+        className={`${styles.launcher} ${open ? styles.launcherOpen : ""}`}
         aria-label={
           open
             ? (locale === "ar" ? "إغلاق مساعد التسوّق" : "Close shopping assistant")
@@ -510,10 +517,8 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
         onClick={open ? handleClose : handleOpen}
       >
         {hasPending && !open && <span className={styles.badge} aria-hidden />}
-        {!qvOpen && <span className={styles.dot} aria-hidden />}
-        {qvOpen ? (
-          <img src={selectedProduct!.img} alt="" className={styles.launcherQvThumb} />
-        ) : open ? (
+        <span className={styles.dot} aria-hidden />
+        {open ? (
           <svg className={styles.launcherIcon} viewBox="0 0 24 24">
             <path d="M18 6 6 18M6 6l12 12" />
           </svg>
@@ -527,7 +532,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
       {/* Chat panel — can be open alongside QV on desktop */}
       <div
         id="rollc-chat-panel"
-        className={`${styles.panel} ${open ? styles.panelOpen : ""} ${open && qvOpen ? styles.panelCompact : ""}`}
+        className={`${styles.panel} ${open ? styles.panelOpen : ""}`}
         role="dialog"
         aria-label={locale === "ar" ? "مساعد التسوّق" : "Shopping Assistant"}
         aria-hidden={!open}
@@ -661,8 +666,7 @@ export function ShoppingAssistant({ page, category, product }: ShoppingAssistant
           </div>
         )}
 
-        {/* Input row — hidden in compact QV mode on desktop */}
-        <div className={`${styles.inputRow} ${open && qvOpen ? styles.inputRowHidden : ""}`}>
+        <div className={styles.inputRow}>
           <input
             ref={inputRef}
             className={styles.input}

@@ -5,7 +5,7 @@ import { Reveal } from "@/components/rollc/ui/Reveal";
 import { useRollcStore } from "@/components/rollc/ui/RollcStore";
 
 function ProductCard({ product }: { product: Product }) {
-  const { locale, addToCart, openQuickView } = useRollcStore();
+  const { locale, addToCart, openQuickView, openAssistant } = useRollcStore();
 
   return (
     <article
@@ -28,7 +28,10 @@ function ProductCard({ product }: { product: Product }) {
     >
       <div className="card-media">
         {product.tag[locale] ? <span className="card-tag">{product.tag[locale]}</span> : null}
-<img src={product.img} alt={product.name[locale]} loading="lazy" />
+        <button type="button" className="card-chat" onClick={(event) => { event.stopPropagation(); openAssistant(product); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
+        </button>
+        <img src={product.img} alt={product.name[locale]} loading="lazy" />
       </div>
       <div className="card-body">
         <span className="card-cat">{product.cat[locale]}</span>

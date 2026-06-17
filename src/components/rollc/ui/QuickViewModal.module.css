@@ -46,6 +46,9 @@
 .gMain:hover img { transform: scale(1.04); }
 .gMain img.fading { opacity: 0; }
 .gBadge { position: absolute; top: 16px; inset-inline-start: 16px; z-index: 3; background: rgba(42, 33, 26, .92); color: var(--gold-soft); font-family: var(--ff-sans); font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; padding: 7px 14px; border-radius: 30px; }
+.gChat { position: absolute; top: 14px; inset-inline-end: 14px; z-index: 3; width: 42px; height: 42px; border-radius: 50%; background: rgba(251, 248, 242, .92); backdrop-filter: blur(4px); display: grid; place-items: center; color: var(--brown); transition: .35s var(--ease); box-shadow: var(--shadow-soft); }
+.gChat:hover { background: var(--gold); color: #fff; }
+.gChat svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.5; fill: none; }
 .gZoom { position: absolute; bottom: 14px; inset-inline-end: 14px; z-index: 3; font-family: var(--ff-sans); font-size: .64rem; letter-spacing: .18em; text-transform: uppercase; color: var(--brown); background: rgba(251, 248, 242, .88); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 7px; }
 .gZoom svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 1.6; fill: none; }
 .thumbs { display: flex; gap: 12px; }

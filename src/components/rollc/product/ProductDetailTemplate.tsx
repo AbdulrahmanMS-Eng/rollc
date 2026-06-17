@@ -100,7 +100,7 @@ function ProductCard({ item, locale, quickAdd }: { item: Product; locale: Locale
 }
 
 export function ProductDetailTemplate({ locale, product }: { locale: Locale; product: Product }) {
-  const { addToCart, showToast } = useRollcStore();
+  const { addToCart, showToast, openAssistant } = useRollcStore();
   const rootRef = useRef<HTMLDivElement>(null);
 
   const [activeImage, setActiveImage] = useState(highRes(product.img));
@@ -238,7 +238,10 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
           <div className={styles.gallery}>
             <div className={styles.gMain}>
               {badge ? <span className={styles.gBadge}>{badge}</span> : null}
-<button type="button" className={styles.gZoom} onClick={() => window.open(activeImage, "_blank")}>
+              <button type="button" className={styles.gChat} onClick={() => openAssistant(product)} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
+              </button>
+              <button type="button" className={styles.gZoom} onClick={() => window.open(activeImage, "_blank")}>
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3M11 8v6M8 11h6" /></svg>
                 <span>{locale === "ar" ? "تكبير" : "Zoom"}</span>
               </button>
