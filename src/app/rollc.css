@@ -1902,3 +1902,28 @@ body.lang-en,
     max-width:160px !important;
   }
 }
+
+/* Mobile header logo final language nudge only */
+@media(max-width:700px){
+  /* العربي: اللوقو يمين شوي */
+  [dir="rtl"] .header .brand{
+    transform:translate(6px, -50%) !important;
+  }
+
+  /* الإنجليزي: اللوقو يسار شوي */
+  [dir="ltr"] .header .brand,
+  .lang-en .header .brand{
+    transform:translate(-6px, -50%) !important;
+  }
+}
+
+@media(max-width:390px){
+  [dir="rtl"] .header .brand{
+    transform:translate(4px, -50%) !important;
+  }
+
+  [dir="ltr"] .header .brand,
+  .lang-en .header .brand{
+    transform:translate(-4px, -50%) !important;
+  }
+}
