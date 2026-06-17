@@ -1422,3 +1422,40 @@ body.lang-en,
   object-fit:contain;
   margin-bottom:18px;
 }
+
+/* ---------- Footer logo final sizing/alignment ---------- */
+.footer .foot-brand,
+.site-footer .foot-brand,
+.foot-brand{
+  text-align:center;
+}
+
+.footer-logo,
+.foot-brand .footer-logo{
+  display:block;
+  width:clamp(205px, 16vw, 250px) !important;
+  height:auto !important;
+  max-width:none !important;
+  object-fit:contain;
+  margin-inline:auto !important;
+  margin-bottom:22px !important;
+  transform:scale(1.08);
+  transform-origin:center;
+}
+
+@media(max-width:700px){
+  .footer-logo,
+  .foot-brand .footer-logo{
+    width:210px !important;
+    transform:scale(1.12);
+    margin-inline:auto !important;
+    margin-bottom:24px !important;
+  }
+
+  .foot-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+}
