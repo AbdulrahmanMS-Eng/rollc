@@ -1693,3 +1693,39 @@ body.lang-en,
   }
 }
 
+
+/* Mobile header logo bigger only */
+@media(max-width:700px){
+  .header .brand{
+    flex-basis:158px !important;
+    width:158px !important;
+    max-width:158px !important;
+    transform:none !important;
+  }
+
+  .header .brand img,
+  .header .brand svg,
+  .header img.brand,
+  .header svg.brand{
+    width:158px !important;
+    max-width:158px !important;
+    height:auto !important;
+    transform:none !important;
+  }
+}
+
+@media(max-width:390px){
+  .header .brand{
+    flex-basis:150px !important;
+    width:150px !important;
+    max-width:150px !important;
+  }
+
+  .header .brand img,
+  .header .brand svg,
+  .header img.brand,
+  .header svg.brand{
+    width:150px !important;
+    max-width:150px !important;
+  }
+}
