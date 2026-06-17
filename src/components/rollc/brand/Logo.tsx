@@ -11,7 +11,7 @@ export function Logo({
 }) {
   return (
     <img
-      src="/logo/1.svg"
+      src="/logo/1.svg?v=20260617-202108"
       alt="Rollc رولك"
       className={className}
       draggable={false}
