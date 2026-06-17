@@ -191,7 +191,7 @@ ul{list-style:none}
 @keyframes scrollLine{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
 
 /* fade animations */
-.reveal{opacity:0;transform:translateY(34px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
@@ -265,11 +265,11 @@ ul{list-style:none}
   opacity:0;transform:translateY(14px);transition:.4s var(--ease);
 }
 .card:hover .quick{opacity:1;transform:none}
-.card-body{padding:20px}
+.card-body{padding:20px;display:flex;flex-direction:column}
 .card-cat{font-family:var(--ff-en-sans);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
 .card-name{font-family:var(--ff-ar-display);font-weight:600;font-size:1.25rem;color:var(--espresso);margin:6px 0 4px}
 .lang-en .card-name{font-family:var(--ff-en-serif)}
-.card-desc{font-size:.84rem;color:var(--muted);min-height:38px}
+.card-desc{font-size:.84rem;color:var(--muted);min-height:38px;flex:1 1 auto}
 .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .price{font-family:var(--ff-en-sans);font-weight:500;color:var(--brown)}
 .price b{font-size:1.2rem;color:var(--espresso)}

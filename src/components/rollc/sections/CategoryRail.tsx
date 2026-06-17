@@ -2,10 +2,9 @@
 
 import { useRef } from "react";
 import { categories, type Locale } from "@/data/rollc/content";
-import { useMobileRail } from "@/components/rollc/ui/useMobileRail";
 
 export function CategoryRail({ locale }: { locale: Locale }) {
-  const { ref } = useMobileRail({ mode: "advance", intervalMs: 4600 });
+  const ref = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const didDrag = useRef(false);
 

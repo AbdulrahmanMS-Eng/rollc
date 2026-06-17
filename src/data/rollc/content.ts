@@ -19,6 +19,7 @@ export const navItems = [
   { href: { ar: "/categories/tables", en: "/en/categories/tables" }, label: { ar: "طاولات", en: "Tables" } },
   { href: { ar: "/categories/decor", en: "/en/categories/decor" }, label: { ar: "ديكور", en: "Decor" } },
   { href: { ar: "/categories/chairs", en: "/en/categories/chairs" }, label: { ar: "الكراسي", en: "Chairs" } },
+  { href: { ar: "/about", en: "/en/about" }, label: { ar: "من نحن", en: "About" } },
   { href: { ar: "/#branches", en: "/en#branches" }, label: { ar: "الفروع", en: "Showrooms" } },
 ];
 

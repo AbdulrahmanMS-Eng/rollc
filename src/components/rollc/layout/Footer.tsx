@@ -20,9 +20,21 @@ const shopLinks: Record<Locale, { label: string; slug: string }[]> = {
   ],
 };
 
-const companyLinks = {
-  ar: ["من نحن", "الفروع", "التوصيل والتركيب", "سياسة الإرجاع", "تواصل معنا"],
-  en: ["About us", "Showrooms", "Delivery & Install", "Returns", "Contact"],
+const companyLinks: Record<Locale, { label: string; href: string }[]> = {
+  ar: [
+    { label: "من نحن", href: "/about" },
+    { label: "الفروع", href: "/#branches" },
+    { label: "التوصيل والتركيب", href: "#" },
+    { label: "سياسة الإرجاع", href: "#" },
+    { label: "تواصل معنا", href: "/about#contact" },
+  ],
+  en: [
+    { label: "About us", href: "/en/about" },
+    { label: "Showrooms", href: "/en#branches" },
+    { label: "Delivery & Install", href: "#" },
+    { label: "Returns", href: "#" },
+    { label: "Contact", href: "/en/about#contact" },
+  ],
 };
 
 export function Footer({ locale }: { locale: Locale }) {
@@ -71,7 +83,7 @@ export function Footer({ locale }: { locale: Locale }) {
           <div className="foot-col">
             <h4>{locale === "ar" ? "الشركة" : "Company"}</h4>
             {companyLinks[locale].map((link) => (
-              <a href="#" key={link}>{link}</a>
+              <a href={link.href} key={link.label}>{link.label}</a>
             ))}
           </div>
 
