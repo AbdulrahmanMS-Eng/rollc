@@ -616,3 +616,12 @@
   }
 }
 /* About mobile story badge = homepage badge END */
+
+/* Mobile accreditations exact size match partners START */
+@media (max-width: 620px) {
+  .certTitle {
+    font-size: 30px !important;
+    line-height: 35px !important;
+  }
+}
+/* Mobile accreditations exact size match partners END */
