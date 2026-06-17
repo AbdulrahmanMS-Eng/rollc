@@ -1411,3 +1411,14 @@ body.lang-en,
   opacity:0 !important;
 }
 
+
+/* Footer logo override (2.svg) */
+.foot-brand .footer-logo,
+.footer-logo{
+  display:block;
+  width:clamp(150px, 13vw, 185px);
+  height:auto;
+  max-width:100%;
+  object-fit:contain;
+  margin-bottom:18px;
+}

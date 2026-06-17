@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { Locale } from "@/data/rollc/content";
-import { Logo } from "@/components/rollc/brand/Logo";
 
 const shopLinks: Record<Locale, { label: string; slug: string }[]> = {
   ar: [
@@ -57,7 +56,14 @@ export function Footer({ locale }: { locale: Locale }) {
       <div className="wrap">
         <div className="foot-top">
           <div className="foot-brand">
-            <Logo locale={locale} tone="paper" className="rollc-logo" />
+            <img
+              src="/logo/2.svg"
+              alt="Rollc رولك"
+              className="footer-logo"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
             <p className="foot-statement">
               {locale === "ar"
                 ? "رولك — حيث يلتقي التصميم بالدفء. نصنع مساحاتٍ تُحاكي ذوقك وتروي حكايتك."
