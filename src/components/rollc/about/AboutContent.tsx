@@ -75,10 +75,10 @@ export function AboutContent({ locale }: { locale: Locale }) {
           <Reveal>
             <div className={styles.statsGrid}>
               {[
-                { numEn: "[ 26+ ]", lbl: { ar: "عاماً من الإتقان (2000–2026)", en: "Years of mastery (2000–2026)" } },
-                { numEn: "[ 500+ ]", lbl: { ar: "مشروع منجز", en: "Projects delivered" } },
-                { numEn: "[ 20+ ]", lbl: { ar: "مدينة في المملكة", en: "Cities across the Kingdom" } },
-                { numEn: "[ 100+ ]", lbl: { ar: "شريك وعلامة فاخرة", en: "Partners & luxury brands" } },
+                { numEn: "26+", lbl: { ar: "عاماً من الإتقان (2000–2026)", en: "Years of mastery (2000–2026)" } },
+                { numEn: "500+", lbl: { ar: "مشروع منجز", en: "Projects delivered" } },
+                { numEn: "20+", lbl: { ar: "مدينة في المملكة", en: "Cities across the Kingdom" } },
+                { numEn: "100+", lbl: { ar: "شريك وعلامة فاخرة", en: "Partners & luxury brands" } },
               ].map((s, i) => (
                 <div key={i} className={styles.stat}>
                   <div className={styles.statNum}>{s.numEn}</div>
