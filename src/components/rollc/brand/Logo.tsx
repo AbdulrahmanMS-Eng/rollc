@@ -20,7 +20,7 @@ export function Logo({
       fetchPriority="high"
       style={{
         display: "block",
-        width: "clamp(96px, 12vw, 150px)",
+        width: "clamp(112px, 12vw, 150px)",
         height: "auto",
         maxWidth: "none",
         objectFit: "contain",
