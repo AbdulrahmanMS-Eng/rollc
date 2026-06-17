@@ -514,3 +514,105 @@
   .accredItem:nth-child(odd) { border-inline-end: none; }
 }
 /* Accreditations — refined hairline grid END */
+
+/* Restore partners desktop only START */
+@media (min-width: 761px) {
+  .logoWall {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  .logoScroller {
+    width: 100% !important;
+    overflow: visible !important;
+    padding-block: 34px 44px !important;
+    -webkit-mask-image: none !important;
+            mask-image: none !important;
+  }
+
+  .logoTrack {
+    width: min(1180px, 91vw) !important;
+    margin-inline: auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+    align-items: center !important;
+    justify-items: center !important;
+    gap: clamp(22px, 2vw, 34px) !important;
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .logoCell[aria-hidden="true"] {
+    display: none !important;
+  }
+
+  .logoCell {
+    width: 100% !important;
+    height: 112px !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+    margin-inline-end: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .logoImg {
+    width: auto !important;
+    height: auto !important;
+    max-width: 165px !important;
+    max-height: 84px !important;
+    object-fit: contain !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  .logoNav {
+    display: none !important;
+  }
+}
+/* Restore partners desktop only END */
+
+/* About mobile story badge = homepage badge START */
+@media (max-width: 620px) {
+  .storyVisual {
+    overflow: visible !important;
+  }
+
+  .storyYears {
+    position: absolute !important;
+    inset-inline-start: -30px !important;
+    inset-inline-end: auto !important;
+    bottom: 40px !important;
+    background: var(--espresso) !important;
+    color: var(--paper) !important;
+    padding: 24px 28px !important;
+    border-radius: 6px !important;
+    box-shadow: var(--shadow) !important;
+    max-width: 200px !important;
+    text-align: start !important;
+  }
+
+  .storyYr {
+    font-family: var(--ff-serif) !important;
+    font-size: 2.8rem !important;
+    color: var(--gold-soft) !important;
+    line-height: 1 !important;
+  }
+
+  .storyYl {
+    font-size: 0.88rem !important;
+    color: rgba(246, 241, 232, 0.78) !important;
+    margin-top: 6px !important;
+    line-height: 1.45 !important;
+  }
+}
+/* About mobile story badge = homepage badge END */

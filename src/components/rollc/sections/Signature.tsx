@@ -15,7 +15,7 @@ export function Signature({ locale }: { locale: Locale }) {
               />
             </div>
             <div className="badge">
-              <div className="num">12</div>
+              <div className="num">26</div>
               <div className="lbl">
                 {locale === "ar"
                   ? "عاماً من الحرفية في صناعة الأثاث الفاخر"
