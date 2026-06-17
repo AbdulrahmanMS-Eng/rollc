@@ -83,8 +83,6 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
   const [shown, setShown] = useState(8);
   const [sortOpen, setSortOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [favs, setFavs] = useState<Set<string>>(new Set());
-
   const activeSets = useMemo<ActiveFilters>(
     () => ({
       price: new Set(active.price),
@@ -136,21 +134,6 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
   const handleAdd = (product: Product) => {
     addToCart();
     showToast(locale === "ar" ? `تمت إضافة ${product.name.ar} إلى السلة` : `${product.name.en} added to cart`);
-  };
-
-  const toggleFav = (product: Product) => {
-    setFavs((prev) => {
-      const next = new Set(prev);
-      const has = next.has(product.id);
-      if (has) next.delete(product.id);
-      else next.add(product.id);
-      showToast(
-        has
-          ? locale === "ar" ? "أُزيل من المفضلة" : "Removed from wishlist"
-          : locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist"
-      );
-      return next;
-    });
   };
 
   return (
@@ -269,7 +252,6 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
               ) : (
                 visible.map((product) => {
                   const badge = badgeOf(product);
-                  const isFav = favs.has(product.id);
                   return (
                     <article
                       className={styles.card}
@@ -292,10 +274,7 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
                     >
                       <div className={styles.cardMedia}>
                         {badge ? <span className={`${styles.cardTag} ${badge === "offer" ? styles.cardTagOffer : ""}`}>{badgeText[badge][locale]}</span> : null}
-                        <button type="button" className={`${styles.cardFav} ${isFav ? styles.cardFavActive : ""}`} onClick={(event) => { event.stopPropagation(); toggleFav(product); }} aria-label={locale === "ar" ? "المفضلة" : "Wishlist"}>
-                          <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
-                        </button>
-                        <img src={product.img} alt={product.name[locale]} loading="lazy" />
+<img src={product.img} alt={product.name[locale]} loading="lazy" />
                       </div>
                       <div className={styles.cardBody}>
                         <span className={styles.cardCat}>{product.cat[locale]}</span>

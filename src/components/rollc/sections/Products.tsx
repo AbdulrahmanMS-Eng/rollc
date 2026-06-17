@@ -5,7 +5,7 @@ import { Reveal } from "@/components/rollc/ui/Reveal";
 import { useRollcStore } from "@/components/rollc/ui/RollcStore";
 
 function ProductCard({ product }: { product: Product }) {
-  const { locale, addToCart, openQuickView, showToast } = useRollcStore();
+  const { locale, addToCart, openQuickView } = useRollcStore();
 
   return (
     <article
@@ -28,10 +28,7 @@ function ProductCard({ product }: { product: Product }) {
     >
       <div className="card-media">
         {product.tag[locale] ? <span className="card-tag">{product.tag[locale]}</span> : null}
-        <button type="button" className="card-fav" onClick={(event) => { event.stopPropagation(); showToast(locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist"); }} aria-label={locale === "ar" ? "إضافة للمفضلة" : "Add to wishlist"}>
-          <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
-        </button>
-        <img src={product.img} alt={product.name[locale]} loading="lazy" />
+<img src={product.img} alt={product.name[locale]} loading="lazy" />
       </div>
       <div className="card-body">
         <span className="card-cat">{product.cat[locale]}</span>

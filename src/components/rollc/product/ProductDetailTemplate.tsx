@@ -105,7 +105,6 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
 
   const [activeImage, setActiveImage] = useState(highRes(product.img));
   const [imageVisible, setImageVisible] = useState(true);
-  const [saved, setSaved] = useState(false);
   const [activeColor, setActiveColor] = useState(0);
   const [activeSize, setActiveSize] = useState(1);
   const [qty, setQty] = useState(1);
@@ -153,7 +152,6 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
   useEffect(() => {
     setActiveImage(highRes(product.img));
     setImageVisible(true);
-    setSaved(false);
     setActiveColor(0);
     setActiveSize(Math.min(1, Math.max(0, sizeOptions(product).length - 1)));
     setQty(1);
@@ -237,19 +235,7 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
           <div className={styles.gallery}>
             <div className={styles.gMain}>
               {badge ? <span className={styles.gBadge}>{badge}</span> : null}
-              <button
-                type="button"
-                className={`${styles.gSave} ${saved ? styles.gSaveActive : ""}`}
-                onClick={() => {
-                  const next = !saved;
-                  setSaved(next);
-                  showToast(next ? (locale === "ar" ? "أُضيفت إلى المفضلة" : "Added to wishlist") : (locale === "ar" ? "أُزيلت من المفضلة" : "Removed from wishlist"));
-                }}
-                aria-label={locale === "ar" ? "إضافة للمفضلة" : "Add to wishlist"}
-              >
-                <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
-              </button>
-              <button type="button" className={styles.gZoom} onClick={() => window.open(activeImage, "_blank")}>
+<button type="button" className={styles.gZoom} onClick={() => window.open(activeImage, "_blank")}>
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3M11 8v6M8 11h6" /></svg>
                 <span>{locale === "ar" ? "تكبير" : "Zoom"}</span>
               </button>

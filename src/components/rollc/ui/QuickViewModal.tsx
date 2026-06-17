@@ -51,8 +51,6 @@ export function QuickViewModal() {
   const [qty, setQty] = useState(1);
   const [colorIndex, setColorIndex] = useState(0);
   const [sizeIndex, setSizeIndex] = useState(0);
-  const [fav, setFav] = useState(false);
-
   const open = Boolean(selectedProduct);
 
   useEffect(() => {
@@ -72,7 +70,6 @@ export function QuickViewModal() {
     setQty(1);
     setColorIndex(0);
     setSizeIndex(productKind(selectedProduct) === "sofas" ? 1 : 0);
-    setFav(false);
   }, [selectedProduct]);
 
   // Lock the underlying scroll container + Esc to close.
@@ -124,14 +121,6 @@ export function QuickViewModal() {
     closeQuickView();
   };
 
-  const onFav = () => {
-    setFav((value) => {
-      const next = !value;
-      showToast(next ? (locale === "ar" ? "أُضيف إلى المفضلة" : "Added to wishlist") : (locale === "ar" ? "أُزيل من المفضلة" : "Removed from wishlist"));
-      return next;
-    });
-  };
-
   const onConsult = () => showToast(locale === "ar" ? "سيتواصل معك مستشار التصميم قريباً ✦" : "Our consultant will contact you soon ✦");
 
   return (
@@ -155,10 +144,7 @@ export function QuickViewModal() {
           <div className={styles.gallery}>
             <div className={styles.gMain}>
               {badge ? <span className={styles.gBadge}>{badge}</span> : null}
-              <button className={`${styles.gSave} ${fav ? styles.gSaveActive : ""}`} onClick={onFav} aria-label={locale === "ar" ? "إضافة للمفضلة" : "Add to wishlist"}>
-                <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z" /></svg>
-              </button>
-              <span className={styles.gZoom}>
+<span className={styles.gZoom}>
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3M11 8v6M8 11h6" /></svg>
                 {locale === "ar" ? "تكبير" : "Zoom"}
               </span>
