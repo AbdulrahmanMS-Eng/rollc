@@ -966,6 +966,17 @@ ul{list-style:none}
 .footer{background:var(--ink);color:var(--sand)}
 .foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.5fr;gap:48px;padding-block:clamp(60px,7vw,90px)}
 .foot-brand .rollc-logo{height:74px;width:auto;display:block;margin-inline-start:-6px}
+
+/* Footer image logo */
+.foot-brand .footer-logo{
+  display:block;
+  width:clamp(145px, 12vw, 178px);
+  height:auto;
+  max-width:100%;
+  object-fit:contain;
+  margin-bottom:18px;
+}
+
 .foot-statement{margin-top:18px;color:rgba(246,241,232,.6);font-size:.94rem;max-width:36ch;line-height:1.8}
 .foot-col h4{font-family:var(--ff-ar-display);font-weight:600;color:#fff;font-size:1.05rem;margin-bottom:18px}
 .lang-en .foot-col h4{font-family:var(--ff-en-serif)}
