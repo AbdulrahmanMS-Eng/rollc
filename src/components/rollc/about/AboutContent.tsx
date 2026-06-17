@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/rollc/ui/Reveal";
 import type { Locale } from "@/data/rollc/content";
 import styles from "./About.module.css";
@@ -72,10 +75,10 @@ export function AboutContent({ locale }: { locale: Locale }) {
           <Reveal>
             <div className={styles.statsGrid}>
               {[
-                { num: "٢٦+", numEn: "26+", lbl: { ar: "عاماً من الإتقان (2000–2026)", en: "Years of mastery (2000–2026)" } },
-                { num: "[ +٥٠٠ ]", numEn: "[ 500+ ]", lbl: { ar: "[ مشروع منجز ]", en: "[ Projects delivered ]" } },
-                { num: "[ +٢٠ ]", numEn: "[ 20+ ]", lbl: { ar: "[ مدينة في المملكة ]", en: "[ Cities across the Kingdom ]" } },
-                { num: "[ +١٠٠ ]", numEn: "[ 100+ ]", lbl: { ar: "[ شريك وعلامة فاخرة ]", en: "[ Partners & luxury brands ]" } },
+                { numEn: "[ 26+ ]", lbl: { ar: "عاماً من الإتقان (2000–2026)", en: "Years of mastery (2000–2026)" } },
+                { numEn: "[ 500+ ]", lbl: { ar: "مشروع منجز", en: "Projects delivered" } },
+                { numEn: "[ 20+ ]", lbl: { ar: "مدينة في المملكة", en: "Cities across the Kingdom" } },
+                { numEn: "[ 100+ ]", lbl: { ar: "شريك وعلامة فاخرة", en: "Partners & luxury brands" } },
               ].map((s, i) => (
                 <div key={i} className={styles.stat}>
                   <div className={styles.statNum}>{s.numEn}</div>
@@ -83,12 +86,6 @@ export function AboutContent({ locale }: { locale: Locale }) {
                 </div>
               ))}
             </div>
-            <p className={styles.statsNote}>
-              {t(locale, {
-                ar: "* الأرقام بين [ الأقواس ] قابلة للتحديث بالقيم الرسمية المعتمدة.",
-                en: "* Figures in [ brackets ] are placeholders to be replaced with official approved values.",
-              })}
-            </p>
           </Reveal>
         </div>
       </section>
@@ -289,11 +286,11 @@ export function AboutContent({ locale }: { locale: Locale }) {
             <div className={styles.tlTrack}>
               {[
                 { yr: "2000", lbl: { ar: "تأسيس رولك وانطلاق أول ورشة", en: "Rollc is founded; the first workshop opens" } },
-                { yr: "[ 2008 ]", lbl: { ar: "[ افتتاح أول صالة عرض رئيسية ]", en: "[ First flagship showroom opens ]" } },
-                { yr: "[ 2014 ]", lbl: { ar: "[ التوسّع في التجهيز المؤسسي ]", en: "[ Expansion into institutional fit-out ]" } },
-                { yr: "[ 2019 ]", lbl: { ar: "[ تسليم مشروعٍ بارز / جائزة ____ ]", en: "[ Landmark project delivered / Award ____ ]" } },
-                { yr: "[ 2022 ]", lbl: { ar: "[ اعتماد شهادة ISO ____ ]", en: "[ ISO ____ certification achieved ]" } },
-                { yr: "2026", lbl: { ar: "[ 500+ مشروع ] عبر [ 20+ مدينة ]", en: "[ 500+ projects ] across [ 20+ cities ]" } },
+                { yr: "2008", lbl: { ar: "افتتاح أول صالة عرض رئيسية", en: "First flagship showroom opens" } },
+                { yr: "2014", lbl: { ar: "التوسّع في التجهيز المؤسسي", en: "Expansion into institutional fit-out" } },
+                { yr: "2019", lbl: { ar: "تسليم مشروعٍ بارز عبر المملكة", en: "A landmark project delivered across the Kingdom" } },
+                { yr: "2022", lbl: { ar: "اعتماد معايير الجودة والتصنيع", en: "Quality and manufacturing standards adopted" } },
+                { yr: "2026", lbl: { ar: "أكثر من 500 مشروع عبر أكثر من 20 مدينة", en: "500+ projects across 20+ cities" } },
               ].map((m, i) => (
                 <div key={i} className={styles.tlItem}>
                   <div className={styles.tlYear}>{m.yr}</div>
@@ -378,27 +375,20 @@ export function AboutContent({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      {/* ============ TRUST STRIP ============ */}
+      {/* ============ PARTNERS / CLIENTS / ACCREDITATIONS ============ */}
       <section className={`${styles.section} ${styles.trust}`}>
         <div className="wrap">
           <Reveal>
             <div className={`${styles.secHead} ${styles.center}`}>
               <span className={styles.eyebrow}>{t(locale, { ar: "موضع ثقة", en: "Trusted by" })}</span>
-              <h2 className={styles.display}>{t(locale, { ar: "شركاء وعملاء واعتمادات", en: "Partners, clients & certifications" })}</h2>
+              <h2 className={styles.display}>{t(locale, { ar: "شركاء وعملاء واعتمادات", en: "Partners & Clients" })}</h2>
+              <p>{t(locale, { ar: "نخبةٌ من الشركاء والعملاء والاعتمادات — تُضاف الشعارات الرسمية لاحقاً.", en: "A selection of partners, clients, and accreditations — official logos to be added." })}</p>
             </div>
-            <p className={styles.trustNote}>
-              {t(locale, {
-                ar: "[ منطقة مخصّصة لشعارات الشركاء / العملاء — تُضاف الشعارات الرسمية لاحقاً ]",
-                en: "[ Placeholder area for partner / client logos — official logos to be added ]",
-              })}
-            </p>
-            <div className={styles.trustGrid}>
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className={styles.trustCell}>
-                  {t(locale, { ar: `[ شعار ${i + 1} ]`, en: `[ Logo ${i + 1} ]` })}
-                </div>
-              ))}
-            </div>
+          </Reveal>
+          <Reveal>
+            <LogoMarquee locale={locale} />
+          </Reveal>
+          <Reveal>
             <div className={styles.trustCert}>
               <span>{t(locale, { ar: "[ شهادة ISO ____ ]", en: "[ ISO ____ certified ]" })}</span>
               <span>{t(locale, { ar: "[ عضوية ____ ]", en: "[ Member of ____ ]" })}</span>
@@ -470,6 +460,104 @@ export function AboutContent({ locale }: { locale: Locale }) {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------
+   Partner / client logo wall — seamless auto-scroll marquee.
+   Continuous medium-speed scroll on mobile + desktop, seamless loop,
+   pause on hover/touch, arrow controls (desktop) + native swipe
+   (mobile), and manual-only when prefers-reduced-motion is set.
+   The scroller is forced LTR so scroll math is identical in both
+   locales (the logo wall itself is direction-neutral).
+   ---------------------------------------------------------------- */
+function LogoMarquee({ locale }: { locale: Locale }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const pausedRef = useRef(false);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
+    let last = performance.now();
+    const SPEED = 45; // px/second — medium, calm marquee
+
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const half = el.scrollWidth / 2; // one full copy of the 8 logos
+      if (half > 0) {
+        if (pausedRef.current) {
+          // keep our offset synced with any manual scroll/swipe
+          offsetRef.current = el.scrollLeft % half;
+        } else {
+          offsetRef.current += SPEED * dt;
+          if (offsetRef.current >= half) offsetRef.current -= half;
+          el.scrollLeft = offsetRef.current;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const nudge = (dx: number) => {
+    scrollerRef.current?.scrollBy({ left: dx, behavior: "smooth" });
+  };
+
+  const logos = Array.from({ length: 8 }, (_, i) => i + 1);
+  const loop = [...logos, ...logos]; // duplicate for a seamless wrap
+
+  const ar = locale === "ar";
+
+  return (
+    <div className={styles.logoWall}>
+      <button
+        type="button"
+        className={`${styles.logoNav} ${styles.logoPrev}`}
+        aria-label={ar ? "السابق" : "Previous"}
+        onClick={() => nudge(-280)}
+      >
+        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+      </button>
+
+      <div
+        ref={scrollerRef}
+        className={styles.logoScroller}
+        dir="ltr"
+        onMouseEnter={() => { pausedRef.current = true; }}
+        onMouseLeave={() => { pausedRef.current = false; }}
+        onTouchStart={() => { pausedRef.current = true; }}
+        onTouchEnd={() => { pausedRef.current = false; }}
+      >
+        <div className={styles.logoTrack}>
+          {loop.map((n, i) => (
+            <div key={i} className={styles.logoCell} aria-hidden={i >= logos.length ? true : undefined}>
+              <svg className={styles.logoMark} viewBox="0 0 120 40" role="img" aria-label={`Logo ${n}`}>
+                <rect x="6" y="10" width="20" height="20" rx="4" />
+                <circle cx="48" cy="20" r="10" />
+                <path d="M70 30V10l14 20V10" />
+                <path d="M100 30V10h10" />
+              </svg>
+              <span className={styles.logoCap}>Logo {n}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className={`${styles.logoNav} ${styles.logoNext}`}
+        aria-label={ar ? "التالي" : "Next"}
+        onClick={() => nudge(280)}
+      >
+        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+      </button>
     </div>
   );
 }
