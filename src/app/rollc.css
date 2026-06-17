@@ -26,7 +26,7 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{}
 body{
   font-family:var(--ff-ar-body);
   background:var(--ivory);
@@ -447,6 +447,10 @@ ul{list-style:none}
   .card-name{font-size:1.05rem}
   .card-desc{min-height:auto}
   .quick{display:none}
+  .card-foot{align-items:flex-end}
+  .price{flex:1 1 auto;min-width:0}
+  .price .old{display:block;margin-inline-start:0}
+  .add-cart{flex-shrink:0}
   .pillars{grid-template-columns:1fr}
   .coll-grid{grid-template-columns:1fr}
   .coll:nth-child(3){grid-column:span 1}

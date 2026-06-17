@@ -63,12 +63,14 @@ export type AssistantReply = {
 // ── Chip banks ────────────────────────────────────────────────
 
 export const PRODUCT_CHIPS: QuickQuestion[] = [
-  { id: "q:colors",        label: { ar: "ما الألوان المتاحة؟",         en: "What colours are available?" } },
-  { id: "q:sizes",         label: { ar: "ما المقاسات المتاحة؟",        en: "What sizes are available?" } },
-  { id: "q:custom-size",   label: { ar: "هل يمكن تفصيله بمقاس خاص؟",  en: "Can it be custom-sized?" } },
-  { id: "q:matching-set",  label: { ar: "هل تتوفّر قطع مطابقة؟",      en: "Any matching pieces?" } },
-  { id: "q:full-set",      label: { ar: "هل يُباع كطقم كامل؟",        en: "Is it sold as a full set?" } },
-  { id: "q:delivery-city", label: { ar: "هل يصل التوصيل لمدينتي؟",    en: "Do you deliver to my city?" } },
+  { id: "q:colors",        label: { ar: "ما الألوان المتاحة؟",          en: "What colours are available?" } },
+  { id: "q:sizes",         label: { ar: "ما المقاسات المتاحة؟",         en: "What sizes are available?" } },
+  { id: "q:material",      label: { ar: "ما الخامة المتاحة؟",           en: "What materials are available?" } },
+  { id: "q:care",          label: { ar: "كيف أعتني بها؟",              en: "How do I care for it?" } },
+  { id: "q:custom-size",   label: { ar: "هل يمكن تفصيله بمقاس خاص؟",   en: "Can it be custom-sized?" } },
+  { id: "q:matching-set",  label: { ar: "هل تتوفّر قطع مطابقة؟",       en: "Any matching pieces?" } },
+  { id: "q:warranty",      label: { ar: "ما مدة الضمان؟",               en: "What's the warranty?" } },
+  { id: "q:delivery-city", label: { ar: "هل يصل التوصيل لمدينتي؟",     en: "Do you deliver to my city?" } },
 ];
 
 export const CATEGORY_CHIPS: QuickQuestion[] = [
@@ -79,9 +81,10 @@ export const CATEGORY_CHIPS: QuickQuestion[] = [
 ];
 
 export const HOME_CHIPS: QuickQuestion[] = [
-  { id: "q:categories", label: { ar: "تصفّح الأقسام",  en: "Browse categories" } },
-  { id: "q:bestseller", label: { ar: "الأكثر مبيعاً", en: "Best sellers" } },
-  { id: "q:budget",     label: { ar: "حسب الميزانية", en: "By budget" } },
+  { id: "q:categories", label: { ar: "تصفّح الأقسام",    en: "Browse categories" } },
+  { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",    en: "Best sellers" } },
+  { id: "q:offers",     label: { ar: "العروض والخصومات", en: "Deals & discounts" } },
+  { id: "q:budget",     label: { ar: "حسب الميزانية",    en: "By budget" } },
 ];
 
 export function getCategoryChips(category?: CategoryKind): QuickQuestion[] {
@@ -406,6 +409,118 @@ function replyOffTopic(): AssistantReply {
   };
 }
 
+function replyMaterial(): AssistantReply {
+  return {
+    text: {
+      ar: "قطعنا متوفرة بخامات مختلفة: جلد طبيعي، قماش كتاني، مخمل، وخشب مصمت. الجلد الطبيعي أكثر متانة للاستخدام اليومي، المخمل يضفي فخامة لكنه يحتاج عناية أكثر، والكتان خيار عملي لكل يوم ✦ الاختيار يعتمد على أسلوب حياتك.",
+      en: "Our pieces come in natural leather, linen fabric, velvet, and solid wood. Leather is most durable for daily use; velvet adds luxury but needs more care; linen is a practical everyday choice ✦ the right material depends on your lifestyle.",
+    },
+    suggestions: [
+      { id: "q:care",       label: { ar: "كيف أعتني بها؟",         en: "How do I care for it?" } },
+      { id: "q:colors",     label: { ar: "ما الألوان المتاحة؟",     en: "What colours are available?" } },
+      { id: "q:consultant", label: { ar: "تواصل مع المستشار",       en: "Talk to a consultant" } },
+    ],
+  };
+}
+
+function replyCare(): AssistantReply {
+  return {
+    text: {
+      ar: "للحفاظ على قطعتك:\n• الجلد: امسحه بقطعة ناعمة مبللة وجففه فوراً — تجنّب الشمس المباشرة.\n• القماش والمخمل: مكنسة أسبوعية، وأزل البقع بمنديل مبلل فوراً.\n• الخشب: مسح بقطعة جافة وملمّع خشب مرة كل ٣ أشهر.",
+      en: "To keep your piece looking great:\n• Leather: wipe with a damp soft cloth and dry immediately — avoid direct sunlight.\n• Fabric/velvet: vacuum weekly; blot spills immediately.\n• Wood: dust dry and apply wood polish every 3 months.",
+    },
+    suggestions: [
+      { id: "q:warranty",   label: { ar: "ما مدة الضمان؟",         en: "What's the warranty?" } },
+      { id: "q:material",   label: { ar: "ما الخامات المتاحة؟",     en: "What materials are available?" } },
+    ],
+  };
+}
+
+function replyReturns(): AssistantReply {
+  return {
+    text: {
+      ar: "يمكنك إرجاع أي قطعة خلال ١٤ يوماً من الاستلام بشرط أن تكون بحالتها الأصلية وبدون استخدام. الاستبدال متاح خلال نفس الفترة ✦ تواصل مع فريقنا وسنرتّب الاستلام.",
+      en: "Returns are accepted within 14 days of delivery, provided the piece is in its original unused condition. Exchanges are available within the same window ✦ contact our team and we'll arrange collection.",
+    },
+    suggestions: [
+      { id: "q:warranty",   label: { ar: "ما مدة الضمان؟",         en: "What's the warranty?" } },
+      { id: "q:consultant", label: { ar: "تواصل مع الفريق",         en: "Contact the team" } },
+    ],
+  };
+}
+
+function replyPayment(): AssistantReply {
+  return {
+    text: {
+      ar: "نقبل: مدى، فيزا، ماستركارد، Apple Pay، وتمارا (تقسيط ٣–٤ دفعات بدون فوائد) ✦ اختر الطريقة الأنسب لك عند إتمام طلبك.",
+      en: "We accept: Mada, Visa, Mastercard, Apple Pay, and Tamara (3–4 interest-free instalments) ✦ Choose your preferred method at checkout.",
+    },
+    suggestions: [
+      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
+      { id: "q:consultant",       label: { ar: "تواصل لإتمام الطلب", en: "Contact to complete order" } },
+    ],
+  };
+}
+
+function replyStock(product?: Product): AssistantReply {
+  return {
+    text: product
+      ? {
+          ar: `${product.name.ar} متوفّر حالياً ✦ الكميات محدودة، ننصحك بإتمام الطلب بأسرع وقت.`,
+          en: `The ${product.name.en} is currently in stock ✦ Quantities are limited — we recommend ordering soon.`,
+        }
+      : {
+          ar: "معظم قطعنا متوفرة الآن. الطلبات المفصّلة (مقاسات خاصة) تحتاج ٢–٤ أسابيع للتجهيز.",
+          en: "Most pieces are available now. Custom orders (tailored sizing) typically take 2–4 weeks to prepare.",
+        },
+    suggestions: [
+      { id: "q:delivery-install", label: { ar: "التوصيل والتركيب؟", en: "Delivery & installation?" } },
+      { id: "q:consultant",       label: { ar: "تأكيد التوفّر",       en: "Confirm availability" } },
+    ],
+  };
+}
+
+function replyShowrooms(): AssistantReply {
+  return {
+    text: {
+      ar: "لدينا صالتا عرض في الرياض والدمام. ساعات العمل: السبت–الخميس ١٠ص–١٠م، الجمعة ٢م–١٠م ✦ يسعدنا استقبالك لتجربة القطع بنفسك.",
+      en: "We have showrooms in Riyadh and Dammam. Open Sat–Thu 10am–10pm, Fri 2pm–10pm ✦ We'd love to welcome you in person to experience the pieces.",
+    },
+    suggestions: [
+      { id: "q:consultant",       label: { ar: "تواصل مع الفرع",      en: "Contact a showroom" } },
+      { id: "q:delivery-install", label: { ar: "هل يصل التوصيل لمدينتي؟", en: "Delivery to my city" } },
+    ],
+  };
+}
+
+function replyOffers(locale: Locale): AssistantReply {
+  return {
+    text: {
+      ar: "لدينا عروض موسمية دورية — تابع حساباتنا لآخر الخصومات. بعض القطع المحددة حالياً بخصم يصل إلى ٢٠٪ ✦ إليك أبرز القطع ذات العروض:",
+      en: "We run seasonal promotions — follow our accounts for the latest deals. Selected pieces are currently discounted up to 20% ✦ Here are the top offers:",
+    },
+    productLinks: bestSellersLinks(locale),
+    suggestions: [
+      { id: "q:bestseller", label: { ar: "الأكثر مبيعاً",  en: "Best sellers" } },
+      { id: "q:budget",     label: { ar: "حسب الميزانية",  en: "By budget" } },
+    ],
+  };
+}
+
+function replyComparison(product: Product | undefined, locale: Locale): AssistantReply {
+  return {
+    text: {
+      ar: "يسعدنا مساعدتك في المقارنة ✦ كل قطعة لها طابعها من حيث الخامة والحجم والأسلوب. أخبرني بالقطعتين اللتين تودّ المقارنة بينهما وسأرشدك.",
+      en: "Happy to help you compare ✦ Each piece has its own character in material, size, and style. Tell me which two pieces you'd like to compare and I'll guide you.",
+    },
+    productLinks: product ? sameCategoryLinks(product, locale).slice(0, 2) : undefined,
+    suggestions: [
+      { id: "q:material",   label: { ar: "ما الخامات المتاحة؟",  en: "What materials?" } },
+      { id: "q:consultant", label: { ar: "مقارنة مع مستشار",     en: "Compare with a consultant" } },
+    ],
+  };
+}
+
 function replySizes(product?: Product): AssistantReply {
   if (product) {
     const dims = productDimensions(product);
@@ -467,7 +582,15 @@ function replyCatBrowse(category: CategoryKind | undefined, locale: Locale): Ass
 function detectIntent(msg: string): string {
   const s = msg.toLowerCase();
   if (/مرحب|أهل|السلام|هلا|hello|hi\b|hey\b/.test(s)) return "greeting";
-  if (/ضمان|إرجاع|استبدال|warranty|return|exchange|refund/.test(s)) return "warranty";
+  if (/ضمان|warranty/.test(s)) return "warranty";
+  if (/إرجاع|استرداد|استبدال|return|exchange|refund/.test(s)) return "returns";
+  if (/دفع|تقسيط|تابي|تمارا|مدى|فيزا|payment|instalm|tamara|tabby|mada|visa/.test(s)) return "payment";
+  if (/الفرق بين|أيهما أفضل|مقارن|compare|comparison|versus|\bvs\b/.test(s)) return "comparison";
+  if (/خامة|قماش|جلد|مخمل|كتان|خشب|material|fabric|leather|velvet|linen|wood/.test(s)) return "material";
+  if (/عناية|تنظيف|صيانة|care|clean|maintain/.test(s)) return "care";
+  if (/توفر|مخزون|متوفر|موجود|stock|availabl/.test(s)) return "stock";
+  if (/فروع|صالة عرض|معرض|showroom|branch/.test(s)) return "showrooms";
+  if (/عروض|خصم|تخفيض|offer|discount|sale|promo/.test(s)) return "offers";
   if (/شراء|اشتر|اطلب|أطلب|buy|order|purchase|checkout/.test(s)) return "buy";
   if (/توصيل|تسليم|شحن|تركيب|delivery|shipping|install/.test(s)) return "delivery-install";
   if (/وقت|مدة|متى|يوم|أسبوع|time|when|days|week|how long/.test(s)) return "delivery-time";
@@ -503,6 +626,14 @@ function handleQuickQuestion(qid: string, ctx: AssistantContext): AssistantReply
     case "bestseller":       return replyBestSellers(locale);
     case "categories":       return replyCategories(locale);
     case "cat-type":         return replyCatBrowse(category, locale);
+    case "material":         return replyMaterial();
+    case "care":             return replyCare();
+    case "returns":          return replyReturns();
+    case "payment":          return replyPayment();
+    case "stock":            return replyStock(product);
+    case "showrooms":        return replyShowrooms();
+    case "offers":           return replyOffers(locale);
+    case "comparison":       return replyComparison(product, locale);
     case "contact":
     case "consultant":       return replyContact();
     default:                 return replyGeneral(product, locale);
@@ -523,6 +654,14 @@ function handleFreeText(msg: string, ctx: AssistantContext): AssistantReply {
     case "budget":           return replyBudget(locale);
     case "bestseller":       return replyBestSellers(locale);
     case "warranty":         return replyWarranty();
+    case "returns":          return replyReturns();
+    case "payment":          return replyPayment();
+    case "material":         return replyMaterial();
+    case "care":             return replyCare();
+    case "stock":            return replyStock(product);
+    case "showrooms":        return replyShowrooms();
+    case "offers":           return replyOffers(locale);
+    case "comparison":       return replyComparison(product, locale);
     case "buy":              return replyBuy(product);
     case "consultant":       return replyContact();
     case "general":          return replyGeneral(product, locale);
