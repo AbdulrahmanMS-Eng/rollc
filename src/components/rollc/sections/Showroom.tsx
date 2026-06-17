@@ -8,20 +8,18 @@ type ViewTransitionDocument = Document & {
   startViewTransition?: (callback: () => void) => void;
 };
 
-/* Sputnik chandelier bulb positions — tune left/top % to match the real image */
-const CHANDELIER_BULBS: { left: string; top: string }[] = [
-  { left: "49%", top: "18%" },
-  { left: "52%", top: "15%" },
-  { left: "60%", top: "17%" },
-  { left: "64%", top: "22%" },
-  { left: "51%", top: "22%" },
-];
+const DAY_IMAGE =
+  "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1800&q=80";
+
+const NIGHT_IMAGE = "/showroom/bedroom-night.png";
+const NIGHT_NO_LIGHT_IMAGE = "/showroom/nolight.png";
 
 export function Showroom({ locale }: { locale: Locale }) {
   const [night, setNight] = useState(false);
   const [lightsOn, setLightsOn] = useState(false);
 
   const isAr = locale === "ar";
+  const roomImage = night ? (lightsOn ? NIGHT_IMAGE : NIGHT_NO_LIGHT_IMAGE) : DAY_IMAGE;
 
   function withTransition(update: () => void) {
     const doc = document as ViewTransitionDocument;
@@ -36,10 +34,10 @@ export function Showroom({ locale }: { locale: Locale }) {
 
   function toggleNight() {
     withTransition(() => {
-      setNight((value) => !value);
-      setLightsOn((value) => {
-        if (!night) return true;
-        return value;
+      setNight((prev) => {
+        const next = !prev;
+        setLightsOn(next);
+        return next;
       });
     });
   }
@@ -95,8 +93,9 @@ export function Showroom({ locale }: { locale: Locale }) {
 
         <Reveal className="room">
           <img
+            key={roomImage}
             className="room-photo"
-            src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1800&q=80"
+            src={roomImage}
             alt={isAr ? "غرفة نوم فاخرة من رولك بتجربة إضاءة نهارية وليلية" : "Luxury Rollc room with day and night lighting"}
           />
 
@@ -111,10 +110,6 @@ export function Showroom({ locale }: { locale: Locale }) {
           <span className="light-cone lamp-left-cone" aria-hidden="true" />
           <span className="light-cone lamp-right-cone" aria-hidden="true" />
           <span className="floor-glow" aria-hidden="true" />
-
-          {CHANDELIER_BULBS.map((pos, i) => (
-            <span key={i} className="chandelier-bulb" style={pos} aria-hidden="true" />
-          ))}
 
           <div className="room-caption">
             <div>

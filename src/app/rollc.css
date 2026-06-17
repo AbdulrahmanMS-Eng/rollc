@@ -1369,3 +1369,34 @@ body.lang-en,
   .actions .lang-switch button { min-width: 38px; height: 38px; }
 }
 /* MOBILE REDESIGN END */
+
+/* ---------- Final fix: real night image should not be darkened by fake overlays ---------- */
+.showroom.night .room img.room-photo{
+  transform:scale(1.015) !important;
+  filter:brightness(1) saturate(1) contrast(1) !important;
+}
+
+/* الصورة الليلية جاهزة وفيها إضاءة، لا نحتاج طبقة تعتيم */
+.showroom.night .night-wash{
+  opacity:0 !important;
+}
+
+/* خفف الفينيت فقط حتى تبقى الصورة واضحة */
+.showroom.night .cinema-vignette{
+  opacity:.18 !important;
+}
+
+/* لا نحتاج الأنوار الصناعية فوق الصورة الليلية */
+.showroom.night .real-light,
+.showroom.night .light-cone,
+.showroom.night .floor-glow{
+  opacity:0 !important;
+  display:none !important;
+}
+
+/* لا تخلي طبقة النهار تغطي الصورة الليلية */
+.showroom.night .sun-wash,
+.showroom.night .window-shade{
+  opacity:0 !important;
+}
+
