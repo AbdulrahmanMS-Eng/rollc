@@ -511,7 +511,7 @@ function LogoMarquee({ locale }: { locale: Locale }) {
   };
 
   const logos = Array.from({ length: 8 }, (_, i) => ({
-    src: `/rollc/about/partners/partner-${String(i + 1).padStart(2, "0")}.svg`,
+    src: `/rollc/about/partners/partner-${String(i + 1).padStart(2, "0")}.png`,
     alt: `Partner ${i + 1}`,
   }));
   const loop = [...logos, ...logos]; // duplicate for a seamless wrap

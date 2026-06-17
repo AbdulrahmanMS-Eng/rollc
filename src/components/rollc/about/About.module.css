@@ -441,3 +441,86 @@
 @media (prefers-reduced-motion: reduce) {
   .heroImg { animation: none; transform: none; }
 }
+
+
+/* Partner marquee refinement START */
+.logoCell {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  min-width: 140px !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImg {
+  display: block;
+  width: auto !important;
+  height: clamp(32px, 3.2vw, 52px) !important;
+  max-width: 170px !important;
+  max-height: 52px !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.logoTrack,
+.logosTrack,
+.logoRail {
+  display: flex;
+  align-items: center;
+  gap: clamp(36px, 4vw, 56px);
+  width: max-content;
+  animation: rollcPartnerMarquee 28s linear infinite;
+  will-change: transform;
+}
+
+.logoTrack:hover,
+.logosTrack:hover,
+.logoRail:hover,
+.logoTrack:focus-within,
+.logosTrack:focus-within,
+.logoRail:focus-within {
+  animation-play-state: paused;
+}
+
+html[dir="rtl"] .logoTrack,
+html[dir="rtl"] .logosTrack,
+html[dir="rtl"] .logoRail {
+  animation-direction: reverse;
+}
+
+@keyframes rollcPartnerMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .logoCell {
+    min-width: 120px !important;
+  }
+
+  .logoImg {
+    height: 34px !important;
+    max-width: 140px !important;
+    max-height: 34px !important;
+  }
+
+  .logoTrack,
+  .logosTrack,
+  .logoRail {
+    gap: 28px;
+    animation-duration: 22s;
+  }
+}
+/* Partner marquee refinement END */
