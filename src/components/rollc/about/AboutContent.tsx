@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/rollc/ui/Reveal";
 import type { Locale } from "@/data/rollc/content";
 import styles from "./About.module.css";
@@ -380,20 +379,38 @@ export function AboutContent({ locale }: { locale: Locale }) {
         <div className="wrap">
           <Reveal>
             <div className={`${styles.secHead} ${styles.center}`}>
-              <span className={styles.eyebrow}>{t(locale, { ar: "موضع ثقة", en: "Trusted by" })}</span>
-              <h2 className={styles.display}>{t(locale, { ar: "شركاء وعملاء واعتمادات", en: "Partners & Clients" })}</h2>
-              <p>{t(locale, { ar: "نخبةٌ من الشركاء والعملاء والاعتمادات — تُضاف الشعارات الرسمية لاحقاً.", en: "A selection of partners, clients, and accreditations — official logos to be added." })}</p>
+              <h2 className={styles.display}>{t(locale, { ar: "شركاؤنا", en: "Our partners" })}</h2>
             </div>
           </Reveal>
           <Reveal>
             <LogoMarquee locale={locale} />
           </Reveal>
           <Reveal>
+            <h2 className={`${styles.display} ${styles.certTitle}`}>{t(locale, { ar: "الاعتمادات", en: "Accreditations" })}</h2>
             <div className={styles.trustCert}>
-              <span>{t(locale, { ar: "[ شهادة ISO ____ ]", en: "[ ISO ____ certified ]" })}</span>
-              <span>{t(locale, { ar: "[ عضوية ____ ]", en: "[ Member of ____ ]" })}</span>
-              <span>{t(locale, { ar: "[ جائزة ____ ]", en: "[ Award ____ ]" })}</span>
-              <span>{t(locale, { ar: "[ تصنيف ____ ]", en: "[ Classification ____ ]" })}</span>
+              {[
+                {
+                  title: t(locale, { ar: "شهادة ISO 9001:2008", en: "ISO 9001:2008 Certification" }),
+                  meta: t(locale, { ar: "إدارة الجودة", en: "Quality Management" }),
+                },
+                {
+                  title: t(locale, { ar: "اعتماد UL", en: "UL Certification" }),
+                  meta: t(locale, { ar: "للأبواب المقاومة للحريق", en: "Fire-Rated Rolling Shutter Doors" }),
+                },
+                {
+                  title: t(locale, { ar: "تصنيف STC 31", en: "STC 31 Rating" }),
+                  meta: t(locale, { ar: "للأبواب العازلة للصوت", en: "Acoustic Door Certification" }),
+                },
+                {
+                  title: t(locale, { ar: "تصنيف K-12 وفق ASTM 2656", en: "K-12 / ASTM 2656 Rating" }),
+                  meta: t(locale, { ar: "للحواجز الهيدروليكية", en: "Hydraulic Road Blockers" }),
+                },
+              ].map((item) => (
+                <div key={item.title} className={styles.certBadge}>
+                  <span className={styles.certBadgeLabel}>{item.title}</span>
+                  <span className={styles.certBadgeMeta}>{item.meta}</span>
+                </div>
+              ))}
             </div>
           </Reveal>
         </div>
@@ -473,88 +490,25 @@ export function AboutContent({ locale }: { locale: Locale }) {
    locales (the logo wall itself is direction-neutral).
    ---------------------------------------------------------------- */
 function LogoMarquee({ locale }: { locale: Locale }) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const offsetRef = useRef(0);
-  const pausedRef = useRef(false);
-
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let raf = 0;
-    let last = performance.now();
-    const SPEED = 45; // px/second — medium, calm marquee
-
-    const tick = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05);
-      last = now;
-      const half = el.scrollWidth / 2; // one full copy of the 8 logos
-      if (half > 0) {
-        if (pausedRef.current) {
-          // keep our offset synced with any manual scroll/swipe
-          offsetRef.current = el.scrollLeft % half;
-        } else {
-          offsetRef.current += SPEED * dt;
-          if (offsetRef.current >= half) offsetRef.current -= half;
-          el.scrollLeft = offsetRef.current;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const nudge = (dx: number) => {
-    scrollerRef.current?.scrollBy({ left: dx, behavior: "smooth" });
-  };
-
   const logos = Array.from({ length: 8 }, (_, i) => ({
     src: `/rollc/about/partners/partner-${String(i + 1).padStart(2, "0")}.png`,
     alt: `Partner ${i + 1}`,
   }));
-  const loop = [...logos, ...logos]; // duplicate for a seamless wrap
 
-  const ar = locale === "ar";
+  const loop = [...logos, ...logos];
 
   return (
-    <div className={styles.logoWall}>
-      <button
-        type="button"
-        className={`${styles.logoNav} ${styles.logoPrev}`}
-        aria-label={ar ? "السابق" : "Previous"}
-        onClick={() => nudge(-280)}
-      >
-        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
-      </button>
-
-      <div
-        ref={scrollerRef}
-        className={styles.logoScroller}
-        dir="ltr"
-        onMouseEnter={() => { pausedRef.current = true; }}
-        onMouseLeave={() => { pausedRef.current = false; }}
-        onTouchStart={() => { pausedRef.current = true; }}
-        onTouchEnd={() => { pausedRef.current = false; }}
-      >
+    <div className={styles.logoWall} aria-label={locale === "ar" ? "شعارات الشركاء" : "Partner logos"}>
+      <div className={styles.logoScroller} dir="ltr">
         <div className={styles.logoTrack}>
           {loop.map((logo, i) => (
             <div key={`${logo.src}-${i}`} className={styles.logoCell} aria-hidden={i >= logos.length ? true : undefined}>
-              <img className={styles.logoImg} src={logo.src} alt={logo.alt} loading="lazy" />
+              <img className={styles.logoImg} src={logo.src} alt={logo.alt} loading="lazy" draggable={false} />
             </div>
           ))}
         </div>
       </div>
-
-      <button
-        type="button"
-        className={`${styles.logoNav} ${styles.logoNext}`}
-        aria-label={ar ? "التالي" : "Next"}
-        onClick={() => nudge(280)}
-      >
-        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
-      </button>
     </div>
   );
 }
+

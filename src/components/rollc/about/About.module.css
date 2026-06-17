@@ -443,84 +443,334 @@
 }
 
 
-/* Partner marquee refinement START */
+/* Partner seamless CSS marquee final START */
+.logoWall {
+  position: relative;
+  overflow: hidden !important;
+}
+
+.logoScroller {
+  overflow: hidden !important;
+  padding-block: 32px !important;
+  scrollbar-width: none !important;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent) !important;
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent) !important;
+}
+
+.logoScroller::-webkit-scrollbar {
+  display: none !important;
+}
+
+.logoTrack {
+  display: flex !important;
+  align-items: center !important;
+  width: max-content !important;
+  animation: rollcPartnerSeamless 34s linear infinite !important;
+  will-change: transform !important;
+}
+
+.logoWall:hover .logoTrack,
+.logoWall:active .logoTrack {
+  animation-play-state: paused !important;
+}
+
 .logoCell {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   border-radius: 0 !important;
+  width: 260px !important;
+  height: 96px !important;
+  margin-inline-end: 74px !important;
   padding: 0 !important;
-  min-height: auto !important;
-  min-width: 140px !important;
-  width: auto !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   flex: 0 0 auto !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  scroll-snap-align: none !important;
+}
+
+.logoCell:hover {
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 .logoImg {
-  display: block;
-  width: auto !important;
-  height: clamp(32px, 3.2vw, 52px) !important;
-  max-width: 170px !important;
-  max-height: 52px !important;
+  width: 150px !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
   object-fit: contain !important;
+  display: block !important;
   opacity: 1 !important;
   filter: none !important;
+  transform: scale(1.85) !important;
+  transform-origin: center center !important;
+  pointer-events: none !important;
 }
 
-.logoTrack,
-.logosTrack,
-.logoRail {
-  display: flex;
-  align-items: center;
-  gap: clamp(36px, 4vw, 56px);
-  width: max-content;
-  animation: rollcPartnerMarquee 28s linear infinite;
-  will-change: transform;
+.logoNav {
+  display: none !important;
 }
 
-.logoTrack:hover,
-.logosTrack:hover,
-.logoRail:hover,
-.logoTrack:focus-within,
-.logosTrack:focus-within,
-.logoRail:focus-within {
-  animation-play-state: paused;
-}
-
-html[dir="rtl"] .logoTrack,
-html[dir="rtl"] .logosTrack,
-html[dir="rtl"] .logoRail {
-  animation-direction: reverse;
-}
-
-@keyframes rollcPartnerMarquee {
+@keyframes rollcPartnerSeamless {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
+
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 760px) {
+  .logoScroller {
+    padding-block: 24px !important;
+  }
+
+  .logoTrack {
+    animation-duration: 24s !important;
+  }
+
   .logoCell {
-    min-width: 120px !important;
+    width: 210px !important;
+    height: 84px !important;
+    margin-inline-end: 52px !important;
   }
 
   .logoImg {
-    height: 34px !important;
-    max-width: 140px !important;
-    max-height: 34px !important;
-  }
-
-  .logoTrack,
-  .logosTrack,
-  .logoRail {
-    gap: 28px;
-    animation-duration: 22s;
+    width: 128px !important;
+    transform: scale(1.75) !important;
   }
 }
-/* Partner marquee refinement END */
+/* Partner seamless CSS marquee final END */
+
+
+/* About partners accreditations title */
+
+
+/* Accreditations spacing only */
+
+
+
+/* Accreditations spacing only */
+
+
+
+/* Accreditations exact title match */
+.certTitle {
+  margin-top: clamp(54px, 6vw, 86px) !important;
+  margin-bottom: clamp(24px, 3vw, 38px) !important;
+  text-align: center !important;
+  font-family: var(--ff-display) !important;
+  font-weight: 600 !important;
+  color: rgb(42, 33, 26) !important;
+  font-size: 46px !important;
+  line-height: 54px !important;
+  letter-spacing: normal !important;
+}
+
+
+/* Desktop static partners logos START */
+@media (min-width: 761px) {
+  .logoWall {
+    overflow: visible !important;
+  }
+
+  .logoScroller {
+    overflow: visible !important;
+    padding-block: 34px 44px !important;
+    -webkit-mask-image: none !important;
+            mask-image: none !important;
+  }
+
+  .logoTrack {
+    width: min(1200px, 94vw) !important;
+    margin-inline: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: clamp(24px, 2.6vw, 38px) !important;
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .logoCell[aria-hidden="true"] {
+    display: none !important;
+  }
+
+  .logoCell {
+    width: auto !important;
+    height: 92px !important;
+    margin-inline-end: 0 !important;
+    padding: 0 !important;
+    flex: 0 1 145px !important;
+    min-width: 105px !important;
+    max-width: 180px !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .logoImg {
+    width: auto !important;
+    height: auto !important;
+    max-width: 180px !important;
+    max-height: 72px !important;
+    object-fit: contain !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  .logoNav {
+    display: none !important;
+  }
+}
+/* Desktop static partners logos END */
+
+/* Desktop partners logos bigger refinement START */
+@media (min-width: 761px) {
+  .logoTrack {
+    width: min(1280px, 96vw) !important;
+    gap: clamp(16px, 1.6vw, 26px) !important;
+  }
+
+  .logoCell {
+    height: 112px !important;
+    flex: 0 1 165px !important;
+    min-width: 118px !important;
+    max-width: 205px !important;
+  }
+
+  .logoImg {
+    max-width: 205px !important;
+    max-height: 88px !important;
+  }
+}
+/* Desktop partners logos bigger refinement END */
+
+/* Desktop partners centered grid refinement START */
+@media (min-width: 761px) {
+  .logoScroller {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .logoTrack {
+    width: min(1120px, 88vw) !important;
+    margin-inline: auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+    align-items: center !important;
+    justify-items: center !important;
+    gap: clamp(12px, 1.2vw, 22px) !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .logoCell {
+    width: 100% !important;
+    height: 112px !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+    margin-inline-end: 0 !important;
+  }
+
+  .logoImg {
+    max-width: 170px !important;
+    max-height: 86px !important;
+  }
+}
+/* Desktop partners centered grid refinement END */
+
+/* Desktop partners logo gap refinement START */
+@media (min-width: 761px) {
+  .logoTrack {
+    width: min(1180px, 91vw) !important;
+    gap: clamp(22px, 2vw, 34px) !important;
+  }
+
+  .logoImg {
+    max-width: 165px !important;
+    max-height: 84px !important;
+  }
+}
+/* Desktop partners logo gap refinement END */
+
+
+/* Accreditations real badges START */
+.trustCert {
+  width: min(960px, 92vw) !important;
+  margin-inline: auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(12px, 1.6vw, 18px) !important;
+  align-items: stretch !important;
+}
+
+.certBadge {
+  min-height: 96px !important;
+  padding: 18px 16px !important;
+  border: 1px solid rgba(42, 33, 26, 0.12) !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.92), rgba(246, 241, 232, 0.72)) !important;
+  box-shadow: 0 18px 42px -34px rgba(42, 33, 26, 0.45) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.certBadgeLabel {
+  display: block !important;
+  font-family: var(--ff-display) !important;
+  font-weight: 600 !important;
+  font-size: 1.02rem !important;
+  line-height: 1.45 !important;
+  color: var(--espresso) !important;
+}
+
+.certBadgeMeta {
+  display: block !important;
+  margin-top: 6px !important;
+  font-family: var(--ff-body) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.5 !important;
+  color: var(--muted) !important;
+}
+
+:global(.lang-en) .certBadgeLabel {
+  font-family: var(--ff-serif) !important;
+  font-weight: 600 !important;
+}
+
+:global(.lang-en) .certBadgeMeta {
+  font-family: var(--ff-sans) !important;
+}
+
+@media (max-width: 900px) {
+  .trustCert {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .trustCert {
+    grid-template-columns: 1fr !important;
+  }
+
+  .certBadge {
+    min-height: 86px !important;
+  }
+}
+/* Accreditations real badges END */
