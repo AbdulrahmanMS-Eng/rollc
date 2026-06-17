@@ -1,57 +1,59 @@
 import type { Locale } from "@/data/rollc/content";
 
 /**
- * Rollc brand mark — crisp inline SVG (no PNG, transparent background).
- *
- * SYMBOL (pure vector, sharp tips, no blur):
- *  - a symmetrical tapering arc (shooting-star trail) peaking dead-centre and
- *    converging to fine points at both ends
- *  - a radiant 8-point north-star sitting on the apex: 4 long primary points
- *    (N/E/S/W) + 4 short diagonal points, with a small sparkle up-right
- *
- * WORDMARK = real text (always crisp): "Rollc" (Cormorant) + "رولك"
- *  (El Messiri) on one shared baseline, centred beneath the star.
- *
- * `tone` swaps the colour pairing so the mark reads on light (header) and dark
- * (footer) surfaces. `locale` decides which script is the larger / main one.
+ * Rollc logo — V5
+ * Closer to the original identity:
+ * - elegant upper sweep
+ * - slightly lighter left body
+ * - centered refined star
+ * - ultra-thin right tail
+ * - Rollc / رولك only
+ * - no subtitle, no right spiral
  */
 
 type Tone = "duo" | "espresso" | "gold" | "paper";
 
-const TONES: Record<Tone, { main: string; accent: string }> = {
-  // brand espresso + gold pairing — the default used in the ivory header
-  duo: { main: "var(--espresso)", accent: "var(--gold)" },
-  espresso: { main: "var(--espresso)", accent: "var(--espresso)" },
-  gold: { main: "var(--gold)", accent: "var(--gold)" },
-  // for dark surfaces (footer): warm paper + soft gold
-  paper: { main: "var(--paper)", accent: "var(--gold-soft)" },
+const TONES: Record<Tone, { main: string; accent: string; soft: string }> = {
+  duo: {
+    main: "var(--espresso)",
+    accent: "var(--gold)",
+    soft: "rgba(191, 143, 75, 0.34)",
+  },
+  espresso: {
+    main: "var(--espresso)",
+    accent: "var(--espresso)",
+    soft: "rgba(42, 33, 26, 0.26)",
+  },
+  gold: {
+    main: "var(--gold)",
+    accent: "var(--gold)",
+    soft: "rgba(191, 143, 75, 0.26)",
+  },
+  paper: {
+    main: "var(--paper)",
+    accent: "var(--gold-soft)",
+    soft: "rgba(246, 241, 232, 0.42)",
+  },
 };
 
-// Geometry centre + the single value to tweak if the star needs resizing.
-const CX = 120;
-const STAR_CY = 36;
-const STAR_SIZE = 30; // ⬅ length of the long primary points — the one tweak
-
-/** Build a closed star path: alternating outer tips and inner waist vertices. */
 function starPath(cx: number, cy: number, outer: number[], inner: number, rotDeg = -90) {
   const n = outer.length;
-  const step = Math.PI / n; // half the angle between adjacent tips
+  const step = Math.PI / n;
   const rot = (rotDeg * Math.PI) / 180;
   const pts: string[] = [];
+
   for (let i = 0; i < n; i++) {
     const aTip = rot + i * 2 * step;
     pts.push(`${(cx + outer[i] * Math.cos(aTip)).toFixed(2)} ${(cy + outer[i] * Math.sin(aTip)).toFixed(2)}`);
+
     const aWaist = aTip + step;
     pts.push(`${(cx + inner * Math.cos(aWaist)).toFixed(2)} ${(cy + inner * Math.sin(aWaist)).toFixed(2)}`);
   }
+
   return `M${pts.join("L")}Z`;
 }
 
-const rP = STAR_SIZE; // primary (N/E/S/W) reach
-const rD = STAR_SIZE * 0.3; // diagonal points
-const rW = STAR_SIZE * 0.18; // inner waist
-const STAR = starPath(CX, STAR_CY, [rP, rD, rP, rD, rP, rD, rP, rD], rW);
-const SPARKLE = starPath(CX + 28, STAR_CY - 19, Array(4).fill(STAR_SIZE * 0.2), STAR_SIZE * 0.06);
+const STAR = starPath(146, 27, [16, 5, 11, 5, 16, 5, 11, 5], 2.1);
 
 export function Logo({
   locale,
@@ -62,56 +64,94 @@ export function Logo({
   tone?: Tone;
   className?: string;
 }) {
-  const { main, accent } = TONES[tone];
-  const enProminent = locale === "en";
+  const { main, accent, soft } = TONES[tone];
 
   return (
     <svg
       className={className}
-      viewBox="0 0 240 132"
+      viewBox="0 0 320 118"
       role="img"
       aria-label="Rollc رولك"
       fill="none"
       shapeRendering="geometricPrecision"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* symmetrical tapering arc — fine points at both ends */}
+      {/* Upper symbol: smoother, lighter, closer to the original */}
       <path
-        d="M24 78 C62 45 92 39 120 39 C148 39 178 45 216 78 C184 51 152 47 120 47 C88 47 56 51 24 78 Z"
+        d="
+          M24 58
+          C50 41 78 31 106 27
+          C124 25 138 24 146 25
+          C170 24 203 24 294 35
+          C217 30 179 30 146 31
+          C126 32 111 34 96 38
+          C71 43 48 51 24 66
+          Z
+        "
         fill={accent}
       />
 
-      {/* radiant 8-point north-star on the apex */}
+      {/* Top highlight */}
+      <path
+        d="M30 58 C56 40 84 31 111 28 C128 27 140 26 146 27 C169 26 201 26 286 35"
+        stroke={soft}
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+
+      {/* Lower contour for crispness */}
+      <path
+        d="M34 61 C59 49 82 42 102 39 C118 36 132 35 146 35 C165 35 186 35 208 36"
+        stroke={soft}
+        strokeWidth="0.95"
+        strokeLinecap="round"
+        opacity="0.48"
+      />
+
+      {/* Refined center star */}
       <path d={STAR} fill={accent} />
+      <circle cx="146" cy="27" r="2.1" fill="var(--paper)" opacity="0.82" />
 
-      {/* small sparkle, upper-right of the star */}
-      <path d={SPARKLE} fill={accent} />
-
-      {/* bilingual wordmark — real text, one baseline, optically centred */}
+      {/* Compact bilingual wordmark */}
       <text
-        x={CX}
-        y="119"
+        x="160"
+        y="100"
         textAnchor="middle"
-        style={{ direction: "ltr", letterSpacing: 0 }}
+        dominantBaseline="alphabetic"
+        style={{ direction: "ltr" }}
       >
         <tspan
-          fill={enProminent ? main : accent}
+          fill={main}
           style={{
-            fontFamily: 'var(--ff-en-serif),"Cormorant Garamond",serif',
-            fontWeight: 600,
-            fontSize: enProminent ? 47 : 31,
-            letterSpacing: "0.01em",
+            fontFamily:
+              'var(--ff-en-serif), "Cormorant Garamond", Georgia, "Times New Roman", serif',
+            fontWeight: 700,
+            fontSize: 41,
+            letterSpacing: "-0.018em",
           }}
         >
-          Rollc
+          Roll
         </tspan>
         <tspan
-          dx="13"
-          fill={enProminent ? accent : main}
+          fill={accent}
           style={{
-            fontFamily: 'var(--ff-ar-display),"El Messiri",serif',
-            fontWeight: 600,
-            fontSize: enProminent ? 31 : 46,
+            fontFamily:
+              'var(--ff-en-serif), "Cormorant Garamond", Georgia, "Times New Roman", serif',
+            fontWeight: 700,
+            fontSize: 41,
+            letterSpacing: "-0.018em",
+          }}
+        >
+          c
+        </tspan>
+        <tspan
+          dx="7"
+          fill={main}
+          style={{
+            fontFamily: 'var(--ff-ar-display), "El Messiri", "Amiri", serif',
+            fontWeight: 700,
+            fontSize: locale === "ar" ? 35 : 34,
+            letterSpacing: "-0.01em",
             unicodeBidi: "isolate",
           }}
         >
