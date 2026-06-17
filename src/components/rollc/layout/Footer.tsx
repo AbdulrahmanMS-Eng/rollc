@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Locale } from "@/data/rollc/content";
+import { Logo } from "@/components/rollc/brand/Logo";
 
 const shopLinks: Record<Locale, { label: string; slug: string }[]> = {
   ar: [
@@ -56,10 +57,7 @@ export function Footer({ locale }: { locale: Locale }) {
       <div className="wrap">
         <div className="foot-top">
           <div className="foot-brand">
-            <span className="mark">
-              Roll<b>c</b>
-            </span>
-            <div className="ar">رولـك</div>
+            <Logo locale={locale} tone="paper" className="rollc-logo" />
             <p className="foot-statement">
               {locale === "ar"
                 ? "رولك — حيث يلتقي التصميم بالدفء. نصنع مساحاتٍ تُحاكي ذوقك وتروي حكايتك."

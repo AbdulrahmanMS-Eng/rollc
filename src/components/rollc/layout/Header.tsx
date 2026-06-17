@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { navItems, type Locale } from "@/data/rollc/content";
 import { useRollcStore } from "@/components/rollc/ui/RollcStore";
+import { Logo } from "@/components/rollc/brand/Logo";
 
 export function Header({ locale }: { locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
@@ -49,10 +50,7 @@ export function Header({ locale }: { locale: Locale }) {
         <div className="wrap">
           <nav className="nav">
             <a href={locale === "ar" ? "/" : "/en"} className="brand" aria-label="Rollc رولك">
-              <span className="mark">
-                Roll<b>c</b>
-              </span>
-              <span className="ar">رولـك</span>
+              <Logo locale={locale} tone="duo" className="rollc-logo" />
             </a>
 
             <ul className="menu">

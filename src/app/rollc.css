@@ -95,10 +95,9 @@ ul{list-style:none}
 .header.scrolled .nav{height:66px}
 .nav{transition:height .4s var(--ease)}
 
-.brand{display:flex;flex-direction:column;line-height:1;flex-shrink:0}
-.brand .mark{font-family:var(--ff-en-serif);font-weight:600;font-size:1.85rem;color:var(--espresso)}
-.brand .mark b{color:var(--gold)}
-.brand .ar{font-family:var(--ff-ar-display);font-size:1rem;color:var(--brown);letter-spacing:.18em;margin-top:2px}
+.brand{display:flex;align-items:center;line-height:1;flex-shrink:0}
+.brand .rollc-logo{height:52px;width:auto;display:block;transition:height .4s var(--ease)}
+.header.scrolled .brand .rollc-logo{height:44px}
 
 .menu{display:flex;align-items:center;gap:32px}
 .menu a{
@@ -369,9 +368,7 @@ ul{list-style:none}
 /* ---------- Footer ---------- */
 .footer{background:var(--ink);color:var(--sand)}
 .foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.5fr;gap:48px;padding-block:clamp(60px,7vw,90px)}
-.foot-brand .mark{font-family:var(--ff-en-serif);font-weight:600;font-size:2.2rem;color:#fff}
-.foot-brand .mark b{color:var(--gold)}
-.foot-brand .ar{font-family:var(--ff-ar-display);letter-spacing:.2em;color:var(--gold-soft);margin-top:2px}
+.foot-brand .rollc-logo{height:74px;width:auto;display:block;margin-inline-start:-6px}
 .foot-statement{margin-top:18px;color:rgba(246,241,232,.6);font-size:.94rem;max-width:36ch;line-height:1.8}
 .foot-col h4{font-family:var(--ff-ar-display);font-weight:600;color:#fff;font-size:1.05rem;margin-bottom:18px}
 .lang-en .foot-col h4{font-family:var(--ff-en-serif)}
