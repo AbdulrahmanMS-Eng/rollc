@@ -267,20 +267,16 @@ function replyColors(
   const colors = productColors;
   const arNames = colors.map((c) => c.ar).join("، ");
   const enNames = colors.map((c) => c.en).join(", ");
-  const productLinks = product
-    ? pickLinks(product.id, locale, 3)
-    : products.slice(0, 3).map((p) => link(p, locale));
 
   return {
     text: {
       ar: product
-        ? `${product.name.ar} متوفّر بعدة ألوان: ${arNames} ✦ إليك بعض الأمثلة:`
-        : `قطعنا متوفرة بألوان متعددة: ${arNames} ✦ إليك بعض الأمثلة:`,
+        ? `${product.name.ar} متوفّر بعدة ألوان: ${arNames} ✦ تواصل معنا لاختيار درجتك المفضّلة.`
+        : `قطعنا متوفرة بألوان متعددة: ${arNames} ✦ تواصل معنا لاختيار درجتك.`,
       en: product
-        ? `The ${product.name.en} comes in: ${enNames} ✦ Here are some examples:`
-        : `Our pieces come in: ${enNames} ✦ Here are some examples:`,
+        ? `The ${product.name.en} comes in: ${enNames} ✦ Contact us to choose your preferred shade.`
+        : `Our pieces come in: ${enNames} ✦ Contact us to pick your shade.`,
     },
-    productLinks,
     suggestions: [
       { id: "q:matching-set", label: { ar: "هل تتوفّر قطع مطابقة؟",  en: "Any matching pieces?" } },
       { id: "q:consultant",   label: { ar: "استفسر عن لون بعينه",     en: "Ask about a specific colour" } },
@@ -385,7 +381,6 @@ function replyGeneral(product?: Product, locale: Locale = "ar"): AssistantReply 
       en: "Of course ✦ Are you looking for details on a specific piece, or would you like to browse the collection?",
     },
     suggestions: product ? PRODUCT_CHIPS : HOME_CHIPS,
-    productLinks: product ? undefined : bestSellersLinks(locale),
   };
 }
 
@@ -549,27 +544,25 @@ function replySizes(product?: Product): AssistantReply {
   };
 }
 
-function replyCategories(locale: Locale): AssistantReply {
+function replyCategories(_locale: Locale): AssistantReply {
   return {
     text: {
       ar: "تجد في رولك: أرائك، كراسي، طاولات، أسرة، وإكسسوارات ديكور. أيّ قسم يستأثر باهتمامك؟",
       en: "Rollc offers: sofas, chairs, tables, beds, and décor accents. Which section interests you?",
     },
-    productLinks: bestSellersLinks(locale),
     suggestions: CATEGORY_CHIPS,
   };
 }
 
-function replyCatBrowse(category: CategoryKind | undefined, locale: Locale): AssistantReply {
+function replyCatBrowse(category: CategoryKind | undefined, _locale: Locale): AssistantReply {
   const catName = category
     ? getCategoryMeta(category).title
     : { ar: "الأثاث", en: "furniture" };
   return {
     text: {
-      ar: `في قسم ${catName.ar} لدينا خيارات متنوعة من الأشكال والتصاميم. إليك أبرزها:`,
-      en: `Our ${catName.en} section has a wide variety of styles and designs. Here are our highlights:`,
+      ar: `في قسم ${catName.ar} لدينا خيارات متنوعة من الأشكال والتصاميم. ما الذي تبحث عنه تحديداً؟`,
+      en: `Our ${catName.en} section has a wide variety of styles and designs. What specifically are you looking for?`,
     },
-    productLinks: bestSellersLinks(locale),
     suggestions: [
       { id: "q:colors", label: { ar: "ما اللون الذي تبحث عنه؟", en: "Which colour are you after?" } },
       { id: "q:budget", label: { ar: "حسب الميزانية",            en: "By budget" } },

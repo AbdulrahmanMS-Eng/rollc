@@ -274,7 +274,7 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
                     >
                       <div className={styles.cardMedia}>
                         {badge ? <span className={`${styles.cardTag} ${badge === "offer" ? styles.cardTagOffer : ""}`}>{badgeText[badge][locale]}</span> : null}
-                        <button type="button" className={styles.cardChat} onClick={(event) => { event.stopPropagation(); openAssistant(product); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
+                        <button type="button" className={styles.cardChat} onClick={(event) => { event.stopPropagation(); event.preventDefault(); openAssistant(product); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
                           <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
                         </button>
                         <img src={product.img} alt={product.name[locale]} loading="lazy" />

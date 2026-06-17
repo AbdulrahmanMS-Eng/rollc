@@ -144,7 +144,7 @@ export function QuickViewModal() {
           <div className={styles.gallery}>
             <div className={styles.gMain}>
               {badge ? <span className={styles.gBadge}>{badge}</span> : null}
-              <button className={styles.gChat} onClick={() => openAssistant(data)} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
+              <button className={styles.gChat} onClick={(event) => { event.stopPropagation(); event.preventDefault(); openAssistant(data); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
               </button>
               <span className={styles.gZoom}>

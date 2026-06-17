@@ -238,7 +238,7 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
           <div className={styles.gallery}>
             <div className={styles.gMain}>
               {badge ? <span className={styles.gBadge}>{badge}</span> : null}
-              <button type="button" className={styles.gChat} onClick={() => openAssistant(product)} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
+              <button type="button" className={styles.gChat} onClick={(event) => { event.stopPropagation(); event.preventDefault(); openAssistant(product); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
               </button>
               <button type="button" className={styles.gZoom} onClick={() => window.open(activeImage, "_blank")}>

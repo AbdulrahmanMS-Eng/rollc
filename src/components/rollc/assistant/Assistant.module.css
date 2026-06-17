@@ -255,10 +255,11 @@
   flex-direction: column;
   gap: 12px;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.messages::-webkit-scrollbar { width: 4px; }
-.messages::-webkit-scrollbar-thumb { background: var(--sand-deep); border-radius: 4px; }
+.messages::-webkit-scrollbar { display: none; }
 
 /* ---------- Bubbles ---------- */
 
@@ -512,20 +513,15 @@
 .chips {
   padding: 8px 16px 10px;
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  overflow-x: auto;
   flex-shrink: 0;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
-.chips::-webkit-scrollbar { display: none; }
-
 .chip {
-  flex-shrink: 0;
   padding: 7px 13px;
   border: 1px solid var(--gold-line);
-  border-radius: 30px;
+  border-radius: 6px;
   font-size: .78rem;
   color: var(--brown);
   background: var(--ivory);
