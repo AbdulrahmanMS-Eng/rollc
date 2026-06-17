@@ -204,17 +204,20 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
   }, [product]);
 
   const addProduct = () => {
-    addToCart();
+    addToCart(product, {
+      qty,
+      color: productColors[activeColor][locale],
+      size: sizes[activeSize]?.[locale],
+    });
     showToast(locale === "ar" ? `تمت إضافة ${product.name.ar} إلى السلة` : `${product.name.en} added to cart`);
   };
 
   const quickAdd = (item: Product) => {
-    addToCart();
+    addToCart(item);
     showToast(locale === "ar" ? `تمت إضافة ${item.name.ar} إلى السلة` : `${item.name.en} added to cart`);
   };
 
   const addSuggestion = (name: string) => {
-    addToCart();
     showToast(locale === "ar" ? `تمت إضافة ${name} إلى السلة` : "Item added to cart");
   };
 

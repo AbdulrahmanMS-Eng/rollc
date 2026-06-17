@@ -8,7 +8,7 @@ import { useRollcStore } from "@/components/rollc/ui/RollcStore";
 export function Header({ locale }: { locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { cart, cartPop, openSearch, showCartStatus } = useRollcStore();
+  const { cartCount, cartPop, openSearch, openCart } = useRollcStore();
 
   useEffect(() => {
     const shell = document.querySelector(".scroll-shell");
@@ -77,14 +77,16 @@ export function Header({ locale }: { locale: Locale }) {
 
               <button
                 className="icon-btn"
-                onClick={showCartStatus}
+                onClick={openCart}
                 aria-label={locale === "ar" ? "السلة" : "Cart"}
               >
                 <svg viewBox="0 0 24 24">
                   <path d="M6 7h12l-1 13H7L6 7Z" />
                   <path d="M9 7a3 3 0 0 1 6 0" />
                 </svg>
-                <span className={`cart-count${cartPop ? " pop" : ""}`}>{cart}</span>
+                {cartCount > 0 && (
+                  <span className={`cart-count${cartPop ? " pop" : ""}`}>{cartCount}</span>
+                )}
               </button>
 
               <div className="lang-switch" role="group" aria-label="Language">

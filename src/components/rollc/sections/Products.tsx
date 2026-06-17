@@ -36,7 +36,7 @@ function ProductCard({ product }: { product: Product }) {
         <p className="card-desc">{product.desc[locale]}</p>
         <div className="card-foot">
           <span className="price"><b>{product.price}</b> <span className="cur">{currency(locale)}</span>{product.old ? <span className="old">{product.old}</span> : null}</span>
-          <button type="button" className="add-cart" onClick={(event) => { event.stopPropagation(); addToCart(); }} aria-label={locale === "ar" ? "أضف إلى السلة" : "Add to cart"}>
+          <button type="button" className="add-cart" onClick={(event) => { event.stopPropagation(); addToCart(product); }} aria-label={locale === "ar" ? "أضف إلى السلة" : "Add to cart"}>
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
           </button>
         </div>

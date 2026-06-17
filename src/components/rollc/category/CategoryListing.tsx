@@ -132,7 +132,7 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
   const href = (id: string) => `${locale === "ar" ? "/products" : "/en/products"}/${id}`;
 
   const handleAdd = (product: Product) => {
-    addToCart();
+    addToCart(product);
     showToast(locale === "ar" ? `تمت إضافة ${product.name.ar} إلى السلة` : `${product.name.en} added to cart`);
   };
 

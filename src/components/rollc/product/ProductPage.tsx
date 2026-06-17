@@ -7,6 +7,7 @@ import { RollcProvider } from "@/components/rollc/ui/RollcStore";
 import { SearchPanel } from "@/components/rollc/ui/SearchPanel";
 import { Toast } from "@/components/rollc/ui/Toast";
 import { ShoppingAssistant } from "@/components/rollc/assistant/Assistant";
+import { CartDrawer } from "@/components/rollc/ui/CartDrawer";
 import type { Locale, Product } from "@/data/rollc/content";
 
 export function ProductPage({ locale, product }: { locale: Locale; product: Product }) {
@@ -26,6 +27,7 @@ export function ProductPage({ locale, product }: { locale: Locale; product: Prod
             <QuickViewModal />
             <Toast />
             <ShoppingAssistant page="product" product={product} />
+            <CartDrawer />
           </main>
         </RollcProvider>
       </div>

@@ -7,6 +7,7 @@ import { RollcProvider } from "@/components/rollc/ui/RollcStore";
 import { SearchPanel } from "@/components/rollc/ui/SearchPanel";
 import { Toast } from "@/components/rollc/ui/Toast";
 import { ShoppingAssistant } from "@/components/rollc/assistant/Assistant";
+import { CartDrawer } from "@/components/rollc/ui/CartDrawer";
 import type { CategoryKind } from "@/components/rollc/category/categoryPageData";
 import type { Locale } from "@/data/rollc/content";
 
@@ -27,6 +28,7 @@ export function CategoryPage({ locale, kind }: { locale: Locale; kind: CategoryK
             <QuickViewModal />
             <Toast />
             <ShoppingAssistant page="category" category={kind} />
+            <CartDrawer />
           </main>
         </RollcProvider>
       </div>

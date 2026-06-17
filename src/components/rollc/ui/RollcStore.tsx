@@ -1,45 +1,88 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { Locale, Product } from "@/data/rollc/content";
+
+export type CartItem = {
+  id: string;
+  product: Product;
+  qty: number;
+  color?: string;
+  size?: string;
+};
 
 type Store = {
   locale: Locale;
-  cart: number;
+  cartItems: CartItem[];
+  cartCount: number;
   cartPop: boolean;
+  cartOpen: boolean;
+  addToCart: (product: Product, opts?: { qty?: number; color?: string; size?: string }) => void;
+  removeFromCart: (id: string) => void;
+  setQty: (id: string, qty: number) => void;
+  clearCart: () => void;
+  openCart: () => void;
+  closeCart: () => void;
   selectedProduct: Product | null;
-  searchOpen: boolean;
-  toast: string;
-  addToCart: () => void;
-  showCartStatus: () => void;
   openQuickView: (product: Product) => void;
   closeQuickView: () => void;
+  searchOpen: boolean;
   openSearch: () => void;
   closeSearch: () => void;
+  toast: string;
   showToast: (msg: string) => void;
+  assistantProduct: Product | null;
+  assistantNonce: number;
+  openAssistant: (product: Product) => void;
 };
+
+const CART_KEY = "rollc-cart";
+
+function loadCart(): CartItem[] {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as CartItem[];
+  } catch {
+    return [];
+  }
+}
+
+function saveCart(items: CartItem[]) {
+  try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch {}
+}
 
 const Ctx = createContext<Store | null>(null);
 
 export function RollcProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
-  const [cart, setCart] = useState(0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartPop, setCartPop] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [toast, setToast] = useState("");
+  const [assistantProduct, setAssistantProduct] = useState<Product | null>(null);
+  const [assistantNonce, setAssistantNonce] = useState(0);
+  const isFirstPersist = useRef(true);
+
+  // Hydrate from localStorage after mount (SSR-safe)
+  useEffect(() => {
+    const saved = loadCart();
+    if (saved.length) setCartItems(saved);
+  }, []);
+
+  // Persist on change — skip the very first invocation (initial empty render)
+  useEffect(() => {
+    if (isFirstPersist.current) {
+      isFirstPersist.current = false;
+      return;
+    }
+    saveCart(cartItems);
+  }, [cartItems]);
+
+  const cartCount = useMemo(() => cartItems.reduce((sum, item) => sum + item.qty, 0), [cartItems]);
 
   const showToast = (msg: string) => setToast(msg);
-
-  const addToCart = () => {
-    setCart((v) => v + 1);
-    setCartPop(false);
-    requestAnimationFrame(() => setCartPop(true));
-    showToast(locale === "ar" ? "تمت الإضافة إلى السلة" : "Added to your cart");
-  };
-
-  const showCartStatus = () => {
-    showToast(cart ? (locale === "ar" ? `لديك ${cart} منتج في السلة` : `${cart} item(s) in your cart`) : (locale === "ar" ? "سلتك فارغة" : "Your cart is empty"));
-  };
 
   useEffect(() => {
     if (!toast) return;
@@ -47,21 +90,59 @@ export function RollcProvider({ locale, children }: { locale: Locale; children: 
     return () => clearTimeout(t);
   }, [toast]);
 
+  const addToCart = (product: Product, opts?: { qty?: number; color?: string; size?: string }) => {
+    const { qty = 1, color, size } = opts ?? {};
+    const id = `${product.id}::${color ?? ""}::${size ?? ""}`;
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.id === id);
+      if (existing) {
+        return prev.map((item) => item.id === id ? { ...item, qty: item.qty + qty } : item);
+      }
+      return [...prev, { id, product, qty, color, size }];
+    });
+    setCartPop(false);
+    requestAnimationFrame(() => setCartPop(true));
+  };
+
+  const removeFromCart = (id: string) => setCartItems((prev) => prev.filter((item) => item.id !== id));
+
+  const setQty = (id: string, qty: number) => {
+    if (qty <= 0) { removeFromCart(id); return; }
+    setCartItems((prev) => prev.map((item) => item.id === id ? { ...item, qty } : item));
+  };
+
+  const clearCart = () => setCartItems([]);
+
+  const openAssistant = (product: Product) => {
+    setAssistantProduct(product);
+    setAssistantNonce((n) => n + 1);
+  };
+
   const value = useMemo(() => ({
     locale,
-    cart,
+    cartItems,
+    cartCount,
     cartPop,
-    selectedProduct,
-    searchOpen,
-    toast,
+    cartOpen,
     addToCart,
-    showCartStatus,
+    removeFromCart,
+    setQty,
+    clearCart,
+    openCart: () => setCartOpen(true),
+    closeCart: () => setCartOpen(false),
+    selectedProduct,
     openQuickView: setSelectedProduct,
     closeQuickView: () => setSelectedProduct(null),
+    searchOpen,
     openSearch: () => setSearchOpen(true),
     closeSearch: () => setSearchOpen(false),
+    toast,
     showToast,
-  }), [locale, cart, cartPop, selectedProduct, searchOpen, toast]);
+    assistantProduct,
+    assistantNonce,
+    openAssistant,
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [locale, cartItems, cartCount, cartPop, cartOpen, selectedProduct, searchOpen, toast, assistantProduct, assistantNonce]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

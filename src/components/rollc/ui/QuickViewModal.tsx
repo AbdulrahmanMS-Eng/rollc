@@ -116,7 +116,7 @@ export function QuickViewModal() {
   };
 
   const onAdd = () => {
-    addToCart();
+    addToCart(data, { qty, color: colors[colorIndex][locale], size: sizes[sizeIndex]?.[locale] });
     showToast(locale === "ar" ? `تمت إضافة ${data.name.ar} إلى السلة` : `${data.name.en} added to cart`);
     closeQuickView();
   };
