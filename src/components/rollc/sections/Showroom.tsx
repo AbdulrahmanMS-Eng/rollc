@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Locale } from "@/data/rollc/content";
 import { Reveal } from "@/components/rollc/ui/Reveal";
 
@@ -13,6 +13,7 @@ const DAY_IMAGE =
 
 const NIGHT_IMAGE = "/showroom/bedroom-night.png";
 const NIGHT_NO_LIGHT_IMAGE = "/showroom/nolight.png";
+const SHOWROOM_IMAGES = [DAY_IMAGE, NIGHT_NO_LIGHT_IMAGE, NIGHT_IMAGE];
 
 export function Showroom({ locale }: { locale: Locale }) {
   const [night, setNight] = useState(false);
@@ -20,6 +21,14 @@ export function Showroom({ locale }: { locale: Locale }) {
 
   const isAr = locale === "ar";
   const roomImage = night ? (lightsOn ? NIGHT_IMAGE : NIGHT_NO_LIGHT_IMAGE) : DAY_IMAGE;
+
+  useEffect(() => {
+    SHOWROOM_IMAGES.forEach((src) => {
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = src;
+    });
+  }, []);
 
   function withTransition(update: () => void) {
     const doc = document as ViewTransitionDocument;
@@ -92,12 +101,32 @@ export function Showroom({ locale }: { locale: Locale }) {
         </Reveal>
 
         <Reveal className="room">
-          <img
-            key={roomImage}
-            className="room-photo"
-            src={roomImage}
-            alt={isAr ? "غرفة نوم فاخرة من رولك بتجربة إضاءة نهارية وليلية" : "Luxury Rollc room with day and night lighting"}
-          />
+          <div className="room-image-stack" aria-hidden="true">
+            <img
+              className={`room-photo room-photo-layer${roomImage === DAY_IMAGE ? " active" : ""}`}
+              src={DAY_IMAGE}
+              alt=""
+              draggable={false}
+              decoding="async"
+              loading="eager"
+            />
+            <img
+              className={`room-photo room-photo-layer${roomImage === NIGHT_NO_LIGHT_IMAGE ? " active" : ""}`}
+              src={NIGHT_NO_LIGHT_IMAGE}
+              alt=""
+              draggable={false}
+              decoding="async"
+              loading="eager"
+            />
+            <img
+              className={`room-photo room-photo-layer${roomImage === NIGHT_IMAGE ? " active" : ""}`}
+              src={NIGHT_IMAGE}
+              alt=""
+              draggable={false}
+              decoding="async"
+              loading="eager"
+            />
+          </div>
 
           <div className="sun-wash" />
           <div className="night-wash" />
