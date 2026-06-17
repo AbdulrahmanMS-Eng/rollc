@@ -3,27 +3,55 @@ import type { Locale } from "@/data/rollc/content";
 /**
  * Rollc brand mark — crisp inline SVG (no PNG, transparent background).
  *
- * Composition (all vector, sharp points, no blur):
- *  - a wide tapering "shooting-star" arc spanning the top
- *  - a radiant 8-point compass/north-star sitting on the arc, slightly
- *    right of centre, with long primary points + short secondary points
- *  - a small sparkle to the upper-right of the star
- *  - the bilingual wordmark below: "Rollc" (Cormorant) + "رولك" (El Messiri)
+ * SYMBOL (pure vector, sharp tips, no blur):
+ *  - a symmetrical tapering arc (shooting-star trail) peaking dead-centre and
+ *    converging to fine points at both ends
+ *  - a radiant 8-point north-star sitting on the apex: 4 long primary points
+ *    (N/E/S/W) + 4 short diagonal points, with a small sparkle up-right
  *
- * `tone` swaps the two-colour pairing so the mark reads on light (header)
- * and dark (footer) surfaces. `locale` decides which script is prominent.
+ * WORDMARK = real text (always crisp): "Rollc" (Cormorant) + "رولك"
+ *  (El Messiri) on one shared baseline, centred beneath the star.
+ *
+ * `tone` swaps the colour pairing so the mark reads on light (header) and dark
+ * (footer) surfaces. `locale` decides which script is the larger / main one.
  */
 
 type Tone = "duo" | "espresso" | "gold" | "paper";
 
 const TONES: Record<Tone, { main: string; accent: string }> = {
-  // brand espresso + gold pairing — the default used elsewhere
+  // brand espresso + gold pairing — the default used in the ivory header
   duo: { main: "var(--espresso)", accent: "var(--gold)" },
   espresso: { main: "var(--espresso)", accent: "var(--espresso)" },
   gold: { main: "var(--gold)", accent: "var(--gold)" },
   // for dark surfaces (footer): warm paper + soft gold
   paper: { main: "var(--paper)", accent: "var(--gold-soft)" },
 };
+
+// Geometry centre + the single value to tweak if the star needs resizing.
+const CX = 120;
+const STAR_CY = 36;
+const STAR_SIZE = 30; // ⬅ length of the long primary points — the one tweak
+
+/** Build a closed star path: alternating outer tips and inner waist vertices. */
+function starPath(cx: number, cy: number, outer: number[], inner: number, rotDeg = -90) {
+  const n = outer.length;
+  const step = Math.PI / n; // half the angle between adjacent tips
+  const rot = (rotDeg * Math.PI) / 180;
+  const pts: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const aTip = rot + i * 2 * step;
+    pts.push(`${(cx + outer[i] * Math.cos(aTip)).toFixed(2)} ${(cy + outer[i] * Math.sin(aTip)).toFixed(2)}`);
+    const aWaist = aTip + step;
+    pts.push(`${(cx + inner * Math.cos(aWaist)).toFixed(2)} ${(cy + inner * Math.sin(aWaist)).toFixed(2)}`);
+  }
+  return `M${pts.join("L")}Z`;
+}
+
+const rP = STAR_SIZE; // primary (N/E/S/W) reach
+const rD = STAR_SIZE * 0.3; // diagonal points
+const rW = STAR_SIZE * 0.18; // inner waist
+const STAR = starPath(CX, STAR_CY, [rP, rD, rP, rD, rP, rD, rP, rD], rW);
+const SPARKLE = starPath(CX + 28, STAR_CY - 19, Array(4).fill(STAR_SIZE * 0.2), STAR_SIZE * 0.06);
 
 export function Logo({
   locale,
@@ -40,61 +68,55 @@ export function Logo({
   return (
     <svg
       className={className}
-      viewBox="0 0 322 132"
+      viewBox="0 0 240 132"
       role="img"
       aria-label="Rollc رولك"
       fill="none"
       shapeRendering="geometricPrecision"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* shooting-star arc — single tapered crescent, points at both ends */}
+      {/* symmetrical tapering arc — fine points at both ends */}
       <path
-        d="M22 92 C70 42 130 30 185 31 C235 32 278 48 300 70 C278 56 232 45 182 46 C128 47 78 58 22 92 Z"
+        d="M24 78 C62 45 92 39 120 39 C148 39 178 45 216 78 C184 51 152 47 120 47 C88 47 56 51 24 78 Z"
         fill={accent}
       />
 
-      {/* radiant 8-point compass star (long N/E/W points, longest S point) */}
-      <path
-        d="M213 52 L191.0 49.5 L193.5 43.5 L187.5 46.0 L185 24 L182.5 46.0 L176.5 43.5 L179.0 49.5 L157 52 L179.0 54.5 L176.5 60.5 L182.5 58.0 L185 96 L187.5 58.0 L193.5 60.5 L191.0 54.5 Z"
-        fill={accent}
-      />
+      {/* radiant 8-point north-star on the apex */}
+      <path d={STAR} fill={accent} />
 
       {/* small sparkle, upper-right of the star */}
-      <path
-        d="M216 24 L217 29 L222 30 L217 31 L216 36 L215 31 L210 30 L215 29 Z"
-        fill={accent}
-      />
+      <path d={SPARKLE} fill={accent} />
 
-      {/* wordmark — Latin */}
+      {/* bilingual wordmark — real text, one baseline, optically centred */}
       <text
-        x="108"
-        y="118"
+        x={CX}
+        y="119"
         textAnchor="middle"
-        fill={enProminent ? main : accent}
-        style={{
-          fontFamily: 'var(--ff-en-serif),"Cormorant Garamond",serif',
-          fontWeight: 600,
-          fontSize: enProminent ? 46 : 30,
-          letterSpacing: "0.01em",
-        }}
+        style={{ direction: "ltr", letterSpacing: 0 }}
       >
-        Rollc
-      </text>
-
-      {/* wordmark — Arabic */}
-      <text
-        x="250"
-        y="118"
-        textAnchor="middle"
-        fill={enProminent ? accent : main}
-        style={{
-          fontFamily: 'var(--ff-ar-display),"El Messiri",serif',
-          fontWeight: 600,
-          fontSize: enProminent ? 30 : 46,
-          letterSpacing: "0.04em",
-        }}
-      >
-        رولك
+        <tspan
+          fill={enProminent ? main : accent}
+          style={{
+            fontFamily: 'var(--ff-en-serif),"Cormorant Garamond",serif',
+            fontWeight: 600,
+            fontSize: enProminent ? 47 : 31,
+            letterSpacing: "0.01em",
+          }}
+        >
+          Rollc
+        </tspan>
+        <tspan
+          dx="13"
+          fill={enProminent ? accent : main}
+          style={{
+            fontFamily: 'var(--ff-ar-display),"El Messiri",serif',
+            fontWeight: 600,
+            fontSize: enProminent ? 31 : 46,
+            unicodeBidi: "isolate",
+          }}
+        >
+          رولك
+        </tspan>
       </text>
     </svg>
   );
