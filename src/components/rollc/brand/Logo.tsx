@@ -10,33 +10,23 @@ export function Logo({
   className?: string;
 }) {
   return (
-    <span
+    <img
+      src="/logo/1.svg"
+      alt="Rollc رولك"
       className={className}
-      aria-label="Rollc رولك"
-      role="img"
+      draggable={false}
+      decoding="async"
+      loading="eager"
+      fetchPriority="high"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "visible",
+        display: "block",
+        width: "clamp(96px, 12vw, 150px)",
+        height: "auto",
+        maxWidth: "none",
+        objectFit: "contain",
+        transform: "scale(1.45)",
+        transformOrigin: "center",
       }}
-    >
-      <img
-        src="/logo/1.svg"
-        alt="Rollc رولك"
-        draggable={false}
-        decoding="async"
-        loading="eager"
-        fetchPriority="high"
-        style={{
-          display: "block",
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          transform: "scale(2.8)",
-          transformOrigin: "center",
-        }}
-      />
-    </span>
+    />
   );
 }
