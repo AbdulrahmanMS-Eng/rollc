@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/rollc/ui/Reveal";
 import type { Locale } from "@/data/rollc/content";
 import styles from "./About.module.css";
@@ -387,7 +388,7 @@ export function AboutContent({ locale }: { locale: Locale }) {
           </Reveal>
           <Reveal>
             <h2 className={`${styles.display} ${styles.certTitle}`}>{t(locale, { ar: "الاعتمادات", en: "Accreditations" })}</h2>
-            <div className={styles.trustCert}>
+            <div className={styles.accredGrid}>
               {[
                 {
                   title: t(locale, { ar: "شهادة ISO 9001:2008", en: "ISO 9001:2008 Certification" }),
@@ -406,9 +407,19 @@ export function AboutContent({ locale }: { locale: Locale }) {
                   meta: t(locale, { ar: "للحواجز الهيدروليكية", en: "Hydraulic Road Blockers" }),
                 },
               ].map((item) => (
-                <div key={item.title} className={styles.certBadge}>
-                  <span className={styles.certBadgeLabel}>{item.title}</span>
-                  <span className={styles.certBadgeMeta}>{item.meta}</span>
+                <div key={item.title} className={styles.accredItem}>
+                  <span className={styles.accredSeal} aria-hidden="true">
+                    {/* certificate seal / rosette — on-brand stroke style */}
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="9" r="6" />
+                      <path d="m9 8.8 2 2 4-4" />
+                      <path d="M8.4 13.8 7 22l5-2.6L17 22l-1.4-8.2" />
+                    </svg>
+                  </span>
+                  <span className={styles.accredText}>
+                    <span className={styles.accredName}>{item.title}</span>
+                    <span className={styles.accredScope}>{item.meta}</span>
+                  </span>
                 </div>
               ))}
             </div>
@@ -482,12 +493,13 @@ export function AboutContent({ locale }: { locale: Locale }) {
 }
 
 /* ----------------------------------------------------------------
-   Partner / client logo wall — seamless auto-scroll marquee.
-   Continuous medium-speed scroll on mobile + desktop, seamless loop,
-   pause on hover/touch, arrow controls (desktop) + native swipe
-   (mobile), and manual-only when prefers-reduced-motion is set.
-   The scroller is forced LTR so scroll math is identical in both
-   locales (the logo wall itself is direction-neutral).
+   Partner / client logo rail — JS-driven seamless auto-scroll with
+   finger/pointer drag layered on top. Medium-speed continuous scroll
+   on mobile + desktop; grabbing the rail pauses the auto-scroll and
+   it smoothly resumes from the released position. The track is
+   duplicated so the loop is seamless in both drag directions. Forced
+   LTR so the scroll math is identical in both locales, and reduced to
+   manual-drag-only when prefers-reduced-motion is set.
    ---------------------------------------------------------------- */
 function LogoMarquee({ locale }: { locale: Locale }) {
   const logos = Array.from({ length: 8 }, (_, i) => ({
@@ -496,11 +508,111 @@ function LogoMarquee({ locale }: { locale: Locale }) {
   }));
 
   const loop = [...logos, ...logos];
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const SPEED = 60; // px/s — medium
+    let offset = 0;
+    let half = track.scrollWidth / 2 || 1;
+    let dragging = false;
+    let hovering = false;
+    let startX = 0;
+    let startOffset = 0;
+    let moved = 0;
+
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduce = mq.matches;
+    const onMq = (e: MediaQueryListEvent) => (reduce = e.matches);
+    mq.addEventListener?.("change", onMq);
+
+    const ro = new ResizeObserver(() => (half = track.scrollWidth / 2 || 1));
+    ro.observe(track);
+
+    const wrap = () => {
+      while (offset <= -half) offset += half; // keep within (-half, 0]
+      while (offset > 0) offset -= half;
+    };
+    const apply = () => (track.style.transform = `translate3d(${offset}px,0,0)`);
+
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 64) / 1000;
+      last = now;
+      if (!dragging && !hovering && !reduce) {
+        offset -= SPEED * dt;
+        wrap();
+        apply();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      startX = e.clientX;
+      startOffset = offset;
+      moved = 0;
+      track.setPointerCapture?.(e.pointerId);
+      track.classList.add(styles.dragging);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      offset = startOffset + dx;
+      wrap();
+      apply();
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      track.releasePointerCapture?.(e.pointerId);
+      track.classList.remove(styles.dragging);
+      last = performance.now(); // resume without a jump
+    };
+    // a drag should never fire a click on whatever is under the finger
+    const onClick = (e: MouseEvent) => {
+      if (moved > 6) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    const onEnter = () => (hovering = true);
+    const onLeave = () => {
+      hovering = false;
+      last = performance.now();
+    };
+
+    track.addEventListener("pointerdown", onDown);
+    track.addEventListener("pointermove", onMove);
+    track.addEventListener("pointerup", onUp);
+    track.addEventListener("pointercancel", onUp);
+    track.addEventListener("click", onClick, true);
+    track.addEventListener("pointerenter", onEnter);
+    track.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      mq.removeEventListener?.("change", onMq);
+      track.removeEventListener("pointerdown", onDown);
+      track.removeEventListener("pointermove", onMove);
+      track.removeEventListener("pointerup", onUp);
+      track.removeEventListener("pointercancel", onUp);
+      track.removeEventListener("click", onClick, true);
+      track.removeEventListener("pointerenter", onEnter);
+      track.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
 
   return (
     <div className={styles.logoWall} aria-label={locale === "ar" ? "شعارات الشركاء" : "Partner logos"}>
       <div className={styles.logoScroller} dir="ltr">
-        <div className={styles.logoTrack}>
+        <div className={styles.logoTrack} ref={trackRef}>
           {loop.map((logo, i) => (
             <div key={`${logo.src}-${i}`} className={styles.logoCell} aria-hidden={i >= logos.length ? true : undefined}>
               <img className={styles.logoImg} src={logo.src} alt={logo.alt} loading="lazy" draggable={false} />
