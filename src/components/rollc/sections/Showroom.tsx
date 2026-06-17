@@ -4,35 +4,92 @@ import { useState } from "react";
 import type { Locale } from "@/data/rollc/content";
 import { Reveal } from "@/components/rollc/ui/Reveal";
 
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => void;
+};
+
+/* Sputnik chandelier bulb positions — tune left/top % to match the real image */
+const CHANDELIER_BULBS: { left: string; top: string }[] = [
+  { left: "49%", top: "18%" },
+  { left: "52%", top: "15%" },
+  { left: "60%", top: "17%" },
+  { left: "64%", top: "22%" },
+  { left: "51%", top: "22%" },
+];
+
 export function Showroom({ locale }: { locale: Locale }) {
   const [night, setNight] = useState(false);
+  const [lightsOn, setLightsOn] = useState(false);
+
+  const isAr = locale === "ar";
+
+  function withTransition(update: () => void) {
+    const doc = document as ViewTransitionDocument;
+
+    if (doc.startViewTransition) {
+      doc.startViewTransition(update);
+      return;
+    }
+
+    update();
+  }
+
+  function toggleNight() {
+    withTransition(() => {
+      setNight((value) => !value);
+      setLightsOn((value) => {
+        if (!night) return true;
+        return value;
+      });
+    });
+  }
+
+  function toggleLights() {
+    withTransition(() => setLightsOn((value) => !value));
+  }
 
   return (
-    <section className={`section showroom${night ? " night" : ""}`} id="showroom">
+    <section
+      className={`section showroom${night ? " night" : " day"}${lightsOn ? " lights-on" : " lights-off"}`}
+      id="showroom"
+    >
       <div className="wrap">
         <Reveal className="show-head">
-          <div>
-            <span className="eyebrow">{locale === "ar" ? "تجربة المعرض" : "Showroom experience"}</span>
+          <div className="show-copy">
+            <span className="eyebrow">{isAr ? "تجربة المعرض" : "Showroom experience"}</span>
             <h2 className="h-display">
-              {locale === "ar" ? "شاهد غرفتك تتحوّل من النهار إلى الليل" : "Watch your room shift from day to night"}
+              {isAr ? "شاهد غرفتك تتحوّل من النهار إلى الليل" : "Watch your room shift from day to night"}
             </h2>
             <p>
-              {locale === "ar"
-                ? "بدّل بين الوضع النهاري والليلي لترى كيف تُضيء قطع رولك المكان وتمنحه دفئاً سينمائياً."
-                : "Toggle between day and night to see how Rollc pieces light up a space with cinematic warmth."}
+              {isAr
+                ? "بدّل المشهد كما لو كنت داخل المعرض: ضوء نهاري هادئ، ثم مساء دافئ تُبرز فيه الإضاءة تفاصيل الأثاث."
+                : "Switch the scene like you are inside the showroom: calm daylight, then a warm evening glow that reveals the furniture details."}
             </p>
           </div>
 
-          <div className="mode-toggle">
-            <span className={`ml${!night ? " on" : ""}`}>{locale === "ar" ? "الوضع النهاري" : "Day mode"}</span>
+          <div className="show-controls" aria-label={isAr ? "أدوات تجربة المعرض" : "Showroom controls"}>
             <button
-              className="switch"
-              onClick={() => setNight((value) => !value)}
-              aria-label={locale === "ar" ? "تبديل الوضع النهاري والليلي" : "Toggle day and night mode"}
+              type="button"
+              className="show-mode"
+              aria-pressed={night}
+              onClick={toggleNight}
             >
-              <span className="knob" />
+              <span className={!night ? "active" : ""}>{isAr ? "نهار" : "Day"}</span>
+              <i aria-hidden="true" />
+              <span className={night ? "active" : ""}>{isAr ? "ليل" : "Night"}</span>
             </button>
-            <span className={`ml${night ? " on" : ""}`}>{locale === "ar" ? "الوضع الليلي" : "Night mode"}</span>
+
+            <button
+              type="button"
+              className="show-lamp"
+              aria-pressed={lightsOn}
+              onClick={toggleLights}
+            >
+              <span className="lamp-icon" aria-hidden="true">
+                ✦
+              </span>
+              <span>{lightsOn ? (isAr ? "الإضاءة مضاءة" : "Lights on") : isAr ? "الإضاءة مطفأة" : "Lights off"}</span>
+            </button>
           </div>
         </Reveal>
 
@@ -40,44 +97,57 @@ export function Showroom({ locale }: { locale: Locale }) {
           <img
             className="room-photo"
             src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1800&q=80"
-            alt={locale === "ar" ? "معرض رولك" : "Rollc showroom"}
+            alt={isAr ? "غرفة نوم فاخرة من رولك بتجربة إضاءة نهارية وليلية" : "Luxury Rollc room with day and night lighting"}
           />
-          <div className="grade-day" />
-          <div className="grade-night" />
-          <div className="glow center" />
-          <div className="glow lamp-l" />
-          <div className="glow lamp-r" />
-          <div className="glow floor" />
-          <span className="bulb b1" />
-          <span className="bulb b2" />
+
+          <div className="sun-wash" />
+          <div className="night-wash" />
+          <div className="window-shade" />
+          <div className="cinema-vignette" />
+
+          <span className="real-light lamp-left-light" aria-hidden="true" />
+          <span className="real-light lamp-right-light" aria-hidden="true" />
+
+          <span className="light-cone lamp-left-cone" aria-hidden="true" />
+          <span className="light-cone lamp-right-cone" aria-hidden="true" />
+          <span className="floor-glow" aria-hidden="true" />
+
+          {CHANDELIER_BULBS.map((pos, i) => (
+            <span key={i} className="chandelier-bulb" style={pos} aria-hidden="true" />
+          ))}
 
           <div className="room-caption">
             <div>
               <p className="rc-name">
-                {locale === "ar" ? "جلسة المساء — مجموعة الفخامة" : "Evening lounge — The Opulence Collection"}
+                {isAr ? "جلسة المساء — دفء يغيّر المكان" : "Evening scene — warmth that changes the room"}
               </p>
               <p className="rc-sub">
-                {locale === "ar"
-                  ? "أريكة، طاولة جانبية، وإضاءة دافئة تُكمل المشهد."
-                  : "A sofa, a side table, and warm light that completes the scene."}
+                {isAr
+                  ? "اضغط على الأزرار وشاهد كيف تصنع الإضاءة مزاجاً مختلفاً لنفس القطع."
+                  : "Use the controls and see how lighting creates a different mood for the same pieces."}
               </p>
             </div>
+
             <span className="rc-tag">
               {night
-                ? locale === "ar"
-                  ? "الإضاءة مُشعّة"
-                  : "Lights on"
-                : locale === "ar"
-                  ? "الإضاءة مطفأة"
-                  : "Lights off"}
+                ? lightsOn
+                  ? isAr
+                    ? "ليل + إضاءة"
+                    : "Night + lights"
+                  : isAr
+                    ? "ليل هادئ"
+                    : "Soft night"
+                : isAr
+                  ? "نهار طبيعي"
+                  : "Natural day"}
             </span>
           </div>
         </Reveal>
 
         <p className="show-note">
-          {locale === "ar"
-            ? "اضغط على المفتاح لإطفاء النهار وإشعال مصابيح الغرفة ✦"
-            : "Flip the switch to dim the day and light the room ✦"}
+          {isAr
+            ? "جرّب تبديل النهار والليل، ثم شغّل الإضاءة لترى تأثير رولك داخل المساحة ✦"
+            : "Switch between day and night, then turn on the lights to see the Rollc effect ✦"}
         </p>
       </div>
     </section>
