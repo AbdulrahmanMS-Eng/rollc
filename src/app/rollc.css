@@ -1659,3 +1659,36 @@ body.lang-en,
     gap:5px;
   }
 }
+
+/* Mobile header logo slight bump */
+@media(max-width:700px){
+  .header .brand{
+    flex-basis:148px !important;
+    width:148px !important;
+    max-width:148px !important;
+  }
+
+  .header .brand img,
+  .header .brand svg,
+  .header img.brand,
+  .header svg.brand{
+    width:148px !important;
+    max-width:148px !important;
+  }
+}
+
+@media(max-width:390px){
+  .header .brand{
+    flex-basis:140px !important;
+    width:140px !important;
+    max-width:140px !important;
+  }
+
+  .header .brand img,
+  .header .brand svg,
+  .header img.brand,
+  .header svg.brand{
+    width:140px !important;
+    max-width:140px !important;
+  }
+}
