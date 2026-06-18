@@ -77,7 +77,7 @@ function PillarCard({ pillar, locale }: { pillar: Pillar; locale: Locale }) {
 
 export function PillarsRail({ locale }: { locale: Locale }) {
   // Continuous marquee on mobile; on desktop the element stays a CSS grid.
-  const { ref, active } = useMobileRail({ mode: "marquee", speed: 0.42 });
+  const { ref, active } = useMobileRail({ mode: "marquee", speed: 0.6 });
 
   return (
     <div ref={ref} className="pillars m-rail m-rail--marquee">
