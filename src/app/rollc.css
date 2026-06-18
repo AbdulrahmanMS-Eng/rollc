@@ -992,6 +992,7 @@ ul{list-style:none}
 .socials{display:flex;gap:10px;margin-top:24px}
 .socials a{width:40px;height:40px;border:1px solid rgba(246,241,232,.2);border-radius:50%;display:grid;place-items:center;font-family:var(--ff-en-sans);font-size:.72rem;letter-spacing:.05em;color:rgba(246,241,232,.7);transition:.3s var(--ease)}
 .socials a:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.socials a svg{width:18px;height:18px}
 .foot-bottom{border-top:1px solid rgba(246,241,232,.1);padding-block:24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font-family:var(--ff-en-sans);font-size:.78rem;color:rgba(246,241,232,.45);letter-spacing:.04em}
 .foot-bottom .pay{display:flex;gap:14px}
 

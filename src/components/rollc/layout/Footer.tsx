@@ -70,10 +70,29 @@ export function Footer({ locale }: { locale: Locale }) {
                 : "Rollc — where design meets warmth. We craft spaces that echo your taste and tell your story."}
             </p>
             <div className="socials">
-              <a href="#" aria-label="Instagram">IG</a>
-              <a href="#" aria-label="X">X</a>
-              <a href="#" aria-label="Pinterest">PIN</a>
-              <a href="#" aria-label="TikTok">TT</a>
+              <a href="#" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/>
+                  <circle cx="12" cy="12" r="4.5"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+              <a href="#" aria-label="X">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <a href="#" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="3"/>
+                  <polygon points="10,9 17,12 10,15" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+              <a href="#" aria-label="TikTok">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34v-6.9a8.18 8.18 0 0 0 4.77 1.52V6.48a4.85 4.85 0 0 1-1-.21z"/>
+                </svg>
+              </a>
             </div>
           </div>
 
