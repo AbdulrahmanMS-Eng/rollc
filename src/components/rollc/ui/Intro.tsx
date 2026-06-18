@@ -28,7 +28,9 @@ export function Intro() {
         animate={reduced ? { opacity: 1 } : { scale: 1, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Logo locale="ar" tone="duo" />
+        <div className="intro-logo-wrap">
+          <Logo locale="ar" tone="duo" />
+        </div>
       </motion.div>
       <motion.div
         initial={reduced ? { opacity: 0 } : { opacity: 0, scaleX: 0 }}

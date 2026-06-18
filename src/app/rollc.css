@@ -1972,3 +1972,8 @@ body.lang-en,
     transition:none!important;
   }
 }
+
+/* Intro splash logo — desktop only, ~1.5× bigger */
+@media(min-width:768px){
+  .intro-logo-wrap{transform:scale(1.5);transform-origin:center}
+}
