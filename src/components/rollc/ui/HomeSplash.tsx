@@ -8,7 +8,9 @@ export function HomeSplash() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!sessionStorage.getItem("rollc_intro_seen")) {
+    if (document.documentElement.classList.contains("intro-first")) {
+      // Remove class so CSS pseudo-element yields to the React overlay
+      document.documentElement.classList.remove("intro-first");
       setLoading(true);
       sessionStorage.setItem("rollc_intro_seen", "1");
       const t = setTimeout(() => setLoading(false), 1300);

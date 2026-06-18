@@ -14,6 +14,10 @@ export default function EnglishRootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr">
+      {/* eslint-disable-next-line @next/next/no-before-interactive-script-component */}
+      <head>
+        <script dangerouslySetInnerHTML={{__html:"try{if(!sessionStorage.getItem('rollc_intro_seen')){document.documentElement.classList.add('intro-first')}}catch(e){}"}} />
+      </head>
       <body className={`${rollcFontClassName} rollc-page-en lang-en`}>{children}</body>
     </html>
   );
