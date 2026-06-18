@@ -13,7 +13,7 @@ export default function ArabicRootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-before-interactive-script-component */}
       <head>
         <script dangerouslySetInnerHTML={{__html:"try{if(!sessionStorage.getItem('rollc_intro_seen')){document.documentElement.classList.add('intro-first')}}catch(e){}"}} />
