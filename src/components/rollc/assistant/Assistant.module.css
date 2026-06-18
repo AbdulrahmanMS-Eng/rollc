@@ -634,6 +634,12 @@
   :global(body.pdp-sticky-active) .panel { bottom: 156px; /* 88+52+16 */ }
 }
 
+/* At 641–760 px the sticky bar shows but the ≤640 block above doesn't fire —
+   raise the launcher here too (desktop-size launcher: 56px, bottom 24px) */
+@media (min-width: 641px) and (max-width: 760px) {
+  :global(body.pdp-sticky-active) .launcher { bottom: 88px; }
+}
+
 /* ============================================================
    REDUCE-MOTION
    ============================================================ */

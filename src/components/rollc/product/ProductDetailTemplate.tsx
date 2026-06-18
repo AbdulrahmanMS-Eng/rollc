@@ -258,11 +258,13 @@ export function ProductDetailTemplate({ locale, product }: { locale: Locale; pro
               <button type="button" className={styles.gChat} onClick={(event) => { event.stopPropagation(); event.preventDefault(); openAssistant(product); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
               </button>
-              <button type="button" className={styles.gZoom} onClick={() => setLightboxOpen(true)}>
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3M11 8v6M8 11h6" /></svg>
-                <span>{locale === "ar" ? "تكبير" : "Zoom"}</span>
-              </button>
-              <img src={activeImage} alt={product.name[locale]} style={{ opacity: imageVisible ? 1 : 0 }} />
+              <img
+                src={activeImage}
+                alt={product.name[locale]}
+                style={{ opacity: imageVisible ? 1 : 0 }}
+                onClick={() => setLightboxOpen(true)}
+                className={styles.zoomableImg}
+              />
             </div>
 
             <div className={styles.thumbs}>

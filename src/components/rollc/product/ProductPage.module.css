@@ -89,15 +89,7 @@
 }
 .gChat:hover { background: var(--gold); color: #fff; }
 .gChat svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
-.gZoom {
-  position: absolute; bottom: 16px; inset-inline-end: 16px; z-index: 3;
-  font-family: var(--ff-sans); font-size: .64rem; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--brown);
-  background: rgba(251, 248, 242, .9); padding: 9px 15px; border-radius: 30px;
-  display: flex; align-items: center; gap: 7px; transition: .3s var(--ease);
-}
-.gZoom:hover { background: var(--espresso); color: var(--paper); }
-.gZoom svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 1.6; fill: none; }
+.zoomableImg { cursor: zoom-in; }
 
 .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .thumb {
