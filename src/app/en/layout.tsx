@@ -44,7 +44,7 @@ export default function EnglishRootLayout({
     <html lang="en" dir="ltr" suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-before-interactive-script-component */}
       <head>
-        <script dangerouslySetInnerHTML={{__html:"try{if(!sessionStorage.getItem('rollc_intro_seen')){document.documentElement.classList.add('intro-first')}}catch(e){}"}} />
+        <script dangerouslySetInnerHTML={{__html:"try{var p=location.pathname.replace(/\\/$/,'')||'/';if(p==='/en'&&!sessionStorage.getItem('rollc_intro_seen')){document.documentElement.classList.add('intro-first')}}catch(e){}"}} />
       </head>
       <body className={`${rollcFontClassName} rollc-page-en lang-en`}>{children}</body>
     </html>
