@@ -142,8 +142,6 @@ export function CategoryListing({ locale, kind }: { locale: Locale; kind: Catego
         <nav className={styles.crumb} aria-label={locale === "ar" ? "مسار التنقل" : "Breadcrumb"}>
           <a href={locale === "ar" ? "/" : "/en"}>{locale === "ar" ? "الرئيسية" : "Home"}</a>
           <span className={styles.sep}>/</span>
-          <a href={locale === "ar" ? "/" : "/en"}>{meta.parentCrumb[locale]}</a>
-          <span className={styles.sep}>/</span>
           <span className={styles.nowCrumb}>{meta.title[locale]}</span>
         </nav>
       </div>
