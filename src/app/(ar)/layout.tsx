@@ -3,8 +3,36 @@ import "../globals.css";
 import { rollcFontClassName } from "../fonts";
 
 export const metadata: Metadata = {
-  title: "Rollc | رولك للأثاث الفاخر",
-  description: "رولك — تجربة أثاث فاخرة تجمع بين التصميم المعماري والدفء الخليجي والشراء الإلكتروني العصري.",
+  metadataBase: new URL("https://rollc.vercel.app"),
+  title: "رولك | أثاث فاخر بتجربة رقمية ذكية",
+  description: "رولك — موقع أثاث فاخر يعرض المنتجات، يستقبل طلبات عروض الأسعار، ويقدم تجربة ذكية مناسبة للمناقصات والتجزئة.",
+  icons: {
+    icon: "/logo/1.svg",
+    shortcut: "/logo/1.svg",
+    apple: "/logo/1.svg",
+  },
+  openGraph: {
+    title: "رولك | أثاث فاخر بتجربة رقمية ذكية",
+    description: "تجربة أثاث فاخرة باللغتين العربية والإنجليزية، مع مساعد ذكي، طلبات عروض أسعار، وصفحة تعريفية مخصصة للمناقصات.",
+    url: "https://rollc.vercel.app/",
+    siteName: "Rollc | رولك",
+    locale: "ar_SA",
+    type: "website",
+    images: [
+      {
+        url: "/og-rollc.png",
+        width: 1200,
+        height: 630,
+        alt: "Rollc | رولك للأثاث الفاخر",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "رولك | أثاث فاخر بتجربة رقمية ذكية",
+    description: "تجربة أثاث فاخرة باللغتين العربية والإنجليزية، مع مساعد ذكي وطلبات عروض أسعار.",
+    images: ["/og-rollc.png"],
+  },
 };
 
 export default function ArabicRootLayout({
