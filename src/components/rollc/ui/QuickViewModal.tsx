@@ -51,6 +51,7 @@ export function QuickViewModal() {
   const [qty, setQty] = useState(1);
   const [colorIndex, setColorIndex] = useState(0);
   const [sizeIndex, setSizeIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const open = Boolean(selectedProduct);
 
   useEffect(() => {
@@ -70,7 +71,18 @@ export function QuickViewModal() {
     setQty(1);
     setColorIndex(0);
     setSizeIndex(productKind(selectedProduct) === "sofas" ? 1 : 0);
+    setLightboxOpen(false);
   }, [selectedProduct]);
+
+  // Lightbox Esc — capture phase so it fires before the modal's Esc handler.
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { e.stopImmediatePropagation(); setLightboxOpen(false); }
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [lightboxOpen]);
 
   // Lock the underlying scroll container + Esc to close.
   useEffect(() => {
@@ -126,6 +138,14 @@ export function QuickViewModal() {
   return (
     <>
       <div className={`${styles.overlay} ${open ? styles.overlayOpen : ""}`} onClick={closeQuickView} aria-hidden />
+      {lightboxOpen && (
+        <div className={styles.lightbox} onClick={() => setLightboxOpen(false)} role="dialog" aria-modal="true" aria-label={locale === "ar" ? "عرض مكبّر" : "Enlarged view"}>
+          <button className={styles.lbClose} onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }} aria-label={locale === "ar" ? "إغلاق" : "Close"}>
+            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg>
+          </button>
+          <img src={gallery[activeImg]} alt={data.name[locale]} onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
       <div
         className={`${styles.qvRoot} ${styles.modal} ${open ? styles.modalOpen : ""}`}
         role="dialog"
@@ -147,11 +167,13 @@ export function QuickViewModal() {
               <button className={styles.gChat} onClick={(event) => { event.stopPropagation(); event.preventDefault(); openAssistant(data); }} aria-label={locale === "ar" ? "اسأل مساعد رولك عن هذا المنتج" : "Ask Rollc assistant about this product"}>
                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
               </button>
-              <span className={styles.gZoom}>
+              <button type="button" className={styles.gZoom} onClick={(e) => { e.stopPropagation(); setLightboxOpen(true); }} aria-label={locale === "ar" ? "تكبير الصورة" : "Enlarge image"}>
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3M11 8v6M8 11h6" /></svg>
                 {locale === "ar" ? "تكبير" : "Zoom"}
-              </span>
-              <img className={fading ? styles.fading : ""} src={gallery[activeImg]} alt={data.name[locale]} />
+              </button>
+              <a href={pdpHref} className={styles.gImgLink} aria-label={locale === "ar" ? `عرض صفحة — ${data.name.ar}` : `View product — ${data.name.en}`}>
+                <img className={fading ? styles.fading : ""} src={gallery[activeImg]} alt={data.name[locale]} />
+              </a>
             </div>
             <div className={styles.thumbs}>
               {gallery.map((src, index) => (

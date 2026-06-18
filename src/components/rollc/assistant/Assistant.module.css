@@ -37,7 +37,7 @@
   box-shadow:
     0 8px 28px -8px rgba(42, 33, 26, .55),
     0 0 0 2px rgba(182, 138, 78, .35);
-  transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  transition: bottom .4s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease);
   cursor: pointer;
 }
 
@@ -628,6 +628,10 @@
     border-radius: 16px;
     transform-origin: bottom inline-end;
   }
+
+  /* Raise launcher + panel above the PDP sticky add-to-cart bar (~80px) */
+  :global(body.pdp-sticky-active) .launcher { bottom: 88px; }
+  :global(body.pdp-sticky-active) .panel { bottom: 156px; /* 88+52+16 */ }
 }
 
 /* ============================================================

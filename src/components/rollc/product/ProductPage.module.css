@@ -425,6 +425,13 @@
 }
 .stickyButton:active { background: var(--gold); }
 
+/* ============ In-site image lightbox ============ */
+.lightbox { position: fixed; inset: 0; z-index: 300; background: rgba(10, 6, 4, .92); display: grid; place-items: center; cursor: zoom-out; }
+.lightbox img { max-width: 90vw; max-height: 88dvh; object-fit: contain; border-radius: 4px; cursor: default; box-shadow: 0 40px 100px rgba(0,0,0,.6); }
+.lbClose { position: absolute; top: 16px; inset-inline-end: 16px; width: 44px; height: 44px; border-radius: 50%; background: rgba(251,248,242,.15); color: #fff; display: grid; place-items: center; transition: background .3s; }
+.lbClose:hover { background: rgba(251,248,242,.3); }
+.lbClose svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+
 /* ============ Scroll reveal (single mechanism) ============ */
 .reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s var(--ease), transform .9s var(--ease); will-change: opacity, transform; }
 .revealIn { opacity: 1; transform: none; }

@@ -51,6 +51,7 @@
 .gChat svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.5; fill: none; }
 .gZoom { position: absolute; bottom: 14px; inset-inline-end: 14px; z-index: 3; font-family: var(--ff-sans); font-size: .64rem; letter-spacing: .18em; text-transform: uppercase; color: var(--brown); background: rgba(251, 248, 242, .88); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 7px; }
 .gZoom svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 1.6; fill: none; }
+.gImgLink { display: block; width: 100%; height: 100%; }
 .thumbs { display: flex; gap: 12px; }
 .thumb { flex: 1; aspect-ratio: 1 / 1; border-radius: var(--r); overflow: hidden; border: 1px solid transparent; outline: 1px solid var(--line); cursor: pointer; transition: .35s var(--ease); position: relative; opacity: .78; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -138,6 +139,13 @@
 .specIc { color: var(--gold); margin-bottom: 8px; display: grid; place-items: center; }
 .specIc svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 1.3; fill: none; }
 .specTxt { font-size: .78rem; color: var(--brown); font-weight: 500; line-height: 1.35; }
+
+/* ---------- In-site image lightbox ---------- */
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(10, 6, 4, .92); display: grid; place-items: center; cursor: zoom-out; }
+.lightbox img { max-width: 90vw; max-height: 88dvh; object-fit: contain; border-radius: 4px; cursor: default; box-shadow: 0 40px 100px rgba(0,0,0,.6); }
+.lbClose { position: absolute; top: 16px; inset-inline-end: 16px; width: 44px; height: 44px; border-radius: 50%; background: rgba(251,248,242,.15); color: #fff; display: grid; place-items: center; transition: background .3s; }
+.lbClose:hover { background: rgba(251,248,242,.3); }
+.lbClose svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.8; fill: none; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
