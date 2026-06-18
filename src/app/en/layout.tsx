@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-rollc.png",
+        url: "/rollc-og-final.png",
         width: 1200,
         height: 630,
         alt: "Rollc Luxury Furniture",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Rollc | Luxury Furniture Experience",
     description: "A bilingual luxury furniture experience with smart assistance and quote requests.",
-    images: ["/og-rollc.png"],
+    images: ["/rollc-og-final.png"],
   },
 };
 

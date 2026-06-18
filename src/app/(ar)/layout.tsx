@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-rollc.png",
+        url: "/rollc-og-final.png",
         width: 1200,
         height: 630,
         alt: "Rollc | رولك للأثاث الفاخر",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "رولك | أثاث فاخر بتجربة رقمية ذكية",
     description: "تجربة أثاث فاخرة باللغتين العربية والإنجليزية، مع مساعد ذكي وطلبات عروض أسعار.",
-    images: ["/og-rollc.png"],
+    images: ["/rollc-og-final.png"],
   },
 };
 
